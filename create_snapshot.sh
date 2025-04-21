@@ -176,8 +176,12 @@ find . "${prune_args[@]}" -o -type f -print0 | while IFS= read -r -d $'\0' file;
             IS_TEXT=true
         else
             # Check against the list of known text extensions (case-insensitive)
+            # Use tr for lowercase conversion for compatibility with older bash versions
+            lower_relative_path=$(echo "$RELATIVE_PATH" | tr '[:upper:]' '[:lower:]')
             for ext in "${TEXT_EXTENSIONS[@]}"; do
-                if [[ "${RELATIVE_PATH,,}" == *"${ext,,}" ]]; then
+                lower_ext=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+                # Check if the lowercase relative path ends with the lowercase extension
+                if [[ "$lower_relative_path" == *"$lower_ext" ]]; then
                     IS_TEXT=true
                     break
                 fi

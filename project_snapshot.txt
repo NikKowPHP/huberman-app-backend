@@ -1,1 +1,874 @@
 # AI Context Reference: Please analyze the following project snapshot thoroughly to understand the codebase structure and content.
+--- START FILE: detailed_plan.md ---
+Okay, let's translate the high-level vision for the "Huberman App" (Optimize Guide) into a detailed technical plan and setup outline for the implementation phase.
+
+---
+
+**Huberman App (Optimize Guide): Implementation Preparation Plan**
+
+**1. Transition Summary**
+
+We have successfully completed the high-level application description and architectural blueprint phases for the Huberman App. The architecture outlines a Modular Monolith (Laravel/PHP backend), a React Native frontend, PostgreSQL database, Redis caching/queuing, and a RESTful API, all designed to support the defined Freemium subscription model. This document details the next crucial phase: transitioning from the architectural vision to actionable technical specifications, project setup, and environment preparation necessary to initiate development efficiently and effectively. The objective is to establish a solid foundation for the implementation lifecycle.
+
+**2. Detailed Technical Design & Specifications**
+
+This phase focuses on refining the high-level architecture into granular component designs and technical specifications.
+
+*   **Component Breakdown (Modular Monolith):**
+    *   **Process:** Decompose the Laravel backend into logical, domain-driven modules (Namespaces/Folders). Based on the architecture and features, initial modules will likely include: `Authentication`, `UserManagement`, `SubscriptionBilling` (integrating with chosen payment provider/Cashier), `ContentManagement` (Episodes, Protocols, Summaries), `ProtocolEngine` (Reminder logic, Tracking), `NotesService`, `CommunityFeatures` (if applicable early), and `CoreApi`.
+    *   **Outcome:** Clearly defined code boundaries and responsibilities within the Laravel application structure.
+*   **Component Interfaces & Interactions:**
+    *   **Process:** Define the specific internal contracts (Service Classes, Interfaces, Events) for how these backend modules interact. Document the flow of data and control, especially for cross-cutting concerns like subscription status checks. For frontend-backend interaction, focus on the API.
+    *   **Outcome:** Documented internal interaction patterns (e.g., Sequence Diagrams for key flows) and clear responsibilities for each module.
+*   **API Design & Documentation:**
+    *   **Process:** Formalize the RESTful API contract. Utilize OpenAPI (Swagger) specification to define all endpoints, request/response schemas, authentication methods (Laravel Sanctum/Passport), and authorization requirements. Explicitly tag endpoints requiring 'Premium' subscription status. Key areas include: Auth (login, register, password reset), User Profile, Plans/Subscriptions (fetching offers, potentially linking to provider portals), Content (fetching episodes, protocols, summaries - with filtering for free/premium), Notes (CRUD, public/private flags), Reminders (CRUD for premium), Tracking (logging adherence for premium). Define error handling standards (HTTP status codes, error response structure). Define webhook endpoints for payment providers (Stripe/Paddle, Apple App Store Server Notifications, Google Play Developer API).
+    *   **Outcome:** A version-controlled `openapi.yaml` or `swagger.json` file serving as the definitive API contract for both frontend and backend teams.
+*   **Database Schema Refinement:**
+    *   **Process:** Review the provided `database_plan.md` SQL schema. Convert it into Laravel Migrations. Finalize data types, constraints (NOT NULL, UNIQUE), foreign key relationships (with appropriate ON DELETE behavior - e.g., CASCADE for notes on user delete, RESTRICT for plans on active subscriptions). Define necessary indexes based on anticipated query patterns (e.g., indexing `subscriptions.user_id`, `subscriptions.status`, `subscriptions.ends_at`, `notes.user_id`, `notes.episode_id`, `protocols.category`). Plan for potential future schema evolution using migrations.
+    *   **Outcome:** A complete set of executable Laravel migration files checked into version control, representing the definitive database structure.
+*   **Complex Workflow/Algorithm Design:**
+    *   **Process:** Document the specific logic for complex features identified in the architecture:
+        *   **Subscription Lifecycle Management:** Detail the state machine for subscriptions (`trialing`, `active`, `past_due`, `canceled`, `expired`) and how webhook events from Stripe/Paddle/Apple/Google trigger state transitions and update the `subscriptions` table.
+        *   **Feature Gating Logic:** Specify the implementation details for Laravel Middleware/Policies that check the user's active subscription status (querying `subscriptions` table, potentially using cached flags from Redis) before granting access to premium API routes or features.
+        *   **Customizable Reminders (Premium):** Design the scheduling mechanism (likely using Laravel's Task Scheduling + Queues) to trigger push notifications based on user-defined times/frequencies for specific protocols.
+        *   **Tracking & Visualization Logic (Premium):** Define how adherence data is stored and how it will be aggregated for progress visualizations (e.g., streak calculation).
+    *   **Outcome:** Sequence diagrams, state diagrams, or pseudo-code documenting the core logic for these critical flows.
+*   **Technology Version & Library Finalization:**
+    *   **Process:** Lock down specific versions: PHP (e.g., 8.2+), Laravel (e.g., 10.x/11.x), PostgreSQL (e.g., 17), Redis (e.g., 7.x), Node.js (LTS for React Native tooling), React Native (latest stable). Select and document key libraries: `laravel/cashier-stripe` or `laravel/cashier-paddle`, `react-native-iap`, Push Notification library (e.g., `react-native-push-notification` or cloud provider SDKs), state management for RN (e.g., Redux Toolkit, Zustand).
+    *   **Outcome:** Updated `composer.json`, `package.json`, and potentially a project README or Architecture Decision Record (ADR) listing finalized versions and libraries.
+
+**3. Project Planning & Development Readiness**
+
+Translate the technical design into a manageable project plan and prepare the team.
+
+*   **Requirements Refinement (User Stories):**
+    *   **Process:** Break down the features from `app_description.md` (both Free and Premium tiers) into granular User Stories (e.g., "As a Free User, I want to see summaries for foundational protocols so that I can understand the basics," "As a Premium User, I want to set a custom daily reminder for 'Morning Sunlight Viewing' so that I don't forget," "As a Premium User, I want to mark a protocol as completed for the day so that I can track my adherence"). Use a tool like Jira or Trello. Prioritize stories for an MVP, focusing on core free functionality and the subscription mechanism first, followed by premium features.
+    *   **Outcome:** A populated backlog of estimated User Stories in the chosen project management tool.
+*   **Detailed Estimation:**
+    *   **Process:** Estimate the effort for each User Story based on the detailed technical designs (e.g., using Story Points or time estimates). This should be done collaboratively by the development team.
+    *   **Outcome:** Estimated backlog providing a basis for timeline creation.
+*   **Granular Project Timeline & Milestones:**
+    *   **Process:** Develop a sprint-based or Kanban-based timeline. Define key milestones:
+        *   M1: Project Setup Complete (Repo, CI/CD Base, Local Env).
+        *   M2: Core Backend Ready (Auth, User Mgmt, DB Migrations, Basic API Shell).
+        *   M3: Basic Content Display (Free Tier Protocols/Summaries visible in RN App).
+        *   M4: Subscription Flow PoC (IAP Integration, Backend Webhooks, Basic Feature Gate).
+        *   M5: Free Tier Feature Complete (Basic Reminders, Notes).
+        *   M6: Premium Feature Set 1 (e.g., Full Content Access, Custom Reminders).
+        *   M7: Premium Feature Set 2 (e.g., Tracking, Offline Access).
+        *   M8: Beta Release / Production Readiness.
+    *   **Outcome:** A documented project plan with sprints/phases, milestones, and dependencies visualized.
+*   **Resource Allocation:**
+    *   **Process:** Assign development team members (Backend Devs, Frontend RN Devs, QA, potentially DevOps support) to specific modules, epics, or sprints based on skills and availability.
+    *   **Outcome:** Clear ownership of tasks/modules within the team.
+*   **Essential Tooling Setup:**
+    *   **Process:** Configure and grant access to necessary tools:
+        *   Project Management: Jira/Trello board setup.
+        *   Version Control: GitHub/GitLab/Bitbucket repository creation, branch strategy definition (e.g., Gitflow).
+        *   Communication: Slack/Teams channel setup.
+        *   Documentation: Confluence/Notion space creation for technical docs, ADRs, meeting notes.
+    *   **Outcome:** Operational project infrastructure ready for team use.
+*   **Development Environment Configuration:**
+    *   **Process:** Finalize and distribute the Docker configuration (`docker-compose.yml`) as specified in the architecture. Ensure it includes containers for PHP-FPM, Nginx/Caddy, PostgreSQL, Redis, and Node.js (for frontend tooling). Provide clear instructions for setup and usage. Standardize environment variable management (e.g., `.env` files with templates).
+    *   **Outcome:** Developers can quickly and consistently set up identical local development environments.
+
+**4. UI/UX Design Integration (If Applicable)**
+
+If not already completed, this is a critical parallel activity, especially for the React Native frontend.
+
+*   **Process:** Ensure finalized, high-fidelity mockups and prototypes are available and signed off. These must cover:
+    *   All key user flows (onboarding, browsing content, setting reminders, taking notes, tracking progress).
+    *   Clear visual differentiation between Free and Premium features/content.
+    *   User-friendly prompts and flows for upgrading to Premium.
+    *   Platform-specific design conventions (iOS/Android).
+    *   Creation of a component library/design system for consistency.
+*   **Outcome:** Signed-off UI/UX designs and a style guide/component library ready for frontend development.
+
+**5. Infrastructure & Environment Setup**
+
+Prepare the cloud/hosting environments required beyond local development.
+
+*   **Infrastructure Planning:**
+    *   **Process:** Based on the Laravel Forge/Vapor choice, plan the specific server sizes/configurations (if using Forge) or review Vapor's serverless scaling model. Estimate initial database (PostgreSQL) and cache (Redis) resource needs (using managed services). Plan for object storage (S3/GCS) for potential offline content or user uploads.
+    *   **Outcome:** Documented infrastructure requirements and initial sizing estimates.
+*   **Cloud Service Selection:**
+    *   **Process:** Confirm choices: Forge/Vapor for hosting, AWS RDS/Managed Postgres provider, AWS ElastiCache/Managed Redis provider, S3/GCS for storage. Set up accounts if necessary.
+    *   **Outcome:** Finalized list of cloud services and providers.
+*   **Environment Provisioning:**
+    *   **Process:** Use Forge/Vapor (or Terraform/Pulumi if more control is desired) to provision the initial Dev, Staging, and Production environments. This includes setting up servers/services, databases, caches, and configuring network access/security groups.
+    *   **Outcome:** Functional cloud environments ready for deployment.
+*   **Monitoring, Logging, Alerting Setup:**
+    *   **Process:** Integrate monitoring tools (e.g., Datadog, Sentry, CloudWatch, Prometheus/Grafana) into the provisioned environments. Configure basic logging aggregation (e.g., Vapor logs, CloudWatch Logs, ELK stack). Set up initial alerts for critical events (e.g., high error rates, server down, high DB connections). Integrate Laravel Telescope for Dev/Staging.
+    *   **Outcome:** Foundational observability infrastructure in place.
+*   **Backup & Recovery Planning:**
+    *   **Process:** Configure automated database backups (e.g., using RDS snapshots or provider tools) with defined retention policies. Document the recovery procedure (e.g., restoring from a snapshot).
+    *   **Outcome:** Initial backup strategy implemented and documented.
+
+**6. Security Deep Dive & Planning**
+
+Integrate security rigorously from the start.
+
+*   **Detailed Threat Modeling:**
+    *   **Process:** Conduct a threat modeling session (e.g., using STRIDE) based on the detailed technical design, data flows, and features (especially authentication, subscription handling, user notes, potential community features). Identify potential threats and vulnerabilities.
+    *   **Outcome:** A documented threat model identifying key risks and potential attack vectors.
+*   **Define Specific Technical Security Controls:**
+    *   **Process:** Based on the threat model and architecture, define concrete security controls:
+        *   **Authentication:** Specify token expiry, refresh token strategy, password complexity rules, brute-force protection (rate limiting).
+        *   **Authorization:** Detail the implementation of Laravel Policies/Middleware for checking `subscriptions.status` for premium features. Ensure no business logic relies solely on client-side checks.
+        *   **Encryption:** Enforce TLS 1.2+ (HTTPS), confirm database encryption at rest, define secure storage for API keys/secrets (e.g., environment variables injected via Forge/Vapor, potentially a secrets manager).
+        *   **Input Validation:** Define strategy (e.g., Laravel Form Requests) for validating all incoming API request data.
+        *   **Payment Security:** Reiterate server-side validation of IAP receipts and secure webhook handling (signature verification).
+        *   **Dependency Scanning:** Plan for tools like `composer audit`, `npm audit`.
+    *   **Outcome:** A checklist or document detailing specific security controls to be implemented and verified.
+*   **Security Testing Planning:**
+    *   **Process:** Plan for integrating security testing into the development lifecycle:
+        *   **SAST:** Configure static analysis tools (e.g., PHPStan, Psalm, ESLint security plugins) to run locally and/or in CI.
+        *   **DAST:** Plan for using basic dynamic analysis tools against the Staging environment later in the cycle.
+        *   **Penetration Testing:** Allocate budget/time for external penetration testing before major production launches.
+    *   **Outcome:** Security testing activities integrated into the project plan and CI/CD strategy.
+
+**7. CI/CD Pipeline Foundation**
+
+Automate the build, test, and deployment process early.
+
+*   **Process:** Set up the initial CI/CD pipeline (using GitHub Actions, GitLab CI, Bitbucket Pipelines, or Jenkins) connected to the version control repository. Configure initial stages:
+    *   Trigger on push/merge to `develop` and `main` branches.
+    *   Checkout code.
+    *   Install dependencies (`composer install`, `npm install`).
+    *   Run linters and static analysis (SAST tools).
+    *   Run automated tests (Unit, Integration - e.g., `php artisan test`, `npm test`).
+    *   Build frontend assets (`npm run build`).
+    *   (Initial) Deploy script targeting the Dev/Staging environment using Forge CLI/API or Vapor CLI deployment commands.
+*   **Outcome:** A basic, functional CI/CD pipeline that automates testing and deployment to lower environments, ready to be expanded as the project progresses.
+
+**8. Initiation of Development**
+
+With the detailed plans and setup complete, development can commence.
+
+*   **Process:** The development team begins implementation based on the prioritized backlog (User Stories), detailed technical designs, API specifications, and established environment/tooling setup.
+*   **Initial Focus:**
+    *   Setting up the base Laravel and React Native project structures.
+    *   Implementing core database migrations (Users, Plans, Subscriptions, initial Content tables).
+    *   Building the Authentication flow (backend API and frontend screens).
+    *   Establishing basic API communication between frontend and backend.
+    *   Setting up the basic subscription scaffolding (e.g., integrating Laravel Cashier, defining Plan models).
+*   **Outcome:** Development kickoff, focusing on foundational components and demonstrating core connectivity.
+
+---
+
+This comprehensive plan provides the necessary detail and structure to effectively transition the Huberman App project from architecture into the implementation phase, ensuring all critical technical, planning, infrastructure, and security aspects are addressed upfront.--- END FILE: detailed_plan.md ---
+
+--- START FILE: create_snapshot.sh ---
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Script Name: create_snapshot.sh
+# Description: Scans a Git repository, extracts content from text files and
+#              paths of image/other files, ignores specified directories/files,
+#              and consolidates the information into a single snapshot file
+#              in the project root, prepended with an AI context instruction.
+#              Finally, attempts to reveal the snapshot file in the default
+#              file manager (opens folder, selects file where possible).
+# Usage:       Place this script anywhere. Run it from within a Git repository
+#              or any subdirectory. It will automatically find the root.
+#              ./create_snapshot.sh
+# Output:      Creates/overwrites 'project_snapshot.txt' in the Git repo root.
+#              Opens the project root folder in the default file manager,
+#              attempting to select 'project_snapshot.txt'.
+# Requirements: bash, git, find, file (core utilities), and potentially
+#               xdg-utils (Linux), wslpath (WSL), specific file managers
+#               (nautilus, dolphin, thunar) on Linux, or appropriate commands
+#               for your OS.
+# -----------------------------------------------------------------------------
+
+# --- 1. Script Setup ---
+# Exit immediately if a command exits with a non-zero status.
+set -e
+# Treat unset variables as an error when substituting. (Optional but good practice)
+# set -u # Uncomment if needed, but ensure all variables are handled.
+# Pipe commands should fail if any command in the pipeline fails, not just the last one.
+set -o pipefail
+
+# --- 2. Identify Git Workspace Root ---
+echo "INFO: Identifying Git repository root..."
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  echo "ERROR: Not inside a Git repository (or git command not found)." >&2
+  exit 1
+}
+echo "INFO: Found project root: $PROJECT_ROOT"
+# Change directory to the project root for consistent relative paths
+cd "$PROJECT_ROOT"
+echo "INFO: Changed directory to project root."
+
+# --- 3. Define Ignored Directories and Output File ---
+# Array of directory/file names to ignore. Add more as needed.
+# IMPORTANT: .git is crucial to prevent scanning the git history itself.
+# Also ignoring the script's own output file.
+OUTPUT_FILENAME="project_snapshot.txt"
+IGNORED_ITEMS=(
+    # Version Control
+    ".git"
+    # Dependencies
+    "node_modules"
+    "vendor"
+    "bower_components"
+    # Common Build/Output Directories
+    "dist"
+    "build"
+    "out"
+    "target"
+    "public/build" # e.g., Remix, Laravel Mix
+    "www"          # e.g., Ionic
+    # Framework-Specific Build/Cache
+    ".next"        # Next.js
+    ".nuxt"        # Nuxt.js
+    ".svelte-kit"  # SvelteKit
+    ".cache"       # Gatsby, Parcel, etc.
+    # Python
+    ".venv"
+    "venv"
+    "__pycache__"
+    ".pytest_cache"
+    ".mypy_cache"
+    "htmlcov"
+    # Testing
+    "coverage"
+    # Logs & Temporary Files
+    "logs"
+    "tmp"
+    "temp"
+    # IDE & Editor Directories
+    ".idea"
+    ".vscode"
+    ".project"
+    ".settings"
+    # OS Generated Files
+    ".DS_Store"
+    "Thumbs.db"
+    "storage/logs"
+    # This script's output file
+    "$OUTPUT_FILENAME"
+    "composer.lock"
+    # Laravel
+    "storage/framework"
+    "bootstrap/cache"
+)
+
+
+# Define the name of the output snapshot file.
+# Since we've cd'd to the PROJECT_ROOT, the output file path is relative to it.
+OUTPUT_FILE="$OUTPUT_FILENAME" # This is just the filename, relative to PROJECT_ROOT
+# Get the absolute path to the output file for file manager commands
+ABSOLUTE_OUTPUT_FILE="$PWD/$OUTPUT_FILENAME"
+
+# Define common file extensions that should always be treated as text,
+# overriding potential misidentification by the 'file' command.
+TEXT_EXTENSIONS=(
+    ".php" ".js" ".css" ".html" ".htm" ".json" ".xml" ".sh" ".py" ".rb" ".java"
+    ".c" ".cpp" ".h" ".hpp" ".vue" ".blade.php" ".md" ".yml" ".yaml" ".sql" ".env"
+    ".txt" ".log" ".ini" ".cfg" ".conf" ".gitignore" ".editorconfig" ".gitattributes"
+    ".env.example" ".lock" ".svg" # SVG is XML-based text
+)
+
+
+echo "INFO: Ignoring directories/files: ${IGNORED_ITEMS[*]}"
+echo "INFO: Output file set to: $OUTPUT_FILE (relative to project root)"
+
+# --- 4. Prepare Output File & Add Header ---
+# Write the AI context header to the output file.
+# This command uses '>' which creates the file or overwrites it if it exists.
+echo "INFO: Writing AI context header to '$OUTPUT_FILE'..."
+echo "# AI Context Reference: Please analyze the following project snapshot thoroughly to understand the codebase structure and content." > "$OUTPUT_FILE"
+# Any subsequent writes to the file in this script MUST use '>>' (append).
+
+# --- 5. Find and Process Files ---
+echo "INFO: Scanning files and generating snapshot content..."
+
+# Construct the -prune arguments for find dynamically based on IGNORED_ITEMS
+# We need to handle both directories and specific files like the output file.
+prune_args=()
+if [ ${#IGNORED_ITEMS[@]} -gt 0 ]; then
+    prune_args+=("(")
+    first=true
+    for item in "${IGNORED_ITEMS[@]}"; do
+        if [ "$first" = false ]; then
+            prune_args+=("-o")
+        fi
+        # Match by path - works for both files and directories at any depth
+        # Use './' prefix to match paths relative to the current directory '.'
+        prune_args+=("-path" "./$item") # Changed -name to -path and added ./ prefix
+        first=false
+    done
+    # We want to prune the matching directories or files
+    prune_args+=(")" "-prune")
+fi
+
+# --- 7. Append Output to File ---
+# Find files, excluding specified items, and pipe to the processing loop.
+# The redirection '>> "$OUTPUT_FILE"' at the end APPENDS the output of the
+# 'while' loop to the file already created/cleared in Step 4.
+find . "${prune_args[@]}" -o -type f -print0 | while IFS= read -r -d $'\0' file; do
+    # --- 6. Inside the Loop: Process Each File ---
+
+    # Get Relative Path (remove leading './')
+    RELATIVE_PATH="${file#./}"
+
+    # Double-check: Skip the output file itself (prune should handle it, but belt-and-suspenders)
+    if [[ "$RELATIVE_PATH" == "$OUTPUT_FILENAME" ]]; then
+        continue
+    fi
+
+    # Determine File Type using MIME types
+    # Use '|| true' to prevent script exit if 'file' command fails (e.g., permission denied)
+    MIME_TYPE=$(file --mime-type -b "$file" || echo "unknown/error") # Provide default on error
+
+    # Conditional Processing based on MIME Type or Extension
+    if [[ "$MIME_TYPE" == "unknown/error" ]]; then
+        # Handle cases where file command failed
+        echo "--- SKIPPED FILE (Could not determine type): $RELATIVE_PATH ---"
+        echo ""
+    elif [[ $MIME_TYPE == image/* ]]; then
+        # Image File: Print only the path marker
+        echo "--- IMAGE FILE: $RELATIVE_PATH ---"
+        echo "" # Blank line for separation
+    else
+        # Check if it's a text file, either by MIME type or by extension
+        IS_TEXT=false
+        if [[ $MIME_TYPE == text/* ]]; then
+            IS_TEXT=true
+        else
+            # Check against the list of known text extensions (case-insensitive)
+            # Use tr for lowercase conversion for compatibility with older bash versions
+            lower_relative_path=$(echo "$RELATIVE_PATH" | tr '[:upper:]' '[:lower:]')
+            for ext in "${TEXT_EXTENSIONS[@]}"; do
+                lower_ext=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+                # Check if the lowercase relative path ends with the lowercase extension
+                if [[ "$lower_relative_path" == *"$lower_ext" ]]; then
+                    IS_TEXT=true
+                    break
+                fi
+            done
+        fi
+
+        if [ "$IS_TEXT" = true ]; then
+            # Text File: Print header, content, footer, and newline
+            echo "--- START FILE: $RELATIVE_PATH ---"
+            # Use cat and handle potential errors reading the file gracefully
+            if cat "$file"; then
+                : # No-op, cat succeeded
+            else
+                echo "[Error reading file content for $RELATIVE_PATH]"
+            fi
+            echo "--- END FILE: $RELATIVE_PATH ---"
+            echo "" # Blank line for separation
+        else
+            # Other File Types (e.g., binary, application/*): Print a path marker with MIME type
+            echo "--- OTHER FILE ($MIME_TYPE): $RELATIVE_PATH ---"
+            echo "" # Blank line for separation
+        fi
+    fi
+
+done >> "$OUTPUT_FILE" # Step 7 Implementation: APPEND loop output here.
+
+# --- 8. Final Touches & Testing ---
+# Final confirmation message. Testing steps are performed manually by the user.
+echo "INFO: Snapshot generation complete."
+echo "INFO: Output written to: $PROJECT_ROOT/$OUTPUT_FILE"
+
+
+# --- 9. Reveal Snapshot File in File Manager ---
+echo "INFO: Attempting to reveal '$OUTPUT_FILE' in the default file manager..."
+# Goal: Open the containing folder ($PROJECT_ROOT) and select the file.
+# This works reliably via specific commands on macOS and Windows.
+# On Linux, we attempt specific file manager commands known to support selection,
+# falling back to opening the folder if none are found or if the file is missing.
+
+# We are in PROJECT_ROOT. Use ABSOLUTE_OUTPUT_FILE for commands needing it.
+
+case "$(uname -s)" in
+    Darwin)
+        # macOS: Use 'open -R' which reveals (opens folder and selects) the file in Finder.
+        if [ -f "$OUTPUT_FILE" ]; then
+            open -R "$OUTPUT_FILE" && echo "INFO: Revealed '$OUTPUT_FILE' in Finder (opened folder and selected file)." || echo "WARN: Failed to reveal file using 'open -R'."
+        else
+            echo "WARN: Output file '$OUTPUT_FILE' not found. Cannot select it. Opening folder instead."
+            open . && echo "INFO: Opened folder using 'open .'" || echo "WARN: Failed to open folder using 'open .'."
+        fi
+        ;;
+    Linux)
+        # Linux: Check for WSL first
+        if [[ -f /proc/version ]] && grep -qiE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+            # WSL: Use explorer.exe /select which reveals the file in Windows Explorer.
+            if command -v wslpath &> /dev/null; then
+                if [ -f "$OUTPUT_FILE" ]; then
+                    WIN_PATH=$(wslpath -w "$ABSOLUTE_OUTPUT_FILE") # Use absolute path for wslpath
+                    explorer.exe /select,"$WIN_PATH" && echo "INFO: Revealed '$OUTPUT_FILE' in Windows Explorer (opened folder and selected file)." || echo "WARN: Failed to reveal file using 'explorer.exe /select'. Ensure explorer.exe is accessible."
+                else
+                    echo "WARN: Output file '$OUTPUT_FILE' not found. Cannot select it. Opening folder instead."
+                    explorer.exe . && echo "INFO: Opened folder in Windows Explorer using 'explorer.exe .'" || echo "WARN: Failed to open folder using 'explorer.exe .'."
+                fi
+            else
+                echo "WARN: 'wslpath' command not found. Cannot determine Windows path to select file. Opening folder instead."
+                explorer.exe . && echo "INFO: Opened folder in Windows Explorer using 'explorer.exe .'" || echo "WARN: Failed to open folder using 'explorer.exe .'."
+            fi
+        else
+            # Standard Linux: Try specific file managers known to support selection.
+            revealed=false
+            if [ ! -f "$OUTPUT_FILE" ]; then
+                 echo "WARN: Output file '$OUTPUT_FILE' not found. Cannot select it."
+                 # Proceed to fallback (xdg-open .) below
+            else
+                # Try Nautilus (GNOME, Ubuntu default)
+                if command -v nautilus &> /dev/null; then
+                    echo "INFO: Found Nautilus. Attempting reveal using 'nautilus --select'..."
+                    # Run in background, suppress output
+                    nautilus --select "$ABSOLUTE_OUTPUT_FILE" &> /dev/null &
+                    revealed=true
+                    echo "INFO: Requested reveal via Nautilus."
+                fi
+
+                # Try Dolphin (KDE) if not already revealed
+                if [ "$revealed" = false ] && command -v dolphin &> /dev/null; then
+                    echo "INFO: Found Dolphin. Attempting reveal using 'dolphin --select'..."
+                    dolphin --select "$ABSOLUTE_OUTPUT_FILE" &> /dev/null &
+                    revealed=true
+                    echo "INFO: Requested reveal via Dolphin."
+                fi
+
+                # Try Thunar (XFCE) if not already revealed
+                # Thunar often selects when given the direct path, but less guaranteed.
+                if [ "$revealed" = false ] && command -v thunar &> /dev/null; then
+                    echo "INFO: Found Thunar. Attempting reveal by opening file path (may select file)..."
+                    thunar "$ABSOLUTE_OUTPUT_FILE" &> /dev/null &
+                    revealed=true
+                    echo "INFO: Requested reveal via Thunar (behavior might vary)."
+                fi
+            fi
+
+            # Fallback: If no specific manager was found/used or file was missing, use xdg-open to open the folder.
+            if [ "$revealed" = false ]; then
+                if command -v xdg-open &> /dev/null; then
+                    echo "INFO: No specific file manager found or file missing. Falling back to opening the containing folder using 'xdg-open .'."
+                    xdg-open . &> /dev/null
+                    if [ $? -eq 0 ]; then
+                        echo "INFO: Successfully requested opening current folder via 'xdg-open .'."
+                    else
+                        echo "WARN: Fallback 'xdg-open .' failed."
+                    fi
+                else
+                    echo "WARN: No specific file manager found, and fallback 'xdg-open' command not found. Cannot automatically open folder. Please install xdg-utils or a supported file manager (Nautilus, Dolphin, Thunar)."
+                fi
+            fi
+        fi
+        ;;
+    CYGWIN*|MINGW*|MSYS*)
+        # Windows environments (Git Bash, etc.): Use explorer.exe /select which reveals the file.
+         if [ -f "$OUTPUT_FILE" ]; then
+            # Using the relative filename works because we are in the correct CWD ($PROJECT_ROOT).
+            explorer.exe /select,"$OUTPUT_FILE" && echo "INFO: Revealed '$OUTPUT_FILE' in Windows Explorer (opened folder and selected file)." || echo "WARN: Failed to reveal file using 'explorer.exe /select'."
+         else
+            echo "WARN: Output file '$OUTPUT_FILE' not found. Cannot select it. Opening folder instead."
+            explorer.exe . && echo "INFO: Opened folder in Windows Explorer using 'explorer.exe .'" || echo "WARN: Failed to open folder using 'explorer.exe .'."
+         fi
+        ;;
+    *)
+        # Unsupported OS
+        echo "WARN: Unsupported OS '$(uname -s)'. Cannot automatically reveal the file."
+        ;;
+esac
+
+echo "INFO: Script finished."
+# --- End of Script ------ END FILE: create_snapshot.sh ---
+
+--- START FILE: app_description.md ---
+
+
+**1. App Name**
+
+Huberman App (Suggested Name)
+
+**2. Introduction/Executive Summary**
+
+The Huberman App is designed as a dedicated companion tool for listeners of the Huberman Lab podcast. Its core purpose is to bridge the gap between listening to the podcast and effectively implementing its science-backed health and performance protocols into daily life. It achieves this by providing structured guidance, actionable reminders, learning resources, progress tracking, and community features, addressing the challenge of translating extensive podcast information into consistent practice.
+
+**3. Target Audience**
+
+The app is intended for listeners and followers ("acolytes") of the Huberman Lab podcast who are motivated to apply the scientific protocols discussed to improve their health, well-being, performance, and overall lifestyle.
+
+**4. Key Features**
+
+The app operates on a Freemium model, offering both free core functionalities and an expanded Premium tier via subscription:
+
+**Free Tier Features:**
+
+*   **Basic Protocol Reminders:** Access pre-set reminders for a limited selection of foundational daily protocols (e.g., Morning Sunlight Exposure).
+*   **Limited Content Access:** View short summaries and brief explanations for the foundational protocols available in the free tier.
+*   **Basic Personal Notes:** Take simple personal notes linked only to the free content/protocols.
+*   **Introduction & Onboarding:** Guided introduction to the app's purpose and basic features.
+
+**Premium Tier Features (Subscription Required):**
+
+*   **Comprehensive Protocol Library & Reminders:**
+    *   Access reminders and content for the *full range* of protocols covered in the podcast (Sleep, Focus, Fitness, Nutrition, Mental Health, etc.).
+    *   Fully *customizable reminders* (timing, frequency, snooze, grouping).
+*   **Full Content Access & Depth:**
+    *   Access both *succinct summaries* and *detailed, long-form explanations* for all protocols.
+    *   Step-by-step implementation guides and practical tips.
+    *   Curated links to relevant resources or papers mentioned (where feasible).
+    *   Distilled key takeaways ("epiphanic summaries") for episodes/protocols.
+*   **Advanced Note-Taking & Community:**
+    *   Unlimited personal note-taking across all content with advanced organization (tags, search).
+    *   Ability to *publicly post notes/takeaways* linked to specific episodes (community sharing).
+    *   Potential for structured community discussions around protocols (moderated).
+*   **Tracking & Personalization:**
+    *   Tools to *track adherence* and consistency with selected protocols.
+    *   Visualizations of progress and streaks.
+    *   Create *personalized routines* or "stacks" combining multiple protocols for specific goals.
+*   **Offline Access:** Download content (summaries, guides, notes) for offline use.
+*   **Early Access & Updates:** Receive new protocols, content, and features as they are released.
+*   **Ad-Free Experience:** Guaranteed free from any advertising.
+
+**5. Core Functionality/How it Works**
+
+The app serves as a centralized hub for Huberman Lab protocol knowledge and implementation. It takes complex information from the podcast and transforms it into actionable steps through reminders and structured guides (basic access free, full access premium). It supports learning via layered content (summaries/detailed explanations) and facilitates habit formation through reminders and tracking tools (premium). Users can personalize their experience through notes (basic free, advanced/public premium) and tailor routines (premium).
+
+**6. Unique Selling Proposition (USP)/Why This App?**
+
+*   **Simplifies Implementation:** Makes applying scientifically-grounded protocols significantly easier and more consistent.
+*   **Consolidated & Structured Resource:** Organizes vast amounts of podcast information into an accessible, actionable format.
+*   **Facilitates Learning & Practice:** Allows users to learn the science while receiving practical guidance on implementation.
+*   **Personalization & Tracking (Premium):** Enables users to tailor protocols to their goals and monitor their progress.
+*   **Community Engagement (Premium):** Offers a platform for shared learning and insights among dedicated users.
+
+**7. Monetization Strategy**
+
+The app utilizes a **Freemium model**. Core functionality and limited content are available for free to ensure basic accessibility. Full access to all features, comprehensive content, advanced personalization, tracking, and community functions requires a **Premium Subscription** (offered on a monthly or annual basis). This model supports ongoing development, content updates, and app maintenance while providing significant value to dedicated users. Intrusive advertising or selling user data are explicitly avoided to maintain user trust and align with the app's wellness focus.
+
+**8. Potential Future Features/Ideas (Based on Initial Notes)**
+
+*   Incorporating relevant content and insights from experts associated with Andrew Huberman ("Band of Brothers and Sistas").
+*   Continued distillation and addition of practices from related talks, interviews, and research papers.
+
+**9. Technical Considerations (Based on Initial Notes)**
+
+*   **Platform:** Primarily envisioned as a mobile application for iOS and Android platforms ("downloadable").
+
+**10. User Considerations/Concerns Mentioned (Based on Initial Notes)**
+
+*   **Habit Formation:** Awareness that over-reliance on reminders could potentially hinder conscious habit internalization (though the app aims to support, not replace, conscious effort).
+*   **Accessibility:** The Freemium model aims to address financial accessibility concerns by providing core value for free, while the subscription funds the full, advanced feature set.
+--- END FILE: app_description.md ---
+
+--- START FILE: database_plan.md ---
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,                     -- Unique identifier for the user
+    name VARCHAR(255) NOT NULL,                  -- User's display name
+    email VARCHAR(255) NOT NULL UNIQUE,          -- User's email address (used for login, must be unique)
+    password VARCHAR(255) NOT NULL,              -- Hashed password
+    email_verified_at TIMESTAMP NULL,            -- Timestamp when the user verified their email address
+    profile_picture_url VARCHAR(2048) NULL,      -- URL to the user's profile picture (optional)
+    remember_token VARCHAR(100) NULL,            -- For "remember me" functionality (Laravel standard)
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL                    -- For soft deletes, if enabled
+);
+
+-- Index for faster email lookups (login)
+CREATE INDEX idx_users_email ON users(email);
+
+-- Plans Table: Defines the available subscription tiers (including Free).
+CREATE TABLE plans (
+    id SERIAL PRIMARY KEY,                       -- Unique identifier for the plan
+    name VARCHAR(255) NOT NULL UNIQUE,           -- Human-readable name (e.g., 'Free', 'Premium Monthly', 'Premium Annual')
+    description TEXT NULL,                       -- Optional description of the plan
+    -- Provider-specific identifiers are crucial for mapping
+    stripe_product_id VARCHAR(255) NULL UNIQUE,  -- Corresponding Product ID in Stripe (if using Stripe)
+    apple_product_id VARCHAR(255) NULL UNIQUE,   -- Corresponding Product ID in App Store Connect (for IAP)
+    google_product_id VARCHAR(255) NULL UNIQUE,  -- Corresponding Product ID in Google Play Console (for IAP)
+    features JSONB NULL,                         -- Store list of features or entitlements as JSON (flexible)
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,     -- Flag to activate/deactivate plans without deleting
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    -- Note: Price details are often better managed within Stripe/App Stores or a separate related table
+    --       if multiple prices exist per plan (e.g., different regions, currencies).
+    --       Alternatively, add stripe_price_id etc. here if simple 1 price per plan.
+);
+
+-- Index for quickly finding active plans
+CREATE INDEX idx_plans_is_active ON plans(is_active);
+
+-- Subscriptions Table: Tracks user subscriptions to specific plans.
+CREATE TABLE subscriptions (
+    id BIGSERIAL PRIMARY KEY,                     -- Unique identifier for the subscription record
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Link to the user
+    plan_id INT NOT NULL REFERENCES plans(id) ON DELETE RESTRICT, -- Link to the subscribed plan (RESTRICT prevents deleting a plan with active subs)
+    status VARCHAR(50) NOT NULL,                 -- Current status (e.g., 'active', 'trialing', 'past_due', 'canceled', 'expired', 'incomplete')
+    provider VARCHAR(50) NOT NULL,               -- Source ('stripe', 'apple', 'google')
+    provider_id VARCHAR(255) NOT NULL,           -- Subscription ID from the payment provider (e.g., Stripe sub_xxx, Apple original_transaction_id, Google purchaseToken)
+    provider_plan_id VARCHAR(255) NULL,          -- Plan/Product ID from the provider (redundant but useful for verification)
+    trial_ends_at TIMESTAMP NULL,                -- Timestamp when the trial period ends (if applicable)
+    ends_at TIMESTAMP NULL,                      -- Timestamp when the current subscription period ends (renews or expires)
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL                    -- For soft deletes (e.g., keep history even if user cancels immediately)
+
+    -- Ensure a user + provider combo doesn't have duplicate active subscription IDs from the provider
+    -- Note: Uniqueness might depend on how provider IDs are handled (e.g., Google Play tokens change)
+    -- A composite unique index might be needed based on specific provider behavior.
+    -- UNIQUE (user_id, provider, provider_id) -- Consider implications carefully
+);
+
+-- Indexes for common lookups
+CREATE INDEX idx_subscriptions_user_id ON subscriptions(user_id);
+CREATE INDEX idx_subscriptions_status ON subscriptions(status);
+CREATE INDEX idx_subscriptions_ends_at ON subscriptions(ends_at);
+CREATE INDEX idx_subscriptions_provider_id ON subscriptions(provider, provider_id); -- Useful for webhook lookups
+
+-- Episodes Table: Stores information about podcast episodes.
+CREATE TABLE episodes (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(512) NOT NULL,                 -- Title of the episode
+    podcast_source VARCHAR(255) NOT NULL DEFAULT 'Huberman Lab', -- Source podcast name
+    episode_number INT NULL,                     -- Episode number, if applicable
+    published_at DATE NULL,                      -- Original air date
+    description TEXT NULL,                       -- Show notes or description
+    audio_url VARCHAR(2048) NULL,                -- Link to the audio file (optional)
+    source_url VARCHAR(2048) NULL,               -- Link to the original episode page/source
+    duration_seconds INT NULL,                   -- Duration in seconds (optional)
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for sorting/filtering by publication date
+CREATE INDEX idx_episodes_published_at ON episodes(published_at);
+
+-- Protocols Table: Defines the health/performance protocols discussed.
+CREATE TABLE protocols (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,           -- Name of the protocol (e.g., 'Morning Sunlight Viewing')
+    description TEXT NOT NULL,                   -- Detailed explanation of the protocol
+    category VARCHAR(100) NULL,                  -- Category (e.g., 'Sleep', 'Focus', 'Nutrition', 'Fitness')
+    implementation_guide TEXT NULL,              -- Step-by-step guide or tips for implementation
+    research_links JSONB NULL,                   -- Store relevant research paper links as JSON array/objects
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for filtering by category
+CREATE INDEX idx_protocols_category ON protocols(category);
+
+-- Episode_Protocol Pivot Table: Many-to-many relationship between episodes and protocols.
+CREATE TABLE episode_protocol (
+    episode_id BIGINT NOT NULL REFERENCES episodes(id) ON DELETE CASCADE,
+    protocol_id BIGINT NOT NULL REFERENCES protocols(id) ON DELETE CASCADE,
+    -- Optional: Add fields like relevance_score, timestamps_mentioned (JSONB) if needed
+    PRIMARY KEY (episode_id, protocol_id) -- Composite primary key ensures uniqueness and creates index
+);
+
+-- Summaries Table: Stores summaries, key takeaways, or soundbites related to episodes.
+CREATE TABLE summaries (
+    id BIGSERIAL PRIMARY KEY,
+    episode_id BIGINT NOT NULL REFERENCES episodes(id) ON DELETE CASCADE, -- Link to the episode
+    -- Optional: protocol_id BIGINT NULL REFERENCES protocols(id) ON DELETE SET NULL, -- If a summary is specific to a protocol within an episode
+    content TEXT NOT NULL,                       -- The summary text itself
+    type VARCHAR(50) NOT NULL DEFAULT 'summary', -- Type ('summary', 'key_takeaway', 'soundbite', 'quote')
+    -- Optional: Add start/end timestamps if linking to specific audio points
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for quickly finding summaries for an episode
+CREATE INDEX idx_summaries_episode_id ON summaries(episode_id);
+
+-- Notes Table: Stores user-generated notes, linked to episodes.
+CREATE TABLE notes (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Link to the note author
+    episode_id BIGINT NOT NULL REFERENCES episodes(id) ON DELETE CASCADE, -- Link to the related episode
+    content TEXT NOT NULL,                       -- The content of the note
+    is_public BOOLEAN NOT NULL DEFAULT FALSE,    -- Flag for public vs. private notes
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for common note queries
+CREATE INDEX idx_notes_user_id ON notes(user_id);
+CREATE INDEX idx_notes_episode_id ON notes(episode_id);
+-- Composite index might be useful for fetching user's notes for a specific episode
+CREATE INDEX idx_notes_user_episode ON notes(user_id, episode_id);
+-- Index for finding public notes for an episode (community feature)
+CREATE INDEX idx_notes_public_episode ON notes(episode_id, is_public) WHERE is_public = TRUE;
+
+-- (Optional) User Protocol Settings/Tracking Table: If advanced tracking is added.
+-- CREATE TABLE user_protocol_tracking (
+--     id BIGSERIAL PRIMARY KEY,
+--     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+--     protocol_id BIGINT NOT NULL REFERENCES protocols(id) ON DELETE CASCADE,
+--     tracked_at DATE NOT NULL DEFAULT CURRENT_DATE, -- Date the protocol was marked as done/tracked
+--     notes TEXT NULL,                              -- Optional notes specific to this tracking instance
+--     metadata JSONB NULL,                          -- For storing extra data (e.g., duration, intensity)
+--     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     UNIQUE (user_id, protocol_id, tracked_at) -- Prevent duplicate tracking per day
+-- );
+-- CREATE INDEX idx_user_protocol_tracking_user_protocol ON user_protocol_tracking(user_id, protocol_id);
+
+-- Standard Laravel Tables (Optional but common):
+-- These might be created automatically by Laravel migrations if used.
+
+-- CREATE TABLE password_resets (
+--     email VARCHAR(255) PRIMARY KEY,
+--     token VARCHAR(255) NOT NULL,
+--     created_at TIMESTAMP NULL
+-- );
+
+-- CREATE TABLE jobs (
+--     id BIGSERIAL PRIMARY KEY,
+--     queue VARCHAR(255) NOT NULL,
+--     payload TEXT NOT NULL,
+--     attempts SMALLINT NOT NULL,
+--     reserved_at INT NULL,
+--     available_at INT NOT NULL,
+--     created_at INT NOT NULL
+-- );
+-- CREATE INDEX idx_jobs_queue_reserved_at ON jobs(queue, reserved_at);
+
+-- CREATE TABLE failed_jobs (
+--     id BIGSERIAL PRIMARY KEY,
+--     connection TEXT NOT NULL,
+--     queue TEXT NOT NULL,
+--     payload TEXT NOT NULL,
+--     exception TEXT NOT NULL,
+--     failed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- );
+
+**Key Relationships Summary:**
+
+- **User <-> Subscription:** One User has many Subscription records (potentially over time), each linking to one Plan.
+- **User <-> Note:** One User has many Notes.
+- **Episode <-> Note:** One Episode has many Notes.
+- **Episode <-> Protocol:** Many Episodes can discuss many Protocols (via episode_protocol pivot table).
+- **Episode <-> Summary:** One Episode has many Summaries.
+- **Plan <-> Subscription:** One Plan can be associated with many Subscriptions.--- END FILE: database_plan.md ---
+
+--- START FILE: architecture_pan.md ---
+---
+
+**Final Architectural Plan (v3): Optimize Guide: Huberman Companion App (with Detailed Monetization Features)**
+
+**1. Executive Summary of Architectural Proposal**
+
+This document outlines the finalized technical architecture for the "Optimize Guide: Huberman Companion" mobile application, designed to support a **Freemium model with tiered Subscriptions (Monthly/Annual)**. The architecture facilitates distinct **Free** (limited foundational protocols/summaries, basic notes) and **Premium** (comprehensive library, customizable reminders, detailed content, advanced notes/community, tracking, offline access) feature sets. It employs a **Modular Monolith** backend (**Laravel/PHP**), **PostgreSQL 17** database, **Redis** cache/queues, and a **React Native** frontend. Communication uses a **RESTful API**. Deployment leverages managed **Laravel hosting (Forge/Vapor)**, with **Docker** for local development. Key architectural components include robust user subscription management, secure feature gating via API middleware, and integration with mobile In-App Purchase (IAP) systems.
+
+**2. Analysis of App Requirements & Architectural Drivers**
+
+*(Requirements updated to reflect specific tiered features)*
+
+- **Content Delivery & Management:** Efficient storage, management, and delivery of structured content. **Access control based on subscription tier is critical:**
+    - *Free:* Limited protocol summaries/explanations.
+    - *Premium:* Full library access (all protocols, detailed explanations, implementation guides, research links, key takeaways).
+- **User Interaction & Data:** User authentication, creation of notes, potential public sharing. **Tiered feature access:**
+    - *Free:* Basic notes linked to free content only.
+    - *Premium:* Unlimited notes across all content, advanced organization, public notes/discussion features.
+- **Actionable Guidance & Reminders:** Reliable push notification system. **Tiered functionality:**
+    - *Free:* Pre-set, non-customizable reminders for a limited protocol set.
+    - *Premium:* Comprehensive, customizable reminders (timing, frequency, grouping) for all protocols, potential location awareness.
+- **Tracking & Personalization (Premium):** Tools for tracking adherence, progress visualization, and creating personalized protocol stacks.
+- **Offline Access (Premium):** Ability to download content and notes.
+- **Cross-Platform Mobile:** Target iOS and Android using React Native.
+- **Scalability:** Potential for significant user growth requires scalable reads, writes, notifications, and **efficient subscription/entitlement checks**.
+- **Maintainability & Evolvability:** Modular design to accommodate future content, features, and subscription changes.
+- **Development Efficiency:** Leverage Laravel/React Native.
+- **User Experience:** Responsive interface, clear distinction between free/premium, seamless upgrade process, **ad-free experience (Premium)**.
+- **Monetization:** Implement the defined Freemium model with secure payment processing and access control.
+
+*Non-Functional Drivers:* Performance, Security (incl. Payment Security), Reliability, Cost-Effectiveness, User Trust & Transparency.
+
+**3. Proposed Architecture Pattern(s)**
+
+- **Recommendation:** **Modular Monolith** for the backend.
+- **Justification:** Remains suitable. Facilitates integrating subscription logic and **feature gating** within relevant modules (e.g., `Users`, `Billing`, domain-specific feature modules) while maintaining structure.
+
+**4. Technology Stack Recommendation**
+
+*(Highlighting feature gating aspects)*
+
+- **Frontend (Mobile):**
+    - **Technology:** **React Native**
+    - **Justification:** Cross-platform. Requires **IAP libraries** (`react-native-iap`). UI must **conditionally render features/content/prompts** based on user subscription status received from the backend.
+- **Backend:**
+    - **Technology:** **Laravel (PHP 8.x+)**
+    - **Justification:** Rapid development. Needs integration with **payment gateways (Stripe/Paddle via SDKs, potentially Laravel Cashier)** and **server-side IAP receipt validation**. **Crucially, must implement robust feature gating mechanisms (e.g., Policies, Middleware, dedicated service classes) to enforce access based on user's active subscription plan.**
+- **Database:**
+    - **Technology:** **PostgreSQL 17**
+    - **Justification:** Robust storage. Schema includes `users`, `plans`, `subscriptions` tables to track user entitlements.
+- **Cache / Queues:**
+    - **Technology:** **Redis**
+    - **Justification:** Caching (API responses, **user entitlement flags**), efficient queue driver (notifications, post-payment processing).
+- **APIs & Communication:**
+    - **Technology:** **RESTful API over HTTPS**
+    - **Justification:** Standard communication. API endpoints serving premium features/data **must be protected by middleware** verifying active premium subscription status. Endpoints needed for fetching subscription offers, managing subscriptions (via provider portals or limited API), and **receiving payment webhooks**.
+- **Payment Processing:**
+    - **Recommendation:** **Stripe** or **Paddle**
+    - **Justification:** Handle subscription logic, compliance, SDKs, IAP integration.
+
+**5. Data Model Considerations**
+
+- **Core Entities:** `User`, `Episode`, `Protocol`, `Summary`, `Note`, `Plan`, `Subscription`, `ContentSource`. (Schema details provided previously).
+- **Feature Gating Logic:** Access checks will typically query the `subscriptions` table (joined with `users` and potentially `plans`) to verify if a user has an `active` subscription linked to a premium `Plan`. This logic resides primarily in the backend (API middleware/policies).
+- **Challenges:** Keeping local subscription status synced accurately; handling complex subscription states; efficiently querying entitlements for API requests.
+
+**6. Scalability and Performance Strategy**
+
+- **Horizontal Backend Scaling:** As before (Forge/Vapor). Optimize subscription checks (e.g., cache user's plan ID and status in Redis for TTL).
+- **Database Scaling:** As before.
+- **Caching:** Aggressively cache user permission/subscription status; cache `Plan` details; cache non-personalized content.
+- **Asynchronous Processing:** Use **Laravel Queues** for notifications, payment webhook processing, entitlement updates, subscription lifecycle emails.
+- **CDN:** As before.
+
+**7. Security Considerations**
+
+- **Authentication:** As before (Sanctum/Passport).
+- **Authorization:** **Critical.** Implement robust authorization (Laravel Middleware/Policies) verifying subscription status *before* granting access to premium API endpoints, features (e.g., creating > X notes, accessing detailed summaries), or data. Prevent client-side bypasses.
+- **Payment Security:** As before (Rely on providers, secure keys, server-side IAP validation, webhook security).
+- **Data Privacy:** As before.
+- **Input Validation:** As before.
+- **API Security:** As before.
+- **Dependency Management:** As before.
+
+**8. Deployment Strategy & Infrastructure**
+
+- **Cloud Provider / Deployment Management / DB / Cache:** As before (Forge/Vapor, Managed PostgreSQL/Redis).
+- **Local Development:** Docker setup remains the same.
+- **CI/CD:** As before. **Include tests specifically verifying feature gating logic for different user subscription states.**
+- **Webhooks:** As before (secure endpoints needed).
+- **Storage:** As before (S3/GCS, especially for potential offline content downloads in premium).
+
+**9. Potential Challenges & Trade-offs**
+
+*(Refined based on feature detail)*
+
+- **Complexity of Subscription Logic & Syncing:** Remains the primary complexity driver.
+- **Robust Feature Gating Implementation:** Ensuring access control is correctly and consistently applied across all relevant features/endpoints requires careful implementation and testing. Mistakes here directly impact revenue and user trust.
+- **IAP Integration:** Remains complex due to platform specifics.
+- **Content Pipeline:** Remains an operational challenge.
+- **Monolith Rigidity:** Risk still exists if modularity isn't maintained.
+- **Cross-Platform Nuances (React Native):** As before.
+- **Notification Reliability:** As before.
+- **User Experience:** **Maintaining a compelling free tier while clearly showcasing premium value without being intrusive is a key design challenge.** Smooth upgrade flow is vital.
+
+**10. Recommendations for Next Steps**
+
+1. **Refine Feature Scope (Free vs. Premium):** *Considered complete based on provided input.*
+2. **Detailed Domain Modeling:** *Schema provided previously.* Create migrations.
+3. **API Contract Definition:** Define all endpoints, clearly marking which require premium access and how status is checked/returned.
+4. **Setup Local Docker Environment:** As before.
+5. **Choose & Configure Hosting/Payment:** As before. Set up plans matching the Free/Premium tiers in Stripe/Paddle and App Stores.
+6. **Implement Core Backend Logic:** Build Auth, basic CRUD, **subscription management (Cashier recommended)**, and **implement core feature gating middleware/policies based on the defined tiers.**
+7. **Frontend PoC (React Native):** Build core UI, **integrate IAP**, **implement conditional rendering based on subscription status**, basic purchase flow.
+8. **Implement Webhook Handling:** As before.
+9. **Content Strategy Definition:** As before.
+10. **Establish CI/CD Pipeline:** Include **feature gating tests**.
+
+---
+
+This version provides a comprehensive architectural blueprint that directly addresses the specified Freemium model and its distinct feature tiers, ensuring the technical plan aligns with the business and product requirements.--- END FILE: architecture_pan.md ---
+
