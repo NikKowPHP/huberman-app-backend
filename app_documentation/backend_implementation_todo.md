@@ -180,48 +180,151 @@
 
 ---
 
+
 ## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
 
-*   **Webhook Processing Logic:**
-    *   `[ ]` For each key Stripe event handled by Cashier or needing custom handling (e.g., `checkout.session.completed`, `customer.subscription.created`, `invoice.payment_succeeded`, `invoice.payment_failed`, `customer.subscription.updated` [trial end, cancel, reactivate], `customer.subscription.deleted`):
-        *   `[ ]` (TDD) Write tests simulating the webhook: Assert DB state changes (`subscriptions.status`, `ends_at`, `trial_ends_at`) are correct. Assert appropriate internal Laravel Events are dispatched (use `Event::fake()`).
-        *   `[ ]` Implement logic within Cashier event listeners *or* extend `WebhookController`/`SubscriptionService::handleWebhook` if not fully covered by Cashier.
-    *   `[ ]` Implement IAP (Apple/Google) server-side receipt validation logic (if applicable, using libraries or HTTP calls). Test validation.
-    *   `[ ]` Implement webhook handling/notification processing for Apple/Google events, mapping them to internal states (`trialing`, `active`, `canceled`, `expired`, `past_due`). Test state transitions.
+*   **Webhook Processing Logic (Stripe via Cashier):**
+    *   **Event: `checkout.session.completed`**
+        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription` created with `trialing` or `active` status, `ends_at`, `trial_ends_at` set correctly. Assert `SubscriptionStarted` event dispatched.
+        *   `[ ]` Verify Cashier's built-in listener handles this correctly OR implement custom listener/logic.
+        *   `[ ]` Ensure associated `User` record is updated if needed (e.g., setting `stripe_id`).
+    *   **Event: `customer.subscription.updated` (Trial Ends -> Active - Often via `invoice.payment_succeeded`)**
+        *   `[ ]` (TDD) Write test simulating relevant webhook (likely `invoice.payment_succeeded` post-trial), asserting `Subscription` status moves to `active`, `trial_ends_at` is nullified, `ends_at` updated.
+        *   `[ ]` Verify Cashier listener handles this.
+    *   **Event: `invoice.payment_succeeded` (Renewal)**
+        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.ends_at` is updated for the next period. Assert `SubscriptionRenewed` event dispatched.
+        *   `[ ]` Verify Cashier listener handles renewal date updates.
+    *   **Event: `invoice.payment_failed`**
+        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.status` updated (e.g., to `past_due` if configured, or remains `active` during grace period). Assert `PaymentFailed` event dispatched.
+        *   `[ ]` Implement logic based on Stripe retry settings (Cashier might handle `past_due` state).
+    *   **Event: `customer.subscription.updated` (Cancel at Period End)**
+        *   `[ ]` (TDD) Write test simulating webhook (where `cancel_at_period_end` is true), asserting `Subscription.status` potentially updated (`canceled`?) and `ends_at` reflects cancellation date. Assert `SubscriptionCanceled` event dispatched.
+        *   `[ ]` Verify Cashier handles `onSubscriptionUpdated` appropriately for cancellation flags.
+    *   **Event: `customer.subscription.deleted` (Immediate Cancel / Final Failure)**
+        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.status` is updated to `canceled` or `expired`, `ends_at` is set to past/now. Assert `SubscriptionExpired` or `SubscriptionCanceled` event dispatched.
+        *   `[ ]` Verify Cashier handles this state transition.
+
+*   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
+    *   `[ ]` Implement endpoint/logic to receive and decode signed `JWS` payload from Apple (`POST /api/webhooks/apple`).
+    *   `[ ]` Implement App Store Server API client/library for server-side receipt validation (if needed beyond notification data).
+    *   `[ ]` (TDD) Test JWS signature verification & payload decoding.
+    *   `[ ]` **Event: `SUBSCRIBED` / `DID_RENEW`**
+        *   `[ ]` (TDD) Test handler maps event to internal state (`active`/`trialing`), updates `Subscription` record (`ends_at`, `provider_id`). Dispatches `SubscriptionStarted`/`SubscriptionRenewed`.
+        *   `[ ]` Implement handler logic for `SUBSCRIBED`/`DID_RENEW`.
+    *   `[ ]` **Event: `DID_FAIL_TO_RENEW`**
+        *   `[ ]` (TDD) Test handler maps event to internal state (`past_due` or `expired` depending on grace period handling), updates `Subscription`. Dispatches `PaymentFailed`/`SubscriptionExpired`.
+        *   `[ ]` Implement handler logic for `DID_FAIL_TO_RENEW`.
+    *   `[ ]` **Event: `EXPIRED`**
+        *   `[ ]` (TDD) Test handler maps event to internal state (`expired`), updates `Subscription`. Dispatches `SubscriptionExpired`.
+        *   `[ ]` Implement handler logic for `EXPIRED`.
+    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (User turns off auto-renew)**
+        *   `[ ]` (TDD) Test handler maps event to internal state (`canceled`), updates `Subscription` (`ends_at` remains period end). Dispatches `SubscriptionCanceled`.
+        *   `[ ]` Implement handler logic for `DID_CHANGE_RENEWAL_STATUS`.
+    *   `[ ]` *(Add handlers for other relevant notification types: `GRACE_PERIOD_EXPIRED`, `REVOKED`, etc.)*
+
+*   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
+    *   `[ ]` Set up Google Cloud Pub/Sub topic and push subscription endpoint (`POST /api/webhooks/google`).
+    *   `[ ]` Implement endpoint to receive Pub/Sub message, decode base64 data.
+    *   `[ ]` Implement Google Play Developer API client/library for purchase validation/acknowledgement.
+    *   `[ ]` (TDD) Test Pub/Sub message decoding and JSON parsing.
+    *   `[ ]` **Notification Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`**
+        *   `[ ]` (TDD) Test handler maps notification to internal state (`active`/`trialing`), updates `Subscription` (`ends_at`, `provider_id` - purchase token). Dispatches `SubscriptionStarted`/`SubscriptionRenewed`. Acknowledges purchase.
+        *   `[ ]` Implement handler logic.
+    *   `[ ]` **Notification Type: `SUBSCRIPTION_IN_GRACE_PERIOD`**
+        *   `[ ]` (TDD) Test handler maps notification to internal state (`past_due`), updates `Subscription`. Dispatches `PaymentFailed`.
+        *   `[ ]` Implement handler logic.
+    *   `[ ]` **Notification Type: `SUBSCRIPTION_ON_HOLD`**
+        *   `[ ]` (TDD) Test handler maps notification to internal state (`past_due` or custom `on_hold`), updates `Subscription`.
+        *   `[ ]` Implement handler logic.
+    *   `[ ]` **Notification Type: `SUBSCRIPTION_CANCELED`**
+        *   `[ ]` (TDD) Test handler maps notification to internal state (`canceled`), updates `Subscription` (`ends_at` remains period end). Dispatches `SubscriptionCanceled`.
+        *   `[ ]` Implement handler logic.
+    *   `[ ]` **Notification Type: `SUBSCRIPTION_EXPIRED`**
+        *   `[ ]` (TDD) Test handler maps notification to internal state (`expired`), updates `Subscription`. Dispatches `SubscriptionExpired`.
+        *   `[ ]` Implement handler logic.
+    *   `[ ]` *(Add handlers for other relevant notification types: `SUBSCRIPTION_REVOKED`, `SUBSCRIPTION_PAUSED`, etc.)*
+
+*   **Scheduled Job for Status Check (Optional but Recommended):**
+    *   `[ ]` (TDD) Test a scheduled job that finds `canceled` subscriptions where `ends_at` is in the past and updates status to `expired`.
+    *   `[ ]` Implement `CheckExpiredSubscriptions` job/command.
+    *   `[ ]` Schedule job in `Kernel.php`.
 
 *   **Cache Invalidation:**
-    *   `[ ]` (TDD) Write tests ensuring that listeners for `Subscription*` events (e.g., `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired`) clear the relevant user's premium status cache (`user:{id}:is_premium`).
-    *   `[ ]` Create Event Listeners that clear the cache upon relevant subscription state changes. Register listeners. Ensure tests pass.
+    *   `[ ]` Create `ClearUserEntitlementCache` Listener.
+    *   `[ ]` (TDD) Write test ensuring Listener clears the correct cache key (`user:{id}:is_premium`).
+    *   `[ ]` Implement cache clearing logic in Listener.
+    *   `[ ]` Register Listener to listen for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events.
+    *   `[ ]` (TDD) Verify event dispatch in webhook tests triggers the listener (using `Event::fake()` and assertions).
 
 ---
 
 ## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep - TDD Focus)
 
 *   **Free Tier - Basic Reminders:**
+    *   *(Keep as is, fairly simple)*
     *   `[ ]` Define logic for identifying foundational protocols.
     *   `[ ]` (TDD) Test logic for sending pre-set reminders (mock notifications).
     *   `[ ]` Implement simple scheduled command/job to send these notifications (if different from Premium).
 
 *   **Premium Tier - Full Content Access:**
+    *   *(Keep as is)*
     *   `[ ]` (TDD) Ensure existing Content API tests cover full access for premium users.
-    *   `[ ]` Verify implementation returns all required data (`implementation_guide`, etc.) for premium users.
+    *   `[ ]` Verify implementation returns all required data (`implementation_guide`, etc.) for premium users via API Resources.
 
 *   **Premium Tier - Custom Reminders (MVP Scope):**
-    *   `[ ]` Implement `create_user_reminders_table` migration (or similar). Run migration.
-    *   `[ ]` (TDD) Test `UserReminder` model.
-    *   `[ ]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`).
-    *   `[ ]` (TDD) Write API tests for `POST/GET/PUT/DELETE /api/v1/reminders` (authenticated, premium only): Test validation, CRUD operations, policy checks (premium access, ownership).
-    *   `[ ]` Implement `ReminderPolicy` enforcing premium access and ownership.
-    *   `[ ]` Implement `ReminderController` and `ReminderService` (basic CRUD). Apply middleware/policies. Define routes. Ensure tests pass.
-    *   `[ ]` (TDD) Test `reminders:send-due` command logic: finding due reminders based on time/timezone/frequency.
-    *   `[ ]` Implement `reminders:send-due` command. Schedule it in `Kernel.php`.
-    *   `[ ]` (TDD) Test `SendProtocolReminderNotification` job: fetching data, constructing notification payload, interacting with mocked notification service.
-    *   `[ ]` Implement `SendProtocolReminderNotification` job and associated Laravel Notification class.
-    *   `[ ]` (TDD) Implement mechanism for storing/retrieving device push tokens per user. Test storage/retrieval.
-    *   `[ ]` Implement API endpoint for frontend to register device tokens.
-    *   `[ ]` Ensure notification job retrieves and uses the correct token.
+    *   **Database:**
+        *   `[ ]` Implement `create_user_reminders_table` migration (user_id, protocol_id, reminder_time, frequency, timezone, last_sent_at, is_active, device_token?). Run migration.
+        *   `[ ]` (TDD) Test `UserReminder` model attributes and relationships (belongsTo User, belongsTo Protocol).
+        *   `[ ]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`). Add relationships.
+    *   **API CRUD:**
+        *   `[ ]` Implement `ReminderPolicy` checking `update`, `delete`, `create` permissions (user ownership, premium status via `SubscriptionServiceInterface`).
+        *   `[ ]` (TDD) Test `ReminderPolicy` denies access for free users and non-owners.
+        *   `[ ]` **Create Reminder:**
+            *   `[ ]` (TDD) API Test `POST /api/v1/reminders`: Valid input creates record, invalid input returns 422, free user gets 403.
+            *   `[ ]` Implement `StoreReminderRequest` Form Request (validation rules for protocol_id, time, frequency, timezone?).
+            *   `[ ]` Implement `ReminderController::store` calling `ReminderService::setReminder`.
+            *   `[ ]` Implement `ReminderService::setReminder` (performs premium check, saves to DB).
+            *   `[ ]` Define `POST /api/v1/reminders` route, apply `auth:sanctum`, `CheckPremiumAccess` middleware, use `ReminderPolicy`.
+        *   `[ ]` **List Reminders:**
+            *   `[ ]` (TDD) API Test `GET /api/v1/reminders`: Returns user's reminders, free user gets 403.
+            *   `[ ]` Implement `ReminderController::index` calling `ReminderService::getUserReminders`.
+            *   `[ ]` Implement `ReminderService::getUserReminders`.
+            *   `[ ]` Define `GET /api/v1/reminders` route, apply middleware.
+        *   `[ ]` **Update Reminder:**
+            *   `[ ]` (TDD) API Test `PUT /api/v1/reminders/{id}`: Valid input updates record, invalid input returns 422, non-owner gets 403.
+            *   `[ ]` Implement `UpdateReminderRequest` Form Request.
+            *   `[ ]` Implement `ReminderController::update` calling `ReminderService::updateReminder`.
+            *   `[ ]` Implement `ReminderService::updateReminder`.
+            *   `[ ]` Define `PUT /api/v1/reminders/{id}` route, apply middleware/policy.
+        *   `[ ]` **Delete Reminder:**
+            *   `[ ]` (TDD) API Test `DELETE /api/v1/reminders/{id}`: Deletes record, non-owner gets 403.
+            *   `[ ]` Implement `ReminderController::destroy` calling `ReminderService::deleteReminder`.
+            *   `[ ]` Implement `ReminderService::deleteReminder`.
+            *   `[ ]` Define `DELETE /api/v1/reminders/{id}` route, apply middleware/policy.
+    *   **Scheduling Logic:**
+        *   `[ ]` (TDD) Test `reminders:send-due` command finds reminders due now based on `reminder_time`, user's `timezone`, `frequency`, and `is_active` status. Mock `Carbon::now()`.
+        *   `[ ]` Implement `reminders:send-due` console command query and filtering logic.
+        *   `[ ]` Ensure command converts current UTC time to user's timezone for comparison.
+        *   `[ ]` Schedule command in `app/Console/Kernel.php` (e.g., `everyMinute()`).
+        *   `[ ]` Implement logic within the command to dispatch `SendProtocolReminderNotification` job for each due reminder.
+    *   **Notification Sending:**
+        *   `[ ]` Implement `SendProtocolReminderNotification` Job.
+        *   `[ ]` (TDD) Test `SendProtocolReminderNotification` job: retrieves `UserReminder`, `User`, `Protocol`; fetches user's device token(s); constructs payload; mocks `Notification::send()`.
+        *   `[ ]` Implement `ProtocolReminder` Notification class (using `database` and `fcm`/`apns` channels). Define payload structure (`toFcm`, `toApns`).
+        *   `[ ]` Implement logic in the Job to fetch user's device token(s) (e.g., from `User` model or dedicated `devices` table).
+        *   `[ ]` Implement Job logic to call `Notification::send()` with the user and notification instance.
+        *   `[ ]` Implement logic in Job to update `UserReminder.last_sent_at` on successful dispatch/send.
+    *   **Device Token Management:**
+        *   `[ ]` Add `device_tokens` (JSON?) column to `users` table OR create `user_devices` table migration. Run migration.
+        *   `[ ]` (TDD) Test storing and retrieving device tokens for a user.
+        *   `[ ]` Implement `UserController::updateDeviceToken` method.
+        *   `[ ]` Implement `UpdateDeviceTokenRequest` Form Request.
+        *   `[ ]` Define API route `POST /api/v1/user/device-token`, apply `auth:sanctum`.
 
 ---
+
+
+
 
 ## Phase 8: Implementing Post-MVP Features (As Prioritized - TDD Focus)
 
@@ -287,3 +390,4 @@
 *   `[ ]` Address any critical post-launch issues promptly.
 *   `[ ]` Schedule or confirm completion of external penetration testing. Remediate findings.
 *   `[ ]` Establish ongoing maintenance plan (dependency updates, security patches).
+
