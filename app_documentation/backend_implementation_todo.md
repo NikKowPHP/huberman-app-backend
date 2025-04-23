@@ -14,8 +14,8 @@
 ## Phase 1: Project Setup & Foundation (Milestone 1 & 2 Prep)
 
 *   **Environment & Tooling:**
-    *   `[ ]` Initialize Git repository.
-    *   `[ ]` Install Laravel (`11.x`) using Composer (`composer create-project laravel/laravel huberman-app-backend`).
+    *   `[x]` Initialize Git repository.
+    *   `[x]` Install Laravel (`11.x`) using Composer (`composer create-project laravel/laravel huberman-app-backend`).
     *   `[ ]` Configure basic `.env` file for local development (App Name, Key, Debug, Log level, DB connection defaults).
     *   `[ ]` Create/Finalize Docker environment (`docker-compose.yml`) based on `infrastructure_devops_details.md` with services:
         *   `[ ]` PHP (`8.2+`) container + Dockerfile.
