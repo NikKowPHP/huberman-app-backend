@@ -32,11 +32,11 @@
     *   `[ ]` Run initial SAST checks to ensure baseline setup.
 
 *   **Core Structure & Base Components:**
-    *   `[ ]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
-    *   `[ ]` Create base API test case (`tests/Feature/ApiTestCase.php`?) setting common headers (Accept: application/json).
-    *   `[ ]` Implement base API controller (`app/Modules/CoreApi/Http/Controllers/Api/BaseApiController.php`?) with common methods/traits if needed.
-    *   `[ ]` Implement standard API response structure/trait (e.g., `ApiResponseHelpers`) if deviating from simple resource responses.
-    *   `[ ]` Configure API routing (`routes/api.php`): Set up version prefix (`/v1`) and include route files from modules.
+*   `[x]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
+    *   `[x]` Create base API test case (`tests/Feature/ApiTestCase.php`) setting common headers (Accept: application/json).
+    *   `[x]` Implement base API controller (`app/Modules/CoreApi/Http/Controllers/Api/BaseApiController.php`) with common methods/traits if needed.
+    *   `[x]` Implement standard API response structure/trait (e.g., `ApiResponseHelpers`) if deviating from simple resource responses.
+    *   `[x]` Configure API routing (`routes/api.php`): Set up version prefix (`/v1`) and include route files from modules.
 
 ---
 
