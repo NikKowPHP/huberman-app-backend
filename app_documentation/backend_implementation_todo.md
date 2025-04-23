@@ -1,4 +1,3 @@
-
 # Huberman App: Backend Implementation TODO Checklist (TDD Approach)
 
 **Project Goal:** Implement the Laravel backend for the Huberman App, supporting a Freemium model, content delivery, user interactions, reminders, tracking, and subscription management, ready for production deployment.
@@ -15,28 +14,28 @@
 ## Phase 1: Project Setup & Foundation (Milestone 1 & 2 Prep)
 
 *   **Environment & Tooling:**
-    *   `[x]` Initialize Git repository.
+    *   `[ ]` Initialize Git repository.
     *   `[ ]` Install Laravel (`11.x`) using Composer (`composer create-project laravel/laravel huberman-app-backend`).
     *   `[ ]` Configure basic `.env` file for local development (App Name, Key, Debug, Log level, DB connection defaults).
-    *   `[ ]` Set up Docker environment (`docker-compose.yml`) with services:
-        *   `[ ]` PHP (`8.2+`) container (e.g., with FPM).
-        *   `[ ]` Web Server (Nginx or Caddy) container configured for Laravel.
-        *   `[ ]` PostgreSQL (`16.x` preferred) container.
+    *   `[ ]` Create/Finalize Docker environment (`docker-compose.yml`) based on `infrastructure_devops_details.md` with services:
+        *   `[ ]` PHP (`8.2+`) container + Dockerfile.
+        *   `[ ]` Web Server (Nginx or Caddy) container + config.
+        *   `[ ]` PostgreSQL (`17.x` or latest supported) container.
         *   `[ ]` Redis (`7.x`) container.
-        *   `[ ]` Node.js (for potential build steps, though primarily frontend).
+        *   `[ ]` Node.js (LTS) container (optional, for build tools).
     *   `[ ]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
-    *   `[ ]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., use in-memory SQLite or separate test PG database).
-    *   `[ ]` Establish coding standards (PSR-12 enforced, consider `laravel/pint` setup).
+    *   `[ ]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
+    *   `[ ]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
     *   `[ ]` Install & Configure SAST tools:
-        *   `[ ]` `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
-        *   `[ ]` `vimeo/psalm`. Configure `psalm.xml`. (Optional if PHPStan sufficient).
+        *   `[ ]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
+        *   `[ ]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
     *   `[ ]` Run initial SAST checks to ensure baseline setup.
 
 *   **Core Structure & Base Components:**
-    *   `[ ]` Define base module structure: Create `app/Modules/` directory and subdirectories for initial modules (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - potentially rename/refactor `CoreApi` later).
-    *   `[ ]` (TDD) Create base API test case (`tests/Feature/ApiTestCase.php`?) setting common headers (Accept: application/json).
-    *   `[ ]` (TDD) Implement base API controller (`app/Modules/CoreApi/Http/Controllers/Api/BaseApiController.php`?) with common methods/traits if needed.
-    *   `[ ]` (TDD) Implement standard API response structure/trait (e.g., `ApiResponseHelpers`) if deviating from simple resource responses.
+    *   `[ ]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
+    *   `[ ]` Create base API test case (`tests/Feature/ApiTestCase.php`?) setting common headers (Accept: application/json).
+    *   `[ ]` Implement base API controller (`app/Modules/CoreApi/Http/Controllers/Api/BaseApiController.php`?) with common methods/traits if needed.
+    *   `[ ]` Implement standard API response structure/trait (e.g., `ApiResponseHelpers`) if deviating from simple resource responses.
     *   `[ ]` Configure API routing (`routes/api.php`): Set up version prefix (`/v1`) and include route files from modules.
 
 ---
@@ -44,10 +43,11 @@
 ## Phase 2: Core User & Authentication (Milestone 2 - TDD Focus)
 
 *   **User Model & Migration:**
-    *   `[ ]` (TDD) Write tests for `User` model creation, relationships (initially none needed), attributes, fillable properties, hidden properties (`password`, `remember_token`), casts (`email_verified_at`).
-    *   `[ ]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
+    *   `[ ]` (TDD) Write tests for `User` model creation, relationships (initially Subscription, Notes, Reminders, Tracking), attributes, fillable, hidden (`password`, `remember_token`), casts (`email_verified_at`), `$with` relations.
     *   `[ ]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
-    *   `[ ]` Run migration (`php artisan migrate`). Ensure tests pass.
+    *   `[ ]` Run migration (`php artisan migrate`).
+    *   `[ ]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
+    *   `[ ]` Ensure User model tests pass.
 
 *   **Authentication (Sanctum):**
     *   `[ ]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
@@ -56,338 +56,367 @@
     *   `[ ]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
 
 *   **Registration:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/register`:
-        *   Test validation rules (name, email, password, confirmation).
-        *   Test successful registration (user created in DB, 201 status, user data + token returned).
-        *   Test email uniqueness constraint.
+    *   `[ ]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
     *   `[ ]` Implement `RegisterRequest` Form Request (`app/Modules/Authentication/Http/Requests/`).
     *   `[ ]` Implement `AuthController::register` method (`app/Modules/Authentication/Http/Controllers/`).
     *   `[ ]` Define route in module's API routes file. Ensure tests pass.
 
 *   **Login:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/login`:
-        *   Test validation rules (email, password).
-        *   Test successful login (correct credentials -> 200 status, user data + token returned).
-        *   Test incorrect credentials (401/422 status).
+    *   `[ ]` (TDD) Write API tests for `POST /api/v1/login`: Validation rules, success (correct credentials -> 200, user+token), failure (incorrect credentials -> 401/422).
     *   `[ ]` Implement `LoginRequest` Form Request.
     *   `[ ]` Implement `AuthController::login` method.
     *   `[ ]` Define route. Ensure tests pass.
 
 *   **Logout:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated route):
-        *   Test successful logout (token invalidated, 204 status).
-        *   Test unauthenticated access (401 status).
+    *   `[ ]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated): Successful logout (token invalid, 204), unauthenticated access (401).
     *   `[ ]` Implement `AuthController::logout` method (invalidate current token).
     *   `[ ]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Authenticated User Endpoint:**
-    *   `[ ]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated):
-        *   Test fetching authenticated user's data.
-        *   Test unauthenticated access (401).
+    *   `[ ]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated): Fetches user data, unauthenticated access (401).
     *   `[ ]` Implement `UserController::profile` (`app/Modules/UserManagement/Http/Controllers/`).
     *   `[ ]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Password Reset:**
-    *   `[ ]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver).
-    *   `[ ]` (TDD) Write tests for password reset flow:
-        *   Forgot Password Request (`POST /api/v1/forgot-password`): Test validation (email exists), successful response, notification/event fired (mock Mail).
-        *   Reset Password (`POST /api/v1/reset-password`): Test validation (token, email, password, confirmation), successful reset, token consumption.
-    *   `[ ]` Implement necessary controllers, requests, notifications/events for password reset.
-    *   `[ ]` Define routes. Ensure tests pass.
+    *   `[ ]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver in `.env`).
+    *   `[ ]` (TDD) Test Forgot Password (`POST /api/v1/forgot-password`): Validation (email exists), success response, mock `Notification::send`.
+    *   `[ ]` (TDD) Test Reset Password (`POST /api/v1/reset-password`): Validation (token, email, password, confirmation), successful reset, token consumed/invalidated.
+    *   `[ ]` Implement necessary Controllers (`ForgotPasswordController`, `NewPasswordController`), Requests, Notifications (`ResetPasswordNotification`).
+    *   `[ ]` Define password reset routes. Ensure tests pass.
 
 *   **Security Controls:**
-    *   `[ ]` (TDD) Write tests for rate limiting on auth endpoints.
-    *   `[ ]` Apply Laravel's default rate limiting middleware to auth routes in `RouteServiceProvider` or route definitions. Configure limits appropriately.
+    *   `[ ]` (TDD) Write tests for rate limiting on auth endpoints (`login`, `register`, `forgot-password`).
+    *   `[ ]` Apply Laravel's default rate limiting middleware to auth routes in `RouteServiceProvider` or route definitions. Configure limits (e.g., in `.env`). Ensure tests pass.
 
 ---
 
 ## Phase 3: Subscription & Billing Foundation (Milestone 4 Prep - TDD Focus)
 
 *   **Models & Migrations:**
-    *   `[ ]` Implement `create_plans_table` migration.
-    *   `[ ]` Implement `create_subscriptions_table` migration (ensure FKs, indexes, `onDelete`).
-    *   `[ ]` Run migrations.
-    *   `[ ]` (TDD) Write tests for `Plan` model (attributes, maybe factory).
-    *   `[ ]` Implement `Plan` model (`app/Modules/SubscriptionBilling/Models/`).
-    *   `[ ]` (TDD) Write tests for `Subscription` model (attributes, relationships to `User` and `Plan`, casts, scopes like `active()`).
-    *   `[ ]` Implement `Subscription` model (`app/Modules/SubscriptionBilling/Models/`), add relationships to `User` model.
+    *   `[ ]` Implement `create_plans_table` migration. Run migration.
+    *   `[ ]` Implement `create_subscriptions_table` migration (FKs, indexes, onDelete). Run migration.
+    *   `[ ]` (TDD) Test `Plan` model (attributes, factory, maybe `isActive` scope). Implement model (`app/Modules/SubscriptionBilling/Models/Plan.php`).
+    *   `[ ]` (TDD) Test `Subscription` model (attributes, relationships `User`/`Plan`, casts, scopes like `active()`, `trialing()`). Implement model (`app/Modules/SubscriptionBilling/Models/Subscription.php`).
+    *   `[ ]` Add `hasMany(Subscription::class)` relationship to `User` model.
 
-*   **Cashier Integration:**
+*   **Cashier Integration (Stripe):**
     *   `[ ]` Install Laravel Cashier Stripe (`composer require laravel/cashier`). Publish migrations & config.
-    *   `[ ]` Run Cashier migrations.
-    *   `[ ]` Configure Cashier (`config/cashier.php`, `services.stripe.key/secret` in `.env`). Set User model.
+    *   `[ ]` Run Cashier migrations (`php artisan migrate`).
+    *   `[ ]` Configure Cashier (`config/cashier.php`, `services.stripe.key/secret/webhook_secret` in `.env`). Set User model.
     *   `[ ]` Add `Billable` trait to `User` model.
 
 *   **Core Service & API Stubs:**
-    *   `[ ]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, etc.).
-    *   `[ ]` Implement basic `SubscriptionService` class (`app/Modules/SubscriptionBilling/Services/`) implementing the interface (methods can initially return false/null or throw `NotImplementedException`).
-    *   `[ ]` Bind interface to implementation in a service provider.
-    *   `[ ]` (TDD) Write API test for `GET /api/v1/plans`.
-    *   `[ ]` Implement API endpoint (`SubscriptionController::plans`) to fetch and return `Plan` data (initially, manually seed some plans or use factories).
-    *   `[ ]` (TDD) Write API test for `GET /api/v1/user/subscription` (authenticated). Test fetching current subscription status (initially null/empty).
-    *   `[ ]` Implement API endpoint (`SubscriptionController::userSubscription`) using `SubscriptionService` stub.
+    *   `[ ]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, `getSubscriptionStatus`, etc.).
+    *   `[ ]` Implement basic `SubscriptionService` class (`app/Modules/SubscriptionBilling/Services/`) implementing the interface (methods return defaults/throw `NotImplementedException`).
+    *   `[ ]` Bind interface to implementation in a service provider (`SubscriptionBillingServiceProvider`).
+    *   `[ ]` **Plans API:**
+        *   `[ ]` Seed `Plans` table (Free, Premium Monthly, Premium Annual) using a `PlanSeeder`.
+        *   `[ ]` (TDD) API Test `GET /api/v1/plans`: Assert returns seeded plans (200 OK).
+        *   `[ ]` Implement `SubscriptionController::plans` endpoint to fetch and return `Plan` data. Use an API Resource (`PlanResource`). Define route.
+    *   `[ ]` **User Subscription API:**
+        *   `[ ]` (TDD) API Test `GET /api/v1/user/subscription` (authenticated): Assert returns null/empty initially (200 OK).
+        *   `[ ]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
 
-*   **Webhook Foundation:**
-    *   `[ ]` (TDD) Write tests for `WebhookController` signature verification middleware/logic (mock Stripe request/signature).
-    *   `[ ]` Implement `WebhookController` (`app/Modules/SubscriptionBilling/Http/Controllers/`) with route (`POST /api/webhooks/stripe`).
-    *   `[ ]` Implement Stripe signature verification logic (using Cashier's built-in tools or manually).
-    *   `[ ]` Define route (ensure CSRF protection is disabled for webhooks). Ensure verification tests pass.
+*   **Webhook Foundation (Stripe):**
+    *   `[ ]` Implement `VerifyStripeWebhookSignature` middleware (or use Cashier's built-in route protection).
+    *   `[ ]` (TDD) Write test for signature verification middleware/logic (mock Stripe request/header/secret). Assert pass/fail scenarios.
+    *   `[ ]` Implement `WebhookController` (`app/Modules/SubscriptionBilling/Http/Controllers/`) with `handleStripeWebhook` method.
+    *   `[ ]` Define `POST /api/webhooks/stripe` route (ensure CSRF protection is disabled for this route). Apply signature verification middleware.
+    *   `[ ]` Ensure verification tests pass.
 
 ---
 
 ## Phase 4: Basic Content Management (Milestone 3 & 5 Prep - TDD Focus)
 
 *   **Models & Migrations:**
-    *   `[ ]` Implement `create_episodes_table` migration.
-    *   `[ ]` Implement `create_protocols_table` migration.
-    *   `[ ]` Implement `create_summaries_table` migration.
-    *   `[ ]` Implement `create_episode_protocol_table` (pivot) migration.
-    *   `[ ]` Run migrations.
-    *   `[ ]` (TDD) Test `Episode`, `Protocol`, `Summary` models (attributes, relationships). Test `Episode<->Protocol` many-to-many relationship.
-    *   `[ ]` Implement models in `app/Modules/ContentManagement/Models/`. Add relationships.
+    *   `[ ]` Implement `create_episodes_table` migration. Run migration.
+    *   `[ ]` Implement `create_protocols_table` migration. Run migration.
+    *   `[ ]` Implement `create_summaries_table` migration. Run migration.
+    *   `[ ]` Implement `create_episode_protocol_table` (pivot) migration. Run migration.
+    *   `[ ]` (TDD) Test `Episode` model (attributes, relationships `Protocols`/`Summaries`/`Notes`). Implement model (`app/Modules/ContentManagement/Models/Episode.php`).
+    *   `[ ]` (TDD) Test `Protocol` model (attributes, relationships `Episodes`). Implement model (`app/Modules/ContentManagement/Models/Protocol.php`).
+    *   `[ ]` (TDD) Test `Summary` model (attributes, relationship `Episode`). Implement model (`app/Modules/ContentManagement/Models/Summary.php`).
+    *   `[ ]` Test `Episode<->Protocol` many-to-many relationship.
 
 *   **Seeding:**
-    *   `[ ]` Create Seeders for `Plans` (Free, Premium Monthly, Premium Annual).
-    *   `[ ]` Create Seeders for foundational `Protocols` and related `Summaries`. Link to placeholder `Episodes` if necessary.
+    *   `[ ]` Create `EpisodeSeeder` (placeholder episodes).
+    *   `[ ]` Create `ProtocolSeeder` (foundational protocols based on `content_strategy_management.md`).
+    *   `[ ]` Create `SummarySeeder` (summaries for foundational protocols).
+    *   `[ ]` Create `EpisodeProtocolSeeder` (link placeholders).
+    *   `[ ]` Update `DatabaseSeeder` to call new seeders in correct order.
     *   `[ ]` Run seeders (`php artisan db:seed`).
 
 *   **Core Service & API:**
-    *   `[ ]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, etc.).
-    *   `[ ]` Implement basic `ContentService`. Bind interface.
-    *   `[ ]` (TDD) Write API tests for listing/viewing episodes, protocols, summaries (unauthenticated, basic retrieval).
-    *   `[ ]` Implement basic API controllers (`EpisodeController`, `ProtocolController`, `SummaryController`) using the `ContentService`.
-    *   `[ ]` Define content API routes. Ensure tests pass.
+    *   `[ ]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`).
+    *   `[ ]` Implement basic `ContentService` implementing the interface. Bind interface.
+    *   `[ ]` Implement API Resources (`EpisodeResource`, `ProtocolResource`, `SummaryResource`).
+    *   `[ ]` **Protocols API:**
+        *   `[ ]` (TDD) API Test `GET /api/v1/protocols`: List protocols (unauthenticated).
+        *   `[ ]` Implement `ProtocolController::index`. Define route.
+        *   `[ ]` (TDD) API Test `GET /api/v1/protocols/{id}`: Show protocol details (unauthenticated).
+        *   `[ ]` Implement `ProtocolController::show`. Define route.
+    *   `[ ]` **Episodes API:**
+        *   `[ ]` (TDD) API Test `GET /api/v1/episodes`: List episodes.
+        *   `[ ]` Implement `EpisodeController::index`. Define route.
+        *   `[ ]` (TDD) API Test `GET /api/v1/episodes/{id}`: Show episode details.
+        *   `[ ]` Implement `EpisodeController::show`. Define route.
+    *   `[ ]` *(Add similar for Summaries if needed as top-level endpoint)*
+    *   `[ ]` Ensure basic content API tests pass.
 
 ---
 
 ## Phase 5: Feature Gating Implementation (Milestone 4 & 5 - TDD Focus)
 
 *   **Subscription Service Logic:**
-    *   `[ ]` (TDD) Write unit tests for `SubscriptionService::userHasActivePremiumSubscription` covering different scenarios: no subscription, free plan, active premium, trialing premium, canceled premium (before/after `ends_at`), expired, past_due. Use factories to set up test data.
-    *   `[ ]` Implement the actual logic in `SubscriptionService` querying the `subscriptions` table, joining `plans`, checking status (`active`, `trialing`) and `ends_at`.
-    *   `[ ]` (TDD) Test caching logic: test that a cache hit avoids DB query, test cache miss populates cache, test cache TTL.
-    *   `[ ]` Implement caching layer within `userHasActivePremiumSubscription` (using `Cache::remember`).
+    *   `[ ]` (TDD - Unit) Test `SubscriptionService::userHasActivePremiumSubscription` covering scenarios: no sub, free plan, active premium, trialing premium, canceled (before/after `ends_at`), expired, past_due. Use factories.
+    *   `[ ]` Implement logic in `SubscriptionService` querying `subscriptions` table (via User relationship), joining `plans`, checking status (`active`, `trialing`), `ends_at`. Ensure 'premium' plan type check.
+    *   `[ ]` (TDD - Unit) Test caching: cache hit avoids DB query, miss populates cache, TTL works, cache clear invalidates.
+    *   `[ ]` Implement caching layer within `userHasActivePremiumSubscription` (e.g., `Cache::remember`). Use appropriate cache tags (e.g., `user:{id}`).
 
 *   **Middleware:**
-    *   `[ ]` (TDD) Write feature tests applying `CheckPremiumAccess` middleware to a test route: test authenticated premium user passes, authenticated free user gets 403, unauthenticated user gets 401 (handled by `auth:sanctum`).
-    *   `[ ]` Implement `CheckPremiumAccess` middleware using the `SubscriptionServiceInterface`.
-    *   `[ ]` Register middleware in `app/Http/Kernel.php`.
-    *   `[ ]` Apply middleware to relevant premium API route groups (initially, maybe just the premium content routes). Ensure tests pass.
+    *   `[ ]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`.
+    *   `[ ]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
+    *   `[ ]` Register middleware alias in `app/Http/Kernel.php`.
+    *   `[ ]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass.
 
 *   **Gated Content API:**
-    *   `[ ]` (TDD) Write API tests specifically testing that premium content (e.g., full protocol details including `implementation_guide`) is *only* returned to authenticated, premium users, while free users get limited data or 403 (decide strategy).
-    *   `[ ]` Refactor Content API endpoints/service to incorporate checks (either via middleware or conditional logic based on `userHasActivePremiumSubscription`) and return data accordingly. Use API Resources to conditionally load attributes. Ensure tests pass.
+    *   `[ ]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
+    *   `[ ]` (TDD - Feature) Test `GET /api/v1/protocols/{id}`: Authenticated free user gets protocol *without* `implementation_guide`. Authenticated premium user gets protocol *with* `implementation_guide`.
+    *   `[ ]` (TDD - Feature) Test `GET /api/v1/protocols`: Free user gets limited list (if applicable) or all protocols with limited data. Premium user gets all protocols with full data (as allowed by Resource). Adjust API tests.
+    *   `[ ]` Refactor `ProtocolController` or `ContentService` if needed to support different data loading based on user status (API Resource often sufficient). Ensure tests pass.
 
 ---
-
 
 ## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
 
 *   **Webhook Processing Logic (Stripe via Cashier):**
     *   **Event: `checkout.session.completed`**
-        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription` created with `trialing` or `active` status, `ends_at`, `trial_ends_at` set correctly. Assert `SubscriptionStarted` event dispatched.
-        *   `[ ]` Verify Cashier's built-in listener handles this correctly OR implement custom listener/logic.
-        *   `[ ]` Ensure associated `User` record is updated if needed (e.g., setting `stripe_id`).
-    *   **Event: `customer.subscription.updated` (Trial Ends -> Active - Often via `invoice.payment_succeeded`)**
-        *   `[ ]` (TDD) Write test simulating relevant webhook (likely `invoice.payment_succeeded` post-trial), asserting `Subscription` status moves to `active`, `trial_ends_at` is nullified, `ends_at` updated.
-        *   `[ ]` Verify Cashier listener handles this.
+        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription` created (`trialing`/`active`), `ends_at`/`trial_ends_at` set, `SubscriptionStarted` event dispatched, `User.stripe_id` updated.
+        *   `[ ]` Verify/Implement Cashier listener logic.
+    *   **Event: `customer.subscription.updated` (Trial Ends -> Active - via `invoice.payment_succeeded`)**
+        *   `[ ]` (TDD) Test: Simulates `invoice.payment_succeeded` post-trial, asserts status -> `active`, `trial_ends_at` nullified, `ends_at` updated.
+        *   `[ ]` Verify Cashier listener.
     *   **Event: `invoice.payment_succeeded` (Renewal)**
-        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.ends_at` is updated for the next period. Assert `SubscriptionRenewed` event dispatched.
-        *   `[ ]` Verify Cashier listener handles renewal date updates.
+        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription.ends_at` updated, `SubscriptionRenewed` event dispatched.
+        *   `[ ]` Verify Cashier listener.
     *   **Event: `invoice.payment_failed`**
-        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.status` updated (e.g., to `past_due` if configured, or remains `active` during grace period). Assert `PaymentFailed` event dispatched.
-        *   `[ ]` Implement logic based on Stripe retry settings (Cashier might handle `past_due` state).
+        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription.status` -> `past_due` (if configured), `PaymentFailed` event dispatched.
+        *   `[ ]` Verify/Implement Cashier listener based on retry settings.
     *   **Event: `customer.subscription.updated` (Cancel at Period End)**
-        *   `[ ]` (TDD) Write test simulating webhook (where `cancel_at_period_end` is true), asserting `Subscription.status` potentially updated (`canceled`?) and `ends_at` reflects cancellation date. Assert `SubscriptionCanceled` event dispatched.
-        *   `[ ]` Verify Cashier handles `onSubscriptionUpdated` appropriately for cancellation flags.
+        *   `[ ]` (TDD) Test: Simulates webhook (`cancel_at_period_end=true`), asserts `Subscription.status` updated (`canceled`?), `ends_at` reflects cancel date, `SubscriptionCanceled` event dispatched.
+        *   `[ ]` Verify Cashier listener (`onSubscriptionUpdated`).
     *   **Event: `customer.subscription.deleted` (Immediate Cancel / Final Failure)**
-        *   `[ ]` (TDD) Write test simulating webhook, asserting `Subscription.status` is updated to `canceled` or `expired`, `ends_at` is set to past/now. Assert `SubscriptionExpired` or `SubscriptionCanceled` event dispatched.
-        *   `[ ]` Verify Cashier handles this state transition.
+        *   `[ ]` (TDD) Test: Simulates webhook, asserts status -> `canceled`/`expired`, `ends_at` set to past/now, `SubscriptionExpired`/`SubscriptionCanceled` event dispatched.
+        *   `[ ]` Verify Cashier listener.
 
 *   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
-    *   `[ ]` Implement endpoint/logic to receive and decode signed `JWS` payload from Apple (`POST /api/webhooks/apple`).
-    *   `[ ]` Implement App Store Server API client/library for server-side receipt validation (if needed beyond notification data).
-    *   `[ ]` (TDD) Test JWS signature verification & payload decoding.
-    *   `[ ]` **Event: `SUBSCRIBED` / `DID_RENEW`**
-        *   `[ ]` (TDD) Test handler maps event to internal state (`active`/`trialing`), updates `Subscription` record (`ends_at`, `provider_id`). Dispatches `SubscriptionStarted`/`SubscriptionRenewed`.
-        *   `[ ]` Implement handler logic for `SUBSCRIBED`/`DID_RENEW`.
-    *   `[ ]` **Event: `DID_FAIL_TO_RENEW`**
-        *   `[ ]` (TDD) Test handler maps event to internal state (`past_due` or `expired` depending on grace period handling), updates `Subscription`. Dispatches `PaymentFailed`/`SubscriptionExpired`.
-        *   `[ ]` Implement handler logic for `DID_FAIL_TO_RENEW`.
-    *   `[ ]` **Event: `EXPIRED`**
-        *   `[ ]` (TDD) Test handler maps event to internal state (`expired`), updates `Subscription`. Dispatches `SubscriptionExpired`.
-        *   `[ ]` Implement handler logic for `EXPIRED`.
-    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (User turns off auto-renew)**
-        *   `[ ]` (TDD) Test handler maps event to internal state (`canceled`), updates `Subscription` (`ends_at` remains period end). Dispatches `SubscriptionCanceled`.
-        *   `[ ]` Implement handler logic for `DID_CHANGE_RENEWAL_STATUS`.
-    *   `[ ]` *(Add handlers for other relevant notification types: `GRACE_PERIOD_EXPIRED`, `REVOKED`, etc.)*
+    *   `[ ]` Implement `WebhookController::handleAppleWebhook`.
+    *   `[ ]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
+    *   `[ ]` (TDD) Test JWS signature verification & decoding.
+    *   `[ ]` Define `POST /api/webhooks/apple` route (disable CSRF).
+    *   `[ ]` Implement App Store Server API client (library?) for server-side validation (optional).
+    *   `[ ]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
+    *   `[ ]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
+    *   `[ ]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
+    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event.
+    *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)*
 
 *   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
-    *   `[ ]` Set up Google Cloud Pub/Sub topic and push subscription endpoint (`POST /api/webhooks/google`).
-    *   `[ ]` Implement endpoint to receive Pub/Sub message, decode base64 data.
-    *   `[ ]` Implement Google Play Developer API client/library for purchase validation/acknowledgement.
-    *   `[ ]` (TDD) Test Pub/Sub message decoding and JSON parsing.
-    *   `[ ]` **Notification Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`**
-        *   `[ ]` (TDD) Test handler maps notification to internal state (`active`/`trialing`), updates `Subscription` (`ends_at`, `provider_id` - purchase token). Dispatches `SubscriptionStarted`/`SubscriptionRenewed`. Acknowledges purchase.
-        *   `[ ]` Implement handler logic.
-    *   `[ ]` **Notification Type: `SUBSCRIPTION_IN_GRACE_PERIOD`**
-        *   `[ ]` (TDD) Test handler maps notification to internal state (`past_due`), updates `Subscription`. Dispatches `PaymentFailed`.
-        *   `[ ]` Implement handler logic.
-    *   `[ ]` **Notification Type: `SUBSCRIPTION_ON_HOLD`**
-        *   `[ ]` (TDD) Test handler maps notification to internal state (`past_due` or custom `on_hold`), updates `Subscription`.
-        *   `[ ]` Implement handler logic.
-    *   `[ ]` **Notification Type: `SUBSCRIPTION_CANCELED`**
-        *   `[ ]` (TDD) Test handler maps notification to internal state (`canceled`), updates `Subscription` (`ends_at` remains period end). Dispatches `SubscriptionCanceled`.
-        *   `[ ]` Implement handler logic.
-    *   `[ ]` **Notification Type: `SUBSCRIPTION_EXPIRED`**
-        *   `[ ]` (TDD) Test handler maps notification to internal state (`expired`), updates `Subscription`. Dispatches `SubscriptionExpired`.
-        *   `[ ]` Implement handler logic.
-    *   `[ ]` *(Add handlers for other relevant notification types: `SUBSCRIPTION_REVOKED`, `SUBSCRIPTION_PAUSED`, etc.)*
+    *   `[ ]` Set up Google Cloud Pub/Sub topic & push subscription.
+    *   `[ ]` Implement `WebhookController::handleGoogleWebhook`.
+    *   `[ ]` Implement service/logic to decode base64 Pub/Sub data.
+    *   `[ ]` (TDD) Test Pub/Sub message decoding & parsing.
+    *   `[ ]` Define `POST /api/webhooks/google` route (disable CSRF).
+    *   `[ ]` Implement Google Play Developer API client (library?) for purchase validation/acknowledgement.
+    *   `[ ]` **Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events, acknowledge purchase.
+    *   `[ ]` **Type: `SUBSCRIPTION_IN_GRACE_PERIOD`:** Implement handler, (TDD) Test state -> `past_due`, update DB, dispatch event.
+    *   `[ ]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB.
+    *   `[ ]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event.
+    *   `[ ]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
+    *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)*
 
-*   **Scheduled Job for Status Check (Optional but Recommended):**
-    *   `[ ]` (TDD) Test a scheduled job that finds `canceled` subscriptions where `ends_at` is in the past and updates status to `expired`.
+*   **Scheduled Job for Status Check:**
     *   `[ ]` Implement `CheckExpiredSubscriptions` job/command.
-    *   `[ ]` Schedule job in `Kernel.php`.
+    *   `[ ]` (TDD) Test job finds past `canceled` subs and sets status to `expired`.
+    *   `[ ]` Schedule job in `Kernel.php` (e.g., `daily()`).
 
 *   **Cache Invalidation:**
     *   `[ ]` Create `ClearUserEntitlementCache` Listener.
-    *   `[ ]` (TDD) Write test ensuring Listener clears the correct cache key (`user:{id}:is_premium`).
-    *   `[ ]` Implement cache clearing logic in Listener.
-    *   `[ ]` Register Listener to listen for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events.
-    *   `[ ]` (TDD) Verify event dispatch in webhook tests triggers the listener (using `Event::fake()` and assertions).
+    *   `[ ]` Implement cache clearing logic (`Cache::tags("user:{$event->subscription->user_id}")->flush();` or similar).
+    *   `[ ]` (TDD) Test Listener clears the correct cache tag/key.
+    *   `[ ]` Register Listener for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events in `EventServiceProvider`.
+    *   `[ ]` (TDD) Verify webhook tests dispatch events correctly using `Event::fake()`.
 
 ---
 
 ## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep - TDD Focus)
 
 *   **Free Tier - Basic Reminders:**
-    *   *(Keep as is, fairly simple)*
-    *   `[ ]` Define logic for identifying foundational protocols.
-    *   `[ ]` (TDD) Test logic for sending pre-set reminders (mock notifications).
-    *   `[ ]` Implement simple scheduled command/job to send these notifications (if different from Premium).
+    *   `[ ]` Implement logic/scope in `Protocol` model to identify foundational protocols.
+    *   `[ ]` Implement `SendFoundationalReminders` command/job.
+    *   `[ ]` (TDD) Test command selects correct protocols & users (mock Notification).
+    *   `[ ]` Schedule command in `Kernel.php`.
 
 *   **Premium Tier - Full Content Access:**
-    *   *(Keep as is)*
-    *   `[ ]` (TDD) Ensure existing Content API tests cover full access for premium users.
-    *   `[ ]` Verify implementation returns all required data (`implementation_guide`, etc.) for premium users via API Resources.
+    *   `[ ]` (TDD - Feature) Ensure `ProtocolResource` tests cover conditional loading of `implementation_guide`.
+    *   `[ ]` (TDD - Feature) Ensure `GET /protocols` tests cover premium user getting full list / rich data via Resource.
 
 *   **Premium Tier - Custom Reminders (MVP Scope):**
     *   **Database:**
-        *   `[ ]` Implement `create_user_reminders_table` migration (user_id, protocol_id, reminder_time, frequency, timezone, last_sent_at, is_active, device_token?). Run migration.
-        *   `[ ]` (TDD) Test `UserReminder` model attributes and relationships (belongsTo User, belongsTo Protocol).
-        *   `[ ]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`). Add relationships.
+        *   `[ ]` Implement `create_user_reminders_table` migration. Run migration.
+        *   `[ ]` (TDD) Test `UserReminder` model attributes & relationships.
+        *   `[ ]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`).
     *   **API CRUD:**
-        *   `[ ]` Implement `ReminderPolicy` checking `update`, `delete`, `create` permissions (user ownership, premium status via `SubscriptionServiceInterface`).
-        *   `[ ]` (TDD) Test `ReminderPolicy` denies access for free users and non-owners.
-        *   `[ ]` **Create Reminder:**
-            *   `[ ]` (TDD) API Test `POST /api/v1/reminders`: Valid input creates record, invalid input returns 422, free user gets 403.
-            *   `[ ]` Implement `StoreReminderRequest` Form Request (validation rules for protocol_id, time, frequency, timezone?).
-            *   `[ ]` Implement `ReminderController::store` calling `ReminderService::setReminder`.
-            *   `[ ]` Implement `ReminderService::setReminder` (performs premium check, saves to DB).
-            *   `[ ]` Define `POST /api/v1/reminders` route, apply `auth:sanctum`, `CheckPremiumAccess` middleware, use `ReminderPolicy`.
-        *   `[ ]` **List Reminders:**
-            *   `[ ]` (TDD) API Test `GET /api/v1/reminders`: Returns user's reminders, free user gets 403.
-            *   `[ ]` Implement `ReminderController::index` calling `ReminderService::getUserReminders`.
-            *   `[ ]` Implement `ReminderService::getUserReminders`.
-            *   `[ ]` Define `GET /api/v1/reminders` route, apply middleware.
-        *   `[ ]` **Update Reminder:**
-            *   `[ ]` (TDD) API Test `PUT /api/v1/reminders/{id}`: Valid input updates record, invalid input returns 422, non-owner gets 403.
-            *   `[ ]` Implement `UpdateReminderRequest` Form Request.
-            *   `[ ]` Implement `ReminderController::update` calling `ReminderService::updateReminder`.
-            *   `[ ]` Implement `ReminderService::updateReminder`.
-            *   `[ ]` Define `PUT /api/v1/reminders/{id}` route, apply middleware/policy.
-        *   `[ ]` **Delete Reminder:**
-            *   `[ ]` (TDD) API Test `DELETE /api/v1/reminders/{id}`: Deletes record, non-owner gets 403.
-            *   `[ ]` Implement `ReminderController::destroy` calling `ReminderService::deleteReminder`.
-            *   `[ ]` Implement `ReminderService::deleteReminder`.
-            *   `[ ]` Define `DELETE /api/v1/reminders/{id}` route, apply middleware/policy.
+        *   `[ ]` Implement `ReminderPolicy`.
+        *   `[ ]` (TDD) Test `ReminderPolicy` (premium check, ownership).
+        *   `[ ]` **Create:** (TDD) API Test, Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
+        *   `[ ]` **List:** (TDD) API Test, Implement `ReminderController::index`, `ReminderService::getUserReminders`, Define Route + Middleware.
+        *   `[ ]` **Update:** (TDD) API Test, Implement `UpdateReminderRequest`, `ReminderController::update`, `ReminderService::updateReminder`, Define Route + Middleware/Policy.
+        *   `[ ]` **Delete:** (TDD) API Test, Implement `ReminderController::destroy`, `ReminderService::deleteReminder`, Define Route + Middleware/Policy.
     *   **Scheduling Logic:**
-        *   `[ ]` (TDD) Test `reminders:send-due` command finds reminders due now based on `reminder_time`, user's `timezone`, `frequency`, and `is_active` status. Mock `Carbon::now()`.
-        *   `[ ]` Implement `reminders:send-due` console command query and filtering logic.
-        *   `[ ]` Ensure command converts current UTC time to user's timezone for comparison.
-        *   `[ ]` Schedule command in `app/Console/Kernel.php` (e.g., `everyMinute()`).
-        *   `[ ]` Implement logic within the command to dispatch `SendProtocolReminderNotification` job for each due reminder.
+        *   `[ ]` Implement `reminders:send-due` command logic (query, timezone conversion, frequency check).
+        *   `[ ]` (TDD) Test `reminders:send-due` command finds due reminders (mock `now()`).
+        *   `[ ]` Ensure command dispatches `SendProtocolReminderNotification` job.
+        *   `[ ]` Schedule command in `Kernel.php` (`everyMinute()`).
     *   **Notification Sending:**
         *   `[ ]` Implement `SendProtocolReminderNotification` Job.
-        *   `[ ]` (TDD) Test `SendProtocolReminderNotification` job: retrieves `UserReminder`, `User`, `Protocol`; fetches user's device token(s); constructs payload; mocks `Notification::send()`.
-        *   `[ ]` Implement `ProtocolReminder` Notification class (using `database` and `fcm`/`apns` channels). Define payload structure (`toFcm`, `toApns`).
-        *   `[ ]` Implement logic in the Job to fetch user's device token(s) (e.g., from `User` model or dedicated `devices` table).
-        *   `[ ]` Implement Job logic to call `Notification::send()` with the user and notification instance.
-        *   `[ ]` Implement logic in Job to update `UserReminder.last_sent_at` on successful dispatch/send.
+        *   `[ ]` Implement `ProtocolReminder` Notification class (`toFcm`, `toApns`).
+        *   `[ ]` (TDD) Test Job retrieves data, fetches token, constructs payload, mocks `Notification::send()`.
+        *   `[ ]` Implement token fetching logic in Job.
+        *   `[ ]` Implement `Notification::send()` call in Job.
+        *   `[ ]` Implement `last_sent_at` update in Job.
     *   **Device Token Management:**
-        *   `[ ]` Add `device_tokens` (JSON?) column to `users` table OR create `user_devices` table migration. Run migration.
-        *   `[ ]` (TDD) Test storing and retrieving device tokens for a user.
-        *   `[ ]` Implement `UserController::updateDeviceToken` method.
-        *   `[ ]` Implement `UpdateDeviceTokenRequest` Form Request.
-        *   `[ ]` Define API route `POST /api/v1/user/device-token`, apply `auth:sanctum`.
+        *   `[ ]` Add `device_tokens` column to `users` table OR create `user_devices` table migration. Run migration.
+        *   `[ ]` (TDD) Test storing/retrieving tokens for a user.
+        *   `[ ]` Implement `UpdateDeviceTokenRequest`.
+        *   `[ ]` Implement `UserController::updateDeviceToken`.
+        *   `[ ]` Define `POST /api/v1/user/device-token` route + `auth:sanctum`.
 
 ---
 
-
-
-
 ## Phase 8: Implementing Post-MVP Features (As Prioritized - TDD Focus)
 
-*   *For each Post-MVP Feature (Notes, Tracking, Detailed Content, etc.):*
-    *   `[ ]` (TDD) Define Models & Migrations. Test models. Implement & run migrations.
-    *   `[ ]` (TDD) Define Service interfaces & implementations. Test core logic (e.g., streak calculation, note limits).
-    *   `[ ]` (TDD) Define Policies (ownership, premium access). Test policies.
-    *   `[ ]` (TDD) Define API Endpoints (Controllers, Form Requests). Test validation, responses, middleware/policy application.
-    *   `[ ]` Implement all components. Define routes. Ensure all tests pass.
+*   **Notes Service (Example):**
+    *   **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement `Note` Model.
+    *   **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
+    *   **Service Layer:** Define `NoteServiceInterface`, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
+    *   **API Endpoints:**
+        *   **Create:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   **List User:** (TDD) API Test, Implement Controller, Define Route.
+        *   **Show:** (TDD) API Test, Implement Controller, Define Route.
+        *   **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   **Delete:** (TDD) API Test, Implement Controller, Define Route.
+        *   **List Public:** (TDD) API Test, Implement Controller, Define Route.
+
+*   **Tracking Service (Placeholder - Apply same pattern):**
+    *   `[ ]` **Models & Migrations:** Implement `create_user_protocol_tracking_table`, (TDD) Test `TrackingLog` Model, Implement Model.
+    *   `[ ]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
+    *   `[ ]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service (log adherence, calculate streak).
+    *   `[ ]` **API Endpoints:**
+        *   `[ ]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[ ]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+
+*   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
 
 ---
 
 ## Phase 9: API Documentation & Refinement
 
-*   `[ ]` Install & Configure `zircote/swagger-php` (if using annotations).
-*   `[ ]` Annotate all API controllers/methods/schemas OR manually update `openapi.yaml`.
-    *   `[ ]` Document all endpoints, parameters, request bodies.
-    *   `[ ]` Document all response schemas (success & error).
-    *   `[ ]` Document security requirements (`auth:sanctum`).
-    *   `[ ]` Clearly mark premium-only endpoints/features in descriptions.
-*   `[ ]` Generate/Validate the `openapi.yaml` specification file.
-*   `[ ]` Commit the final `openapi.yaml` to the repository.
+*   **Setup:**
+    *   `[ ]` Install & Configure `zircote/swagger-php` OR choose manual editing tool.
+*   **Annotation/Manual Update:**
+    *   `[ ]` Review `openapi.yaml` structure.
+    *   `[ ]` Annotate/Document: `Authentication` module endpoints & schemas.
+    *   `[ ]` Annotate/Document: `UserManagement` module endpoints & schemas.
+    *   `[ ]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
+    *   `[ ]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
+    *   `[ ]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
+    *   `[ ]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
+    *   `[ ]` Define/Review: Reusable schemas in `components/schemas`.
+    *   `[ ]` Define/Review: Reusable error responses in `components/responses`.
+    *   `[ ]` Define/Review: Security schemes (`bearerAuth`) and apply.
+*   **Generation & Validation:**
+    *   `[ ]` Generate `openapi.yaml`.
+    *   `[ ]` Validate `openapi.yaml` using validator tool. Fix errors.
+*   **Commit:**
+    *   `[ ]` Commit final, validated `openapi.yaml` to repository.
 
 ---
 
 ## Phase 10: Testing & Quality Assurance
 
-*   `[ ]` Review overall unit test coverage. Improve coverage for critical areas (billing, auth, gating).
-*   `[ ]` Write integration tests for key end-to-end flows (e.g., register -> login -> upgrade -> access premium feature -> cancel -> lose access).
-*   `[ ]` Perform manual QA against user stories (both Free & Premium flows). Test edge cases, different subscription states.
-*   `[ ]` Run final SAST checks (`composer audit`, PHPStan/Psalm). Address findings.
-*   `[ ]` Perform basic DAST scan (e.g., OWASP ZAP) against Staging environment. Address critical findings.
+*   **Test Coverage Review:**
+    *   `[ ]` Generate PHPUnit code coverage report.
+    *   `[ ]` Analyze report, identify gaps in critical modules.
+    *   `[ ]` Write additional unit/integration tests to improve coverage.
+*   **Integration Flow Testing:**
+    *   `[ ]` (TDD - Feature) Test Flow: Registration -> Login.
+    *   `[ ]` (TDD - Feature) Test Flow: Free User Access (Check premium endpoint access denied).
+    *   `[ ]` (TDD - Feature) Test Flow: Subscription Upgrade (Simulated webhook -> Premium access granted).
+    *   `[ ]` (TDD - Feature) Test Flow: Subscription Cancellation (Simulated webhook -> Access revoked after `ends_at`).
+    *   `[ ]` (TDD - Feature) Test Flow: Reminder Setting & Receiving (Simulated: Create reminder -> Time passes -> Job runs -> Mock Notification sent).
+*   **Manual QA:**
+    *   `[ ]` Develop manual test cases/checklist (Free & Premium flows).
+    *   `[ ]` Execute manual tests on Staging.
+    *   `[ ]` Perform exploratory testing on Staging.
+    *   `[ ]` Perform Design QA against Figma mocks.
+    *   `[ ]` Log bugs in tracking tool.
+    *   `[ ]` Verify bug fixes on Staging.
+*   **Security Testing:**
+    *   `[ ]` Run final `composer audit`.
+    *   `[ ]` Run final SAST scans (PHPStan/Psalm), address findings.
+    *   `[ ]` Perform basic DAST scan (OWASP ZAP) against Staging, analyze critical findings.
+*   **Performance Testing (Basic):**
+    *   `[ ]` Manually assess key API endpoint response times on Staging.
+    *   `[ ]` (Optional MVP+) Perform basic load test (k6) against read-heavy endpoints.
 
 ---
 
 ## Phase 11: Deployment Preparation
 
-*   `[ ]` Finalize Staging/Production environment configuration (Forge/Vapor/other).
-*   `[ ]` Provision managed PostgreSQL & Redis. Configure backups.
-*   `[ ]` Set up CI/CD pipeline (e.g., GitHub Actions):
-    *   `[ ]` Trigger on pushes/PRs to `main`/`develop`.
-    *   `[ ]` Install dependencies (`composer install --no-dev --optimize-autoloader`).
-    *   `[ ]` Run SAST checks.
-    *   `[ ]` Run tests (PHPUnit).
-    *   `[ ]` Build assets (if any backend assets).
-    *   `[ ]` Deploy to Staging (manual trigger?).
-    *   `[ ]` Deploy to Production (manual trigger).
-*   `[ ]` Configure secure environment variables for Staging/Production in hosting provider.
-*   `[ ]` Set up Monitoring (e.g., Forge/Vapor monitoring, Datadog, Sentry/Flare).
-*   `[ ]` Set up Logging aggregation (e.g., Papertrail, CloudWatch Logs).
-*   `[ ]` Set up Alerting for critical errors/events.
-*   `[ ]` Configure queue workers for Staging/Production (e.g., using Supervisor).
+*   **Environment Configuration:**
+    *   `[ ]` Finalize `.env` templates (`.env.staging.example`, `.env.production.example`).
+    *   `[ ]` Configure environment variables securely in Forge/Vapor for Staging.
+    *   `[ ]` Configure environment variables securely in Forge/Vapor for Production.
+*   **Infrastructure Provisioning & Configuration:**
+    *   `[ ]` Provision/Configure Staging: Managed DB & Redis, Backups, Workers, DNS, SSL.
+    *   `[ ]` Provision/Configure Production: Managed DB & Redis, Backups, Workers, DNS, SSL. Document restore procedure.
+*   **CI/CD Pipeline Finalization:**
+    *   `[ ]` Add Staging deployment step/job to `ci.yml`.
+    *   `[ ]` Add Production deployment step/job to `ci.yml`.
+    *   `[ ]` Ensure CI pipeline runs build steps (`composer install --no-dev`, assets?).
+    *   `[ ]` Ensure pipeline runs migrations (`php artisan migrate --force`).
+    *   `[ ]` Test full Staging deployment via CI/CD.
+*   **Monitoring & Logging Setup:**
+    *   `[ ]` Integrate Error Tracking SDK (Sentry/Flare) for Staging/Prod.
+    *   `[ ]` Configure Laravel logging (stack, daily file, aggregation service/driver, JSON format, Prod level WARN+, Staging level DEBUG).
+    *   `[ ]` Set up monitoring dashboards (System, App, Queue metrics).
+    *   `[ ]` Configure critical alerts (Errors, Resources, Queue).
+*   **Pre-computation/Seeding:**
+    *   `[ ]` Prepare/Review production seeders (`PlanSeeder`).
+    *   `[ ]` Identify any other essential production seed data.
 
 ---
 
 ## Phase 12: Production Launch & Post-Launch
 
-*   `[ ]` Perform final deployment dry-run to Staging.
-*   `[ ]` Coordinate launch with frontend team.
-*   `[ ]` Deploy backend to Production environment.
-*   `[ ]` Run initial database migrations and seeders (if needed) in Production.
-*   `[ ]` **Monitor:** Closely watch logs, error tracking, server performance, queue lengths, payment provider dashboards immediately post-launch.
-*   `[ ]` Address any critical post-launch issues promptly.
-*   `[ ]` Schedule or confirm completion of external penetration testing. Remediate findings.
-*   `[ ]` Establish ongoing maintenance plan (dependency updates, security patches).
-
+*   **Pre-Launch Checks:**
+    *   `[ ]` Perform final Staging deployment dry-run.
+    *   `[ ]` Complete final Staging manual QA / Smoke Testing.
+    *   `[ ]` Confirm Production environment variables.
+    *   `[ ]` Confirm Production database backups configured.
+    *   `[ ]` Coordinate launch window.
+*   **Launch:**
+    *   `[ ]` Merge release branch / Create release tag.
+    *   `[ ]` Trigger Production deployment via CI/CD.
+    *   `[ ]` Run Production migrations & essential seeders.
+    *   `[ ]` Perform Production smoke tests (critical paths).
+*   **Post-Launch Monitoring:**
+    *   `[ ]` **Intensive Monitoring (Day 1-3):** Watch error tracking, logs, performance dashboards, queues, payment dashboards.
+    *   `[ ]` Triage/Prioritize critical post-launch bugs.
+*   **Ongoing:**
+    *   `[ ]` Schedule/Confirm external penetration testing.
+    *   `[ ]` Remediate pen test findings.
+    *   `[ ]` Establish dependency update schedule.
+    *   `[ ]` Periodically review monitoring/logs.
+    *   `[ ]` Conduct periodic backup restoration tests (quarterly).
