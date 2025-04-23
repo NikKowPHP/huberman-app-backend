@@ -16,15 +16,15 @@
 *   **Environment & Tooling:**
     *   `[x]` Initialize Git repository.
     *   `[x]` Install Laravel (`11.x`) using Composer (`composer create-project laravel/laravel huberman-app-backend`).
-    *   `[ ]` Configure basic `.env` file for local development (App Name, Key, Debug, Log level, DB connection defaults).
-    *   `[ ]` Create/Finalize Docker environment (`docker-compose.yml`) based on `infrastructure_devops_details.md` with services:
-        *   `[ ]` PHP (`8.2+`) container + Dockerfile.
-        *   `[ ]` Web Server (Nginx or Caddy) container + config.
-        *   `[ ]` PostgreSQL (`17.x` or latest supported) container.
-        *   `[ ]` Redis (`7.x`) container.
+    *   `[x]` Configure basic `.env` file for local development (App Name, Key, Debug, Log level, DB connection defaults).
+    *   `[x]` Create/Finalize Docker environment (`docker-compose.yml`) based on `infrastructure_devops_details.md` with services:
+        *   `[x]` PHP (`8.2+`) container + Dockerfile.
+        *   `[x]` Web Server (Nginx or Caddy) container + config.
+        *   `[x]` PostgreSQL (`17.x` or latest supported) container.
+        *   `[x]` Redis (`7.x`) container.
         *   `[ ]` Node.js (LTS) container (optional, for build tools).
-    *   `[ ]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
-    *   `[ ]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
+    *   `[x]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
+    *   `[x]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
     *   `[ ]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
     *   `[ ]` Install & Configure SAST tools:
         *   `[ ]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
