@@ -119,11 +119,11 @@
         *   `[x]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
 
 *   **Webhook Foundation (Stripe):**
-    *   `[ ]` Implement `VerifyStripeWebhookSignature` middleware (or use Cashier's built-in route protection).
-    *   `[ ]` (TDD) Write test for signature verification middleware/logic (mock Stripe request/header/secret). Assert pass/fail scenarios.
-    *   `[ ]` Implement `WebhookController` (`app/Modules/SubscriptionBilling/Http/Controllers/`) with `handleStripeWebhook` method.
-    *   `[ ]` Define `POST /api/webhooks/stripe` route (ensure CSRF protection is disabled for this route). Apply signature verification middleware.
-    *   `[ ]` Ensure verification tests pass.
+    *   `[x]` Implement `VerifyStripeWebhookSignature` middleware (or use Cashier's built-in route protection).
+    *   `[x]` (TDD) Write test for signature verification middleware/logic (mock Stripe request/header/secret). Assert pass/fail scenarios.
+    *   `[x]` Implement `WebhookController` (`app/Modules/SubscriptionBilling/Http/Controllers/`) with `handleStripeWebhook` method.
+    *   `[x]` Define `POST /api/webhooks/stripe` route (ensure CSRF protection is disabled for this route). Apply signature verification middleware.
+    *   `[x]` Ensure verification tests pass.
 
 ---
 

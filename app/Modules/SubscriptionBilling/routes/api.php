@@ -22,3 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->get('/user/subscription', [SubscriptionController::class, 'userSubscription']);
+
+use App\Http\Middleware\VerifyStripeWebhookSignature;
+
+Route::post('/webhooks/stripe', function () {
+    // Handle Stripe webhook
+})->withoutMiddleware('csrf')->middleware(VerifyStripeWebhookSignature::class);
