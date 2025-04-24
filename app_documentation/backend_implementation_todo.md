@@ -94,11 +94,11 @@
 ## Phase 3: Subscription & Billing Foundation (Milestone 4 Prep - TDD Focus)
 
 *   **Models & Migrations:**
-    *   `[ ]` Implement `create_plans_table` migration. Run migration.
-    *   `[ ]` Implement `create_subscriptions_table` migration (FKs, indexes, onDelete). Run migration.
-    *   `[ ]` (TDD) Test `Plan` model (attributes, factory, maybe `isActive` scope). Implement model (`app/Modules/SubscriptionBilling/Models/Plan.php`).
-    *   `[ ]` (TDD) Test `Subscription` model (attributes, relationships `User`/`Plan`, casts, scopes like `active()`, `trialing()`). Implement model (`app/Modules/SubscriptionBilling/Models/Subscription.php`).
-    *   `[ ]` Add `hasMany(Subscription::class)` relationship to `User` model.
+    *   `[x]` Implement `create_plans_table` migration. Run migration.
+    *   `[x]` Implement `create_subscriptions_table` migration (FKs, indexes, onDelete). Run migration.
+    *   `[x]` (TDD) Test `Plan` model (attributes, factory, maybe `isActive` scope). Implement model (`app/Modules/SubscriptionBilling/Models/Plan.php`).
+    *   `[x]` (TDD) Test `Subscription` model (attributes, relationships `User`/`Plan`, casts, scopes like `active()`, `trialing()`). Implement model (`app/Modules/SubscriptionBilling/Models/Subscription.php`).
+    *   `[x]` Add `hasMany(Subscription::class)` relationship to `User` model.
 
 *   **Cashier Integration (Stripe):**
     *   `[ ]` Install Laravel Cashier Stripe (`composer require laravel/cashier`). Publish migrations & config.
