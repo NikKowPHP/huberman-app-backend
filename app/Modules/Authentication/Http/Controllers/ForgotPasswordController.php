@@ -3,33 +3,24 @@
 namespace App\Modules\Authentication\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Authentication\Http\Requests\ForgotPasswordRequest;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller
 {
     use SendsPasswordResetEmails;
 
-    /**
-     * Get the response for a successful password reset link request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function sendResetLinkResponse(\Illuminate\Http\Request $request, $response)
+    public function sendResetLinkEmail(ForgotPasswordRequest $request)
     {
-        return response()->json(['message' => $response], 200);
-    }
+        $this->validateEmail($request);
 
-    /**
-     * Get the response for a failed password reset link request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function sendResetLinkFailedResponse(\Illuminate\Http\Request $request, $response)
-    {
-        return response()->json(['email' => [$response]], 422);
+        // We will send the password reset link to this user. Once we have attempted
+        // to send the link, we will examine the response then see the message we
+        // need to show to the user.
+        $this->broker()->sendResetLink(
+            $request->only('email')
+        );
+
+        return response()->json(['message' => 'Password reset link sent to your email.'], 200);
     }
 }

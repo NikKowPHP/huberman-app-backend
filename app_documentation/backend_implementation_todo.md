@@ -79,10 +79,10 @@
     *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Password Reset:**
-    *   `[ ]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver in `.env`).
-    *   `[ ]` (TDD) Test Forgot Password (`POST /api/v1/forgot-password`): Validation (email exists), success response, mock `Notification::send`.
-    *   `[ ]` (TDD) Test Reset Password (`POST /api/v1/reset-password`): Validation (token, email, password, confirmation), successful reset, token consumed/invalidated.
-    *   `[ ]` Implement necessary Controllers (`ForgotPasswordController`, `NewPasswordController`), Requests, Notifications (`ResetPasswordNotification`).
+    *   `[x]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver in `.env`).
+    *   `[x]` (TDD) Test Forgot Password (`POST /api/v1/forgot-password`): Validation (email exists), success response, mock `Notification::send`.
+    *   `[x]` (TDD) Test Reset Password (`POST /api/v1/reset-password`): Validation (token, email, password, confirmation), successful reset, token consumed/invalidated.
+    *   `[x]` Implement necessary Controllers (`ForgotPasswordController`, `NewPasswordController`), Requests, Notifications (`ResetPasswordNotification`).
     *   `[ ]` Define password reset routes. Ensure tests pass.
 
 *   **Security Controls:**
