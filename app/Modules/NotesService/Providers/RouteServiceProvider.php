@@ -1,50 +1,45 @@
 <?php
-// File: app/Modules/NotesService/Providers/RouteServiceProvider.php
 
 namespace App\Modules\NotesService\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Http\Request; // Uncomment if using RateLimiter
-// use Illuminate\Support\Facades\RateLimiter; // Uncomment if using RateLimiter
 
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The module namespace.
+     * The path to your module's "home" route.
+     *
+     * Typically, users are redirected here after authentication.
+     *
      * @var string
      */
-    // protected $moduleNamespace = 'App\Modules\NotesService\Http\Controllers';
+    public const HOME = '/home';
 
     /**
-     * Called before routes are registered.
+     * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
     {
-        // $this->configureRateLimiting();
-
         $this->routes(function () {
-            $apiRoutesPath = base_path('app/Modules/NotesService/routes/api.php');
-            if (file_exists($apiRoutesPath)) {
-                Route::middleware('api')
-                    ->prefix('api/v1') // Adjust prefix (e.g., 'api/v1/notes')
-                    ->group($apiRoutesPath);
-            }
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(module_path('NotesService', '/routes/api.php'));
 
-            $webRoutesPath = base_path('app/Modules/NotesService/routes/web.php');
-            if (file_exists($webRoutesPath)) {
-                Route::middleware('web')
-                    // ->namespace($this->moduleNamespace)
-                    ->group($webRoutesPath);
-            }
+            Route::middleware('web')
+                ->group(module_path('NotesService', '/routes/web.php'));
         });
     }
 
     /**
-     * Configure the rate limiters.
+     * Configure the rate limiters for the application.
+     *
+     * @return void
      */
-    // protected function configureRateLimiting(): void
-    // {
-    //     // ...
-    // }
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
 }

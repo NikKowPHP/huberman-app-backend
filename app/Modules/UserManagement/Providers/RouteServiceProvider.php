@@ -1,58 +1,45 @@
 <?php
-// File: app/Modules/UserManagement/Providers/RouteServiceProvider.php
 
 namespace App\Modules\UserManagement\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Http\Request; // Uncomment if using RateLimiter
-// use Illuminate\Support\Facades\RateLimiter; // Uncomment if using RateLimiter
 
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The module namespace to assume when generating URLs to actions.
-     * Adjust if your controllers are namespaced differently within the module.
+     * The path to your module's "home" route.
+     *
+     * Typically, users are redirected here after authentication.
+     *
      * @var string
      */
-    // protected $moduleNamespace = 'App\Modules\UserManagement\Http\Controllers';
+    public const HOME = '/home';
 
     /**
-     * Called before routes are registered.
-     * Register any model bindings or pattern based filters.
+     * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
     {
-        // $this->configureRateLimiting(); // Uncomment if rate limiting specific to this module is needed
-
         $this->routes(function () {
-            // Define API routes for the module
-            // Ensure the path to the routes file is correct
-            $apiRoutesPath = base_path('app/Modules/UserManagement/routes/api.php');
-            if (file_exists($apiRoutesPath)) {
-                Route::middleware('api')
-                    ->prefix('api/v1') // Adjust prefix as needed (e.g., 'api/v1/user')
-                    ->group($apiRoutesPath);
-            }
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(module_path('UserManagement', '/routes/api.php'));
 
-            // Define Web routes for the module (if any)
-            // Ensure the path to the routes file is correct
-            $webRoutesPath = base_path('app/Modules/UserManagement/routes/web.php');
-            if (file_exists($webRoutesPath)) {
-                Route::middleware('web')
-                    // ->namespace($this->moduleNamespace) // Uncomment if using namespace property
-                    ->group($webRoutesPath);
-            }
+            Route::middleware('web')
+                ->group(module_path('UserManagement', '/routes/web.php'));
         });
     }
 
     /**
      * Configure the rate limiters for the application.
+     *
+     * @return void
      */
-    // protected function configureRateLimiting(): void
-    // {
-    //     RateLimiter::for('api', function (Request $request) {
-    //         return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
-    //     });
-    // }
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
 }
