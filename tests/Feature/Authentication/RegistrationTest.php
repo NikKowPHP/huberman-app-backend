@@ -6,7 +6,7 @@ use App\Modules\UserManagement\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\Feature\ApiTestCase; // Use the base ApiTestCase
-
+use PHPUnit\Framework\Attributes\Test;
 class RegistrationTest extends ApiTestCase
 {
     use RefreshDatabase;

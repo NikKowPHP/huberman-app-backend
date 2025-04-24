@@ -74,9 +74,9 @@
     *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Authenticated User Endpoint:**
-    *   `[ ]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated): Fetches user data, unauthenticated access (401).
-    *   `[ ]` Implement `UserController::profile` (`app/Modules/UserManagement/Http/Controllers/`).
-    *   `[ ]` Define route, protected by `auth:sanctum`. Ensure tests pass.
+    *   `[x]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated): Fetches user data, unauthenticated access (401).
+    *   `[x]` Implement `UserController::profile` (`app/Modules/UserManagement/Http/Controllers/`).
+    *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Password Reset:**
     *   `[ ]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver in `.env`).
