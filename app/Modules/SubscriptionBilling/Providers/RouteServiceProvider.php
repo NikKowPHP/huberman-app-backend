@@ -2,6 +2,8 @@
 
 namespace App\Modules\SubscriptionBilling\Providers;
 
+use App\Modules\SubscriptionBilling\Contracts\SubscriptionServiceInterface;
+use App\Modules\SubscriptionBilling\Services\SubscriptionService;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +38,13 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+    }
+
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        $this->app->bind(SubscriptionServiceInterface::class, SubscriptionService::class);
     }
 }

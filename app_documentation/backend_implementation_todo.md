@@ -107,16 +107,16 @@
     *   `[x]` Add `Billable` trait to `User` model.
 
 *   **Core Service & API Stubs:**
-    *   `[ ]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, `getSubscriptionStatus`, etc.).
-    *   `[ ]` Implement basic `SubscriptionService` class (`app/Modules/SubscriptionBilling/Services/`) implementing the interface (methods return defaults/throw `NotImplementedException`).
-    *   `[ ]` Bind interface to implementation in a service provider (`SubscriptionBillingServiceProvider`).
+    *   `[x]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, `getSubscriptionStatus`, etc.).
+    *   `[x]` Implement basic `SubscriptionService` class (`app/Modules/SubscriptionBilling/Services/`) implementing the interface (methods return defaults/throw `NotImplementedException`).
+    *   `[x]` Bind interface to implementation in a service provider (`SubscriptionBillingServiceProvider`).
     *   `[ ]` **Plans API:**
-        *   `[ ]` Seed `Plans` table (Free, Premium Monthly, Premium Annual) using a `PlanSeeder`.
-        *   `[ ]` (TDD) API Test `GET /api/v1/plans`: Assert returns seeded plans (200 OK).
-        *   `[ ]` Implement `SubscriptionController::plans` endpoint to fetch and return `Plan` data. Use an API Resource (`PlanResource`). Define route.
+        *   `[x]` Seed `Plans` table (Free, Premium Monthly, Premium Annual) using a `PlanSeeder`.
+        *   `[x]` (TDD) API Test `GET /api/v1/plans`: Assert returns seeded plans (200 OK).
+        *   `[x]` Implement `SubscriptionController::plans` endpoint to fetch and return `Plan` data. Use an API Resource (`PlanResource`). Define route.
     *   `[ ]` **User Subscription API:**
-        *   `[ ]` (TDD) API Test `GET /api/v1/user/subscription` (authenticated): Assert returns null/empty initially (200 OK).
-        *   `[ ]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
+        *   `[x]` (TDD) API Test `GET /api/v1/user/subscription` (authenticated): Assert returns null/empty initially (200 OK).
+        *   `[x]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
 
 *   **Webhook Foundation (Stripe):**
     *   `[ ]` Implement `VerifyStripeWebhookSignature` middleware (or use Cashier's built-in route protection).

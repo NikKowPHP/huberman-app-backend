@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Modules\UserManagement\Models\User; // Updated namespace
+use Database\Seeders\PlanSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,10 +21,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        // Add calls to other seeders here as they are created
-        // $this->call([
-        //     PlanSeeder::class,
-        //     // ... other seeders
-        // ]);
+        $this->call([
+            PlanSeeder::class,
+        ]);
     }
 }
