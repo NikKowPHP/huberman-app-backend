@@ -11,13 +11,15 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->id(); // Bigint, unsigned, auto-increment, primary key
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_picture_url', 2048)->nullable(); // Added as per database_migrations_plan.md
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps(); // created_at, updated_at (nullable timestamps)
+            $table->softDeletes(); // Added as per database_migrations_plan.md
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

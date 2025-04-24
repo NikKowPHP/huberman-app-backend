@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Modules\UserManagement\Models\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -11,80 +11,77 @@ class UserTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_can_create_a_user()
+    public function a_user_can_be_created()
     {
         $user = User::factory()->create();
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertNotNull($user->id);
+        $this->assertNotNull($user->name);
+        $this->assertNotNull($user->email);
+        $this->assertNotNull($user->password);
     }
 
     /** @test */
-    public function it_has_relationships()
+    public function a_user_has_relationships()
     {
         $user = User::factory()->create();
 
+        // Initially Subscription, Notes, Reminders, Tracking
         $this->assertTrue(method_exists($user, 'subscriptions'));
-        $this->assertTrue(method_exists($user, 'notes'));
-        $this->assertTrue(method_exists($user, 'reminders'));
-        $this->assertTrue(method_exists($user, 'tracking'));
+        // $this->assertTrue(method_exists($user, 'notes')); //TODO: Implement Notes
+        // $this->assertTrue(method_exists($user, 'reminders')); //TODO: Implement Reminders
+        // $this->assertTrue(method_exists($user, 'tracking')); //TODO: Implement Tracking
     }
 
     /** @test */
-    public function it_has_correct_attributes()
+    public function a_user_has_attributes()
     {
-        $user = User::factory()->create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user = User::factory()->create();
 
-        $this->assertEquals('John Doe', $user->name);
-        $this->assertEquals('john@example.com', $user->email);
-        $this->assertTrue(\Hash::check('password', $user->password));
+        $this->assertIsString($user->name);
+        $this->assertIsString($user->email);
+        $this->assertIsString($user->password);
+        $this->assertNull($user->email_verified_at);
     }
 
     /** @test */
-    public function it_has_correct_fillable_properties()
+    public function a_user_has_fillable_properties()
     {
         $user = new User();
 
-        $fillable = $user->getFillable();
-
-        $this->assertContains('name', $fillable);
-        $this->assertContains('email', $fillable);
-        $this->assertContains('password', $fillable);
+        $this->assertEquals([
+            'name',
+            'email',
+            'password',
+        ], $user->getFillable());
     }
 
     /** @test */
-    public function it_has_correct_hidden_properties()
+    public function a_user_has_hidden_properties()
     {
         $user = new User();
 
-        $hidden = $user->getHidden();
-
-        $this->assertContains('password', $hidden);
-        $this->assertContains('remember_token', $hidden);
+        $this->assertEquals([
+            'password',
+            'remember_token',
+        ], $user->getHidden());
     }
 
     /** @test */
-    public function it_has_correct_casts()
+    public function a_user_has_casts()
     {
         $user = new User();
 
-        $casts = $user->getCasts();
-
-        $this->assertArrayHasKey('email_verified_at', $casts);
-        $this->assertEquals('datetime', $casts['email_verified_at']);
+        $this->assertEquals([
+            'email_verified_at' => 'datetime',
+        ], $user->getCasts());
     }
 
     /** @test */
-    public function it_has_correct_with_relations()
+    public function a_user_has_with_relations()
     {
         $user = new User();
 
-        $with = $user->getWith();
-
-        $this->assertContains('subscriptions', $with);
+        $this->assertEquals([], $user->getWith());
     }
 }

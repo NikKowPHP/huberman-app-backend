@@ -355,7 +355,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -1084,11 +1085,11 @@ This version provides a comprehensive architectural blueprint that directly addr
         *   `[ ]` Node.js (LTS) container (optional, for build tools).
     *   `[x]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
     *   `[x]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
-    *   `[ ]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
-    *   `[ ]` Install & Configure SAST tools:
-        *   `[ ]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
-        *   `[ ]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
-    *   `[ ]` Run initial SAST checks to ensure baseline setup.
+    *   `[x]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
+    *   `[x]` Install & Configure SAST tools:
+        *   `[x]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
+        *   `[x]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
+    *   `[x]` Run initial SAST checks to ensure baseline setup.
 
 *   **Core Structure & Base Components:**
 *   `[x]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
@@ -4373,12 +4374,15 @@ return [
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.4",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5.3",
+        "vimeo/psalm": "^6.10"
     },
     "autoload": {
         "psr-4": {
@@ -6065,8 +6069,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -6117,8 +6120,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -6155,8 +6157,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -6269,8 +6270,7 @@ server {
 --- END FILE: docker/nginx/conf.d/app.conf ---
 
 --- START FILE: docker-compose.yml ---
-# docker-compose.yml
-version: '3.8'
+
 
 services:
   # PHP Service (Application Server)
@@ -6455,6 +6455,37 @@ CMD ["php-fpm"]--- END FILE: Dockerfile ---
 }
 --- END FILE: package.json ---
 
+--- START FILE: phpstan.neon ---
+
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        # - routes/ # Uncomment if you want to analyze routes
+        # - config/ # Uncomment if you want to analyze config files
+
+    # Level 5 is a good balance between strictness and practicality for Laravel projects
+    level: 5
+
+    # Optional: Ignore specific errors if necessary (use sparingly)
+    # ignoreErrors:
+    #     - '#PHPDoc tag @var contains unknown class#'
+
+    # Optional: Specify memory limit if needed for large projects
+    # memoryLimit: 1G
+
+    # Larastan specific configurations
+    # larastan:
+        # Optional: Specify database connection for schema analysis
+        # database_connection: testing
+
+        # Optional: Specify paths to check for model properties from factories
+        # factory_paths:
+        #     - database/factories
+--- END FILE: phpstan.neon ---
+
 --- START FILE: phpunit.xml ---
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -6494,6 +6525,33 @@ CMD ["php-fpm"]--- END FILE: Dockerfile ---
     </php>
 </phpunit>
 --- END FILE: phpunit.xml ---
+
+--- START FILE: pint.json ---
+{
+  "preset": "psr12"
+}--- END FILE: pint.json ---
+
+--- START FILE: psalm.xml ---
+<?xml version="1.0"?>
+<psalm
+    errorLevel="4"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
+>
+    <projectFiles>
+        <directory name="app" />
+        <directory name="database/factories" />
+        <directory name="database/seeders" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+</psalm>
+--- END FILE: psalm.xml ---
 
 --- START FILE: public/.htaccess ---
 <IfModule mod_rewrite.c>
@@ -7005,7 +7063,6 @@ Route::get('/', function () {
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ApiTestCase extends TestCase

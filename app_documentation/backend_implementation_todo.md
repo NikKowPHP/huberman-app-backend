@@ -29,7 +29,7 @@
     *   `[x]` Install & Configure SAST tools:
         *   `[x]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
         *   `[x]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
-    *   `[ ]` Run initial SAST checks to ensure baseline setup.
+    *   `[x]` Run initial SAST checks to ensure baseline setup.
 
 *   **Core Structure & Base Components:**
 *   `[x]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
@@ -50,7 +50,7 @@
     *   `[ ]` Ensure User model tests pass.
 
 *   **Authentication (Sanctum):**
-    *   `[ ]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
+    *   `[x]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
     *   `[ ]` Run Sanctum migrations (`php artisan migrate`).
     *   `[ ]` Add `HasApiTokens` trait to `User` model.
     *   `[ ]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
