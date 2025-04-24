@@ -52,9 +52,9 @@
 
 *   **Authentication (Sanctum):**
     *   `[x]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
-    *   `[ ]` Run Sanctum migrations (`php artisan migrate`).
-    *   `[ ]` Add `HasApiTokens` trait to `User` model.
-    *   `[ ]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
+    *   `[x]` Run Sanctum migrations (`php artisan migrate`).
+    *   `[x]` Add `HasApiTokens` trait to `User` model.
+    *   `[x]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
 
 *   **Registration:**
     *   `[ ]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
