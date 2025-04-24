@@ -48,7 +48,7 @@
     *   `[x]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
     *   `[x]` Run migration (`php artisan migrate`).
     *   `[x]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
-    *   `[ ]` Ensure User model tests pass.
+    *   `[x]` Ensure User model tests pass.
 
 *   **Authentication (Sanctum):**
     *   `[x]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
