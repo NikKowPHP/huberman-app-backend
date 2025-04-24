@@ -21,14 +21,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(module_path('SubscriptionBilling', '/routes/api.php'));
-
-            Route::middleware('web')
-                ->group(module_path('SubscriptionBilling', '/routes/web.php'));
-        });
+        Route::middleware('api')
+            ->prefix('v1/billing')
+            ->group(base_path('app/Modules/SubscriptionBilling/routes/api.php'));
     }
 
     /**
