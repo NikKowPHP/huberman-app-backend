@@ -178,7 +178,7 @@
     *   `[x]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`. # Assuming done as file exists
     *   `[x]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
     *   `[x]` Register middleware alias in `app/Http/Kernel.php`. (Updated in bootstrap/app.php for L11)
-    *   `[x]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
+    *   `[ ]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
 
 *   **Gated Content API:**
     *   `[x]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
@@ -195,20 +195,20 @@
         *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription` created (`trialing`/`active`), `ends_at`/`trial_ends_at` set, `SubscriptionStarted` event dispatched, `User.stripe_id` updated.
         *   `[x]` Verify/Implement Cashier listener logic.
     *   **Event: `customer.subscription.updated` (Trial Ends -> Active - via `invoice.payment_succeeded`)**
-        *   `[ ]` (TDD) Test: Simulates `invoice.payment_succeeded` post-trial, asserts status -> `active`, `trial_ends_at` nullified, `ends_at` updated.
-        *   `[ ]` Verify Cashier listener.
+        *   `[x]` (TDD) Test: Simulates `invoice.payment_succeeded` post-trial, asserts status -> `active`, `trial_ends_at` nullified, `ends_at` updated.
+        *   `[x]` Verify Cashier listener.
     *   **Event: `invoice.payment_succeeded` (Renewal)**
-        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription.ends_at` updated, `SubscriptionRenewed` event dispatched.
-        *   `[ ]` Verify Cashier listener.
+        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription.ends_at` updated, `SubscriptionRenewed` event dispatched.
+        *   `[x]` Verify Cashier listener.
     *   **Event: `invoice.payment_failed`**
-        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription.status` -> `past_due` (if configured), `PaymentFailed` event dispatched.
-        *   `[ ]` Verify/Implement Cashier listener based on retry settings.
+        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription.status` -> `past_due` (if configured), `PaymentFailed` event dispatched.
+        *   `[x]` Verify/Implement Cashier listener based on retry settings.
     *   **Event: `customer.subscription.updated` (Cancel at Period End)**
-        *   `[ ]` (TDD) Test: Simulates webhook (`cancel_at_period_end=true`), asserts `Subscription.status` updated (`canceled`?), `ends_at` reflects cancel date, `SubscriptionCanceled` event dispatched.
-        *   `[ ]` Verify Cashier listener (`onSubscriptionUpdated`).
+        *   `[x]` (TDD) Test: Simulates webhook (`cancel_at_period_end=true`), asserts `Subscription.status` updated (`canceled`?), `ends_at` reflects cancel date, `SubscriptionCanceled` event dispatched.
+        *   `[x]` Verify Cashier listener (`onSubscriptionUpdated`).
     *   **Event: `customer.subscription.deleted` (Immediate Cancel / Final Failure)**
-        *   `[ ]` (TDD) Test: Simulates webhook, asserts status -> `canceled`/`expired`, `ends_at` set to past/now, `SubscriptionExpired`/`SubscriptionCanceled` event dispatched.
-        *   `[ ]` Verify Cashier listener.
+        *   `[x]` (TDD) Test: Simulates webhook, asserts status -> `canceled`/`expired`, `ends_at` set to past/now, `SubscriptionExpired`/`SubscriptionCanceled` event dispatched.
+        *   `[x]` Verify Cashier listener.
 
 *   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
     *   `[ ]` Implement `WebhookController::handleAppleWebhook`.
