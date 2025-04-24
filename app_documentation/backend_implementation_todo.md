@@ -148,21 +148,21 @@
     *   `[ ]` Run seeders (`php artisan db:seed`).
 
 *   **Core Service & API:**
-    *   `[ ]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`).
-    *   `[ ]` Implement basic `ContentService` implementing the interface. Bind interface.
-    *   `[ ]` Implement API Resources (`EpisodeResource`, `ProtocolResource`, `SummaryResource`).
-    *   `[ ]` **Protocols API:**
-        *   `[ ]` (TDD) API Test `GET /api/v1/protocols`: List protocols (unauthenticated).
-        *   `[ ]` Implement `ProtocolController::index`. Define route.
-        *   `[ ]` (TDD) API Test `GET /api/v1/protocols/{id}`: Show protocol details (unauthenticated).
-        *   `[ ]` Implement `ProtocolController::show`. Define route.
-    *   `[ ]` **Episodes API:**
-        *   `[ ]` (TDD) API Test `GET /api/v1/episodes`: List episodes.
-        *   `[ ]` Implement `EpisodeController::index`. Define route.
-        *   `[ ]` (TDD) API Test `GET /api/v1/episodes/{id}`: Show episode details.
-        *   `[ ]` Implement `EpisodeController::show`. Define route.
-    *   `[ ]` *(Add similar for Summaries if needed as top-level endpoint)*
-    *   `[ ]` Ensure basic content API tests pass.
+    *   `[x]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`).
+    *   `[x]` Implement basic `ContentService` implementing the interface. Bind interface.
+    *   `[x]` Implement API Resources (`EpisodeResource`, `ProtocolResource`, `SummaryResource`).
+    *   `[x]` **Protocols API:**
+        *   `[x]` (TDD) API Test `GET /api/v1/protocols`: List protocols (unauthenticated).
+        *   `[x]` Implement `ProtocolController::index`. Define route.
+        *   `[x]` (TDD) API Test `GET /api/v1/protocols/{id}`: Show protocol details (unauthenticated).
+        *   `[x]` Implement `ProtocolController::show`. Define route.
+    *   `[x]` **Episodes API:**
+        *   `[x]` (TDD) API Test `GET /api/v1/episodes`: List episodes.
+        *   `[x]` Implement `EpisodeController::index`. Define route.
+        *   `[x]` (TDD) API Test `GET /api/v1/episodes/{id}`: Show episode details.
+        *   `[x]` Implement `EpisodeController::show`. Define route.
+    *   `[x]` *(Add similar for Summaries if needed as top-level endpoint)*
+    *   `[x]` Ensure basic content API tests pass.
 
 ---
 
