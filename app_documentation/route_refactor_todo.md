@@ -34,8 +34,8 @@ Okay, here is a detailed TODO checklist for refactoring the route registration t
 ---
 **Phase 3: Register Module Service Providers**
 
-*   `[ ]` Edit the main application providers file: `bootstrap/providers.php`.
-*   `[ ]` Add the fully qualified class name for each created module RouteServiceProvider to the `return [...]` array. Example:
+*   `[x]` Edit the main application providers file: `bootstrap/providers.php`.
+*   `[x]` Add the fully qualified class name for each created module RouteServiceProvider to the `return [...]` array. Example:
     ```php
     return [
         App\Providers\AppServiceProvider::class,
@@ -53,10 +53,10 @@ Okay, here is a detailed TODO checklist for refactoring the route registration t
 
 **Phase 4: Clean Up Main Route File**
 
-*   `[ ]` Edit the main API routes file: `routes/api.php`.
-*   `[ ]` Delete the `glob(...)` loop and the `require $routeFilePath;` line within it.
-*   `[ ]` Remove the `Route::prefix('v1')->group(...)` wrapper *unless* you decided module providers should *not* handle the `v1` prefix themselves. (Based on Phase 2, the wrapper can likely be removed).
-*   `[ ]` Keep the default `Route::middleware('auth:sanctum')->get('/user', ...);` route if still needed at the top level.
+*   `[x]` Edit the main API routes file: `routes/api.php`.
+*   `[x]` Delete the `glob(...)` loop and the `require $routeFilePath;` line within it.
+*   `[x]` Remove the `Route::prefix('v1')->group(...)` wrapper *unless* you decided module providers should *not* handle the `v1` prefix themselves. (Based on Phase 2, the wrapper can likely be removed).
+*   `[x]` Keep the default `Route::middleware('auth:sanctum')->get('/user', ...);` route if still needed at the top level.
 
 ---
 

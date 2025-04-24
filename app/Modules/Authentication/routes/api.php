@@ -1,6 +1,8 @@
 <?php
 
 use App\Modules\Authentication\Http\Controllers\AuthController;
+use App\Modules\Authentication\Http\Controllers\ForgotPasswordController;
+use App\Modules\Authentication\Http\Controllers\NewPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:5,1')->group(function () {
