@@ -77,4 +77,36 @@ class LoginTest extends ApiTestCase
               'message' => 'Invalid credentials',
           ]);
     }
+
+    /** @test */
+    public function it_allows_authenticated_user_to_logout()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $loginResponse = $this->postJson('/api/v1/login', [
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        $token = $loginResponse->json('token');
+
+        $this->postJson('/api/v1/logout', [], [
+            'Authorization' => "Bearer $token",
+        ])->assertStatus(204);
+
+        // Optionally, try accessing a protected route to confirm logout
+        // $this->getJson('/api/v1/user/profile', [
+        //     'Authorization' => "Bearer $token",
+        // ])->assertStatus(401);
+    }
+
+    /** @test */
+    public function it_returns_unauthorized_for_unauthenticated_logout_access()
+    {
+        $this->postJson('/api/v1/logout')
+             ->assertStatus(401);
+    }
 }

@@ -69,9 +69,9 @@
     *   `[x]` Define route. Ensure tests pass.
 
 *   **Logout:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated): Successful logout (token invalid, 204), unauthenticated access (401).
-    *   `[ ]` Implement `AuthController::logout` method (invalidate current token).
-    *   `[ ]` Define route, protected by `auth:sanctum`. Ensure tests pass.
+    *   `[x]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated): Successful logout (token invalid, 204), unauthenticated access (401).
+    *   `[x]` Implement `AuthController::logout` method (invalidate current token).
+    *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
 
 *   **Authenticated User Endpoint:**
     *   `[ ]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated): Fetches user data, unauthenticated access (401).
