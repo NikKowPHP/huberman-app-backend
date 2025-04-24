@@ -11,9 +11,9 @@ class RegistrationTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    private string $registerUrl = '/api/v1/register';
+    private string $registerUrl = '/v1/register';
 
-    /** @test */
+#[Test]
     public function it_requires_name_email_and_password_for_registration(): void
     {
         $this->postJson($this->registerUrl, [])
@@ -21,7 +21,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['name', 'email', 'password']);
     }
 
-    /** @test */
+#[Test]
     public function it_requires_a_valid_email(): void
     {
         $this->postJson($this->registerUrl, ['email' => 'not-an-email'])
@@ -29,7 +29,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['email']);
     }
 
-    /** @test */
+#[Test]
     public function it_requires_password_confirmation(): void
     {
         $this->postJson($this->registerUrl, [
@@ -42,7 +42,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['password']); // Laravel confirms password by default rule
     }
 
-    /** @test */
+#[Test]
     public function it_requires_password_and_confirmation_to_match(): void
     {
         $this->postJson($this->registerUrl, [
@@ -55,7 +55,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['password']);
     }
 
-     /** @test */
+ #[Test]
     public function it_requires_a_minimum_password_length(): void
     {
         // Assuming default Laravel minimum length is 8
@@ -69,7 +69,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['password']);
     }
 
-    /** @test */
+#[Test]
     public function it_requires_email_to_be_unique(): void
     {
         // Arrange: Create an existing user
@@ -86,7 +86,7 @@ class RegistrationTest extends ApiTestCase
             ->assertJsonValidationErrors(['email']);
     }
 
-    /** @test */
+#[Test]
     public function it_registers_a_user_successfully_and_returns_user_and_token(): void
     {
         $userData = [

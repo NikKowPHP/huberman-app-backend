@@ -17,20 +17,25 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
 Route::prefix('v1')->group(function () {
-    // Include route files from modules
-    $modulesPath = app_path('Modules');
-    $moduleDirectories = glob($modulesPath . '/*', GLOB_ONLYDIR);
+    $modulesPath = app_path('Modules'); // Should resolve to /var/www/html/app/Modules inside Docker
+    $moduleDirectories = glob($modulesPath . '/*', GLOB_ONLYDIR); // Finds subdirectories like 'Authentication'
+
+    // Add a debug statement here temporarily if needed:
+    // Log::info('Module Directories Found: ' . print_r($moduleDirectories, true));
 
     foreach ($moduleDirectories as $moduleDirectory) {
-        $moduleName = basename($moduleDirectory);
-        $routeFilePath = $moduleDirectory . '/routes/api.php';
+        $routeFilePath = $moduleDirectory . '/routes/api.php'; // Correctly constructs path
 
-        if (file_exists($routeFilePath)) {
-            Route::group(['prefix' => strtolower($moduleName)], function () use ($routeFilePath) {
-                require $routeFilePath;
-            });
+        // Add a debug statement here temporarily if needed:
+        // Log::info('Checking for route file: ' . $routeFilePath);
+
+        if (file_exists($routeFilePath)) { // Checks if the file exists
+            Log::info('Attempting to include route file: ' . $routeFilePath);
+            require $routeFilePath; // Includes the file (like the Authentication one)
+            Log::info('Successfully included route file: ' . $routeFilePath);
+        } else {
+            Log::warning('Route file NOT found: ' . $routeFilePath);
         }
     }
 });

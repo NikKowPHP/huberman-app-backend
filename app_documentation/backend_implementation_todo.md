@@ -63,10 +63,10 @@
     *   `[ ]` Define route in module's API routes file. Ensure tests pass.
 
 *   **Login:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/login`: Validation rules, success (correct credentials -> 200, user+token), failure (incorrect credentials -> 401/422).
-    *   `[ ]` Implement `LoginRequest` Form Request.
-    *   `[ ]` Implement `AuthController::login` method.
-    *   `[ ]` Define route. Ensure tests pass.
+    *   `[x]` (TDD) Write API tests for `POST /api/v1/login`: Validation rules, success (correct credentials -> 200, user+token), failure (incorrect credentials -> 401/422).
+    *   `[x]` Implement `LoginRequest` Form Request.
+    *   `[x]` Implement `AuthController::login` method.
+    *   `[x]` Define route. Ensure tests pass.
 
 *   **Logout:**
     *   `[ ]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated): Successful logout (token invalid, 204), unauthenticated access (401).

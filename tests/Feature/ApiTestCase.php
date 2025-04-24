@@ -13,6 +13,7 @@ class ApiTestCase extends TestCase
     {
         parent::setUp();
 
+
         $this->withHeaders([
             'Accept' => 'application/json',
         ]);
