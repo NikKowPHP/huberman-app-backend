@@ -86,8 +86,8 @@
     *   `[ ]` Define password reset routes. Ensure tests pass.
 
 *   **Security Controls:**
-    *   `[ ]` (TDD) Write tests for rate limiting on auth endpoints (`login`, `register`, `forgot-password`).
-    *   `[ ]` Apply Laravel's default rate limiting middleware to auth routes in `RouteServiceProvider` or route definitions. Configure limits (e.g., in `.env`). Ensure tests pass.
+    *   `[x]` (TDD) Write tests for rate limiting on auth endpoints (`login`, `register`, `forgot-password`).
+    *   `[x]` Apply Laravel's default rate limiting middleware to auth routes in `RouteServiceProvider` or route definitions. Configure limits (e.g., in `.env`). Ensure tests pass.
 
 ---
 
