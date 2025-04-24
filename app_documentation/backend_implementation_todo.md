@@ -3,6 +3,7 @@
 **Project Goal:** Implement the Laravel backend for the Huberman App, supporting a Freemium model, content delivery, user interactions, reminders, tracking, and subscription management, ready for production deployment.
 
 **Development Approach:** Test-Driven Development (TDD) will be used. For each functional component, write tests *first* to define expected behavior, then implement the code to make the tests pass, and finally refactor.
+**COMMAND EXECUTION** Every command should be executed with 'docker-compose exec app' prefix.
 
 **Legend:**
 *   `[ ]` - To Do
@@ -44,8 +45,8 @@
 
 *   **User Model & Migration:**
     *   `[ ]` (TDD) Write tests for `User` model creation, relationships (initially Subscription, Notes, Reminders, Tracking), attributes, fillable, hidden (`password`, `remember_token`), casts (`email_verified_at`), `$with` relations.
-    *   `[ ]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
-    *   `[ ]` Run migration (`php artisan migrate`).
+    *   `[x]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
+    *   `[x]` Run migration (`php artisan migrate`).
     *   `[ ]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
     *   `[ ]` Ensure User model tests pass.
 
