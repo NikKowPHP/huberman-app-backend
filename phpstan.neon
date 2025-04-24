@@ -1,0 +1,28 @@
+
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        # - routes/ # Uncomment if you want to analyze routes
+        # - config/ # Uncomment if you want to analyze config files
+
+    # Level 5 is a good balance between strictness and practicality for Laravel projects
+    level: 5
+
+    # Optional: Ignore specific errors if necessary (use sparingly)
+    # ignoreErrors:
+    #     - '#PHPDoc tag @var contains unknown class#'
+
+    # Optional: Specify memory limit if needed for large projects
+    # memoryLimit: 1G
+
+    # Larastan specific configurations
+    # larastan:
+        # Optional: Specify database connection for schema analysis
+        # database_connection: testing
+
+        # Optional: Specify paths to check for model properties from factories
+        # factory_paths:
+        #     - database/factories

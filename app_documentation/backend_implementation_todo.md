@@ -25,10 +25,10 @@
         *   `[ ]` Node.js (LTS) container (optional, for build tools).
     *   `[x]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
     *   `[x]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
-    *   `[ ]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
-    *   `[ ]` Install & Configure SAST tools:
-        *   `[ ]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
-        *   `[ ]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
+    *   `[x]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
+    *   `[x]` Install & Configure SAST tools:
+        *   `[x]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
+        *   `[x]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
     *   `[ ]` Run initial SAST checks to ensure baseline setup.
 
 *   **Core Structure & Base Components:**
