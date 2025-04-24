@@ -57,9 +57,9 @@
     *   `[x]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
 
 *   **Registration:**
-    *   `[ ]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
-    *   `[ ]` Implement `RegisterRequest` Form Request (`app/Modules/Authentication/Http/Requests/`).
-    *   `[ ]` Implement `AuthController::register` method (`app/Modules/Authentication/Http/Controllers/`).
+    *   `[x]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
+    *   `[x]` Implement `RegisterRequest` Form Request (`app/Modules/Authentication/Http/Requests/`).
+    *   `[x]` Implement `AuthController::register` method (`app/Modules/Authentication/Http/Controllers/`).
     *   `[ ]` Define route in module's API routes file. Ensure tests pass.
 
 *   **Login:**
