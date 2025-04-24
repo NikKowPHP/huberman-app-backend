@@ -178,13 +178,13 @@
     *   `[x]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`. # Assuming done as file exists
     *   `[x]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
     *   `[x]` Register middleware alias in `app/Http/Kernel.php`. (Updated in bootstrap/app.php for L11)
-    *   `[ ]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
+    *   `[x]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
 
 *   **Gated Content API:**
-    *   `[ ]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
-    *   `[ ]` (TDD - Feature) Test `GET /api/v1/protocols/{id}`: Authenticated free user gets protocol *without* `implementation_guide`. Authenticated premium user gets protocol *with* `implementation_guide`.
+    *   `[x]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
+    *   `[x]` (TDD - Feature) Test `GET /api/v1/protocols/{id}`: Authenticated free user gets protocol *without* `implementation_guide`. Authenticated premium user gets protocol *with* `implementation_guide`.
     *   `[ ]` (TDD - Feature) Test `GET /api/v1/protocols`: Free user gets limited list (if applicable) or all protocols with limited data. Premium user gets all protocols with full data (as allowed by Resource). Adjust API tests.
-    *   `[ ]` Refactor `ProtocolController` or `ContentService` if needed to support different data loading based on user status (API Resource often sufficient). Ensure tests pass.
+    *   `[x]` Refactor `ProtocolController` or `ContentService` if needed to support different data loading based on user status (API Resource often sufficient). Ensure tests pass.
 
 ---
 

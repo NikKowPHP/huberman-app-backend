@@ -13,11 +13,11 @@ class ContentService implements ContentServiceInterface
     /**
      * Get all protocols.
      *
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getProtocols(): Collection
+    public function getProtocols(): \Illuminate\Database\Eloquent\Builder
     {
-        return Protocol::all();
+        return Protocol::query();
     }
 
     /**

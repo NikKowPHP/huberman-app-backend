@@ -12,6 +12,10 @@ class ProtocolSeeder extends Seeder
      */
     public function run(): void
     {
-        Protocol::factory()->count(3)->create();
+        Protocol::factory()->count(5)->create();
+
+        Protocol::factory()->count(2)->create([
+            'is_free' => false,
+        ]);
     }
 }

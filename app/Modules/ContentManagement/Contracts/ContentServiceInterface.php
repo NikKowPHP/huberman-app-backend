@@ -9,9 +9,9 @@ interface ContentServiceInterface
     /**
      * Get all protocols.
      *
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getProtocols(): Collection;
+    public function getProtocols(): \Illuminate\Database\Eloquent\Builder;
 
     /**
      * Get a protocol by ID.

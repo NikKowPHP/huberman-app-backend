@@ -21,7 +21,13 @@ class ProtocolController extends Controller
      */
     public function index(): JsonResponse
     {
-        $protocols = $this->contentService->getProtocols();
+        $user = auth()->user();
+
+        if ($user && app(SubscriptionServiceInterface::class)->userHasActivePremiumSubscription($user)) {
+            $protocols = $this->contentService->getProtocols();
+        } else {
+            $protocols = $this->contentService->getProtocols()->where('is_free', true);
+        }
 
         return response()->json(ProtocolResource::collection($protocols));
     }
