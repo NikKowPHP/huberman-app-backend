@@ -191,9 +191,9 @@
 ## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
 
 *   **Webhook Processing Logic (Stripe via Cashier):**
-    *   **Event: `checkout.session.completed`**
-        *   `[ ]` (TDD) Test: Simulates webhook, asserts `Subscription` created (`trialing`/`active`), `ends_at`/`trial_ends_at` set, `SubscriptionStarted` event dispatched, `User.stripe_id` updated.
-        *   `[ ]` Verify/Implement Cashier listener logic.
+        *   **Event: `checkout.session.completed`**
+        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription` created (`trialing`/`active`), `ends_at`/`trial_ends_at` set, `SubscriptionStarted` event dispatched, `User.stripe_id` updated.
+        *   `[x]` Verify/Implement Cashier listener logic.
     *   **Event: `customer.subscription.updated` (Trial Ends -> Active - via `invoice.payment_succeeded`)**
         *   `[ ]` (TDD) Test: Simulates `invoice.payment_succeeded` post-trial, asserts status -> `active`, `trial_ends_at` nullified, `ends_at` updated.
         *   `[ ]` Verify Cashier listener.

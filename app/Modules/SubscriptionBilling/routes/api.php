@@ -1,6 +1,8 @@
 <?php
 
 use App\Modules\SubscriptionBilling\Http\Controllers\SubscriptionController;
+use App\Modules\SubscriptionBilling\Http\Controllers\WebhookController;
+use App\Http\Middleware\VerifyStripeWebhookSignature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->get('/user/subscription', [SubscriptionController::class, 'userSubscription']);
 
-use App\Http\Middleware\VerifyStripeWebhookSignature;
-
-Route::post('/webhooks/stripe', function () {
-    // Handle Stripe webhook
-})->withoutMiddleware('csrf')->middleware(VerifyStripeWebhookSignature::class);
+Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook'])->withoutMiddleware('csrf')->middleware(VerifyStripeWebhookSignature::class);
