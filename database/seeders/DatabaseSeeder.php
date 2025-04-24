@@ -24,5 +24,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PlanSeeder::class,
         ]);
+
+        $this->call([
+            EpisodeSeeder::class,
+            ProtocolSeeder::class,
+            SummarySeeder::class,
+            EpisodeProtocolSeeder::class,
+        ]);
     }
 }

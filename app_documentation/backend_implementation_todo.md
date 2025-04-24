@@ -140,11 +140,11 @@
     *   `[x]` Test `Episode<->Protocol` many-to-many relationship.
 
 *   **Seeding:**
-    *   `[ ]` Create `EpisodeSeeder` (placeholder episodes).
-    *   `[ ]` Create `ProtocolSeeder` (foundational protocols based on `content_strategy_management.md`).
-    *   `[ ]` Create `SummarySeeder` (summaries for foundational protocols).
-    *   `[ ]` Create `EpisodeProtocolSeeder` (link placeholders).
-    *   `[ ]` Update `DatabaseSeeder` to call new seeders in correct order.
+    *   `[x]` Create `EpisodeSeeder` (placeholder episodes).
+    *   `[x]` Create `ProtocolSeeder` (foundational protocols based on `content_strategy_management.md`).
+    *   `[x]` Create `SummarySeeder` (summaries for foundational protocols).
+    *   `[x]` Create `EpisodeProtocolSeeder` (link placeholders).
+    *   `[x]` Update `DatabaseSeeder` to call new seeders in correct order.
     *   `[ ]` Run seeders (`php artisan db:seed`).
 
 *   **Core Service & API:**
