@@ -130,14 +130,14 @@
 ## Phase 4: Basic Content Management (Milestone 3 & 5 Prep - TDD Focus)
 
 *   **Models & Migrations:**
-    *   `[ ]` Implement `create_episodes_table` migration. Run migration.
-    *   `[ ]` Implement `create_protocols_table` migration. Run migration.
-    *   `[ ]` Implement `create_summaries_table` migration. Run migration.
-    *   `[ ]` Implement `create_episode_protocol_table` (pivot) migration. Run migration.
-    *   `[ ]` (TDD) Test `Episode` model (attributes, relationships `Protocols`/`Summaries`/`Notes`). Implement model (`app/Modules/ContentManagement/Models/Episode.php`).
-    *   `[ ]` (TDD) Test `Protocol` model (attributes, relationships `Episodes`). Implement model (`app/Modules/ContentManagement/Models/Protocol.php`).
-    *   `[ ]` (TDD) Test `Summary` model (attributes, relationship `Episode`). Implement model (`app/Modules/ContentManagement/Models/Summary.php`).
-    *   `[ ]` Test `Episode<->Protocol` many-to-many relationship.
+    *   `[x]` Implement `create_episodes_table` migration. Run migration.
+    *   `[x]` Implement `create_protocols_table` migration. Run migration.
+    *   `[x]` Implement `create_summaries_table` migration. Run migration.
+    *   `[x]` Implement `create_episode_protocol_table` (pivot) migration. Run migration.
+    *   `[x]` (TDD) Test `Episode` model (attributes, relationships `Protocols`/`Summaries`/`Notes`). Implement model (`app/Modules/ContentManagement/Models/Episode.php`).
+    *   `[x]` (TDD) Test `Protocol` model (attributes, relationships `Episodes`). Implement model (`app/Modules/ContentManagement/Models/Protocol.php`).
+    *   `[x]` (TDD) Test `Summary` model (attributes, relationship `Episode`). Implement model (`app/Modules/ContentManagement/Models/Summary.php`).
+    *   `[x]` Test `Episode<->Protocol` many-to-many relationship.
 
 *   **Seeding:**
     *   `[ ]` Create `EpisodeSeeder` (placeholder episodes).
