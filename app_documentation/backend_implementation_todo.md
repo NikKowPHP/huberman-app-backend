@@ -101,10 +101,10 @@
     *   `[x]` Add `hasMany(Subscription::class)` relationship to `User` model.
 
 *   **Cashier Integration (Stripe):**
-    *   `[ ]` Install Laravel Cashier Stripe (`composer require laravel/cashier`). Publish migrations & config.
-    *   `[ ]` Run Cashier migrations (`php artisan migrate`).
-    *   `[ ]` Configure Cashier (`config/cashier.php`, `services.stripe.key/secret/webhook_secret` in `.env`). Set User model.
-    *   `[ ]` Add `Billable` trait to `User` model.
+    *   `[x]` Install Laravel Cashier Stripe (`composer require laravel/cashier`). Publish migrations & config.
+    *   `[x]` Run Cashier migrations (`php artisan migrate`).
+    *   `[x]` Configure Cashier (`config/cashier.php`, `services.stripe.key/secret/webhook_secret` in `.env`). Set User model.
+    *   `[x]` Add `Billable` trait to `User` model.
 
 *   **Core Service & API Stubs:**
     *   `[ ]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, `getSubscriptionStatus`, etc.).
