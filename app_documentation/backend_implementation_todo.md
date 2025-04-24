@@ -44,10 +44,10 @@
 ## Phase 2: Core User & Authentication (Milestone 2 - TDD Focus)
 
 *   **User Model & Migration:**
-    *   `[ ]` (TDD) Write tests for `User` model creation, relationships (initially Subscription, Notes, Reminders, Tracking), attributes, fillable, hidden (`password`, `remember_token`), casts (`email_verified_at`), `$with` relations.
+    *   `[x]` (TDD) Write tests for `User` model creation, relationships (initially Subscription, Notes, Reminders, Tracking), attributes, fillable, hidden (`password`, `remember_token`), casts (`email_verified_at`), `$with` relations.
     *   `[x]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
     *   `[x]` Run migration (`php artisan migrate`).
-    *   `[ ]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
+    *   `[x]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
     *   `[ ]` Ensure User model tests pass.
 
 *   **Authentication (Sanctum):**

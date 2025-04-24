@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
->
-    <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-        </testsuite>
-    </testsuites>
-    <source>
-        <include>
-            <directory>app</directory>
-        </include>
-    </source>
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="pgsql"/>
-        <env name="DB_HOST" value="127.0.0.1"/>
-        <env name="DB_PORT" value="5433"/>
+        <env name="DB_HOST" value="db"/>
+        <!-- Use the service name -->
+        <env name="DB_PORT" value="5432"/>
+        <!-- Use the internal container port -->
         <env name="DB_DATABASE" value="huberman_app_test"/>
+        <!-- Keep test DB name -->
         <env name="DB_USERNAME" value="huberman_user"/>
+        <!-- Keep test user -->
         <env name="DB_PASSWORD" value="secret"/>
+        <!-- Keep test password -->
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
@@ -35,3 +24,4 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>
+    
