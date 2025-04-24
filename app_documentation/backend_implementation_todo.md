@@ -169,16 +169,16 @@
 ## Phase 5: Feature Gating Implementation (Milestone 4 & 5 - TDD Focus)
 
 *   **Subscription Service Logic:**
-    *   `[ ]` (TDD - Unit) Test `SubscriptionService::userHasActivePremiumSubscription` covering scenarios: no sub, free plan, active premium, trialing premium, canceled (before/after `ends_at`), expired, past_due. Use factories.
-    *   `[ ]` Implement logic in `SubscriptionService` querying `subscriptions` table (via User relationship), joining `plans`, checking status (`active`, `trialing`), `ends_at`. Ensure 'premium' plan type check.
-    *   `[ ]` (TDD - Unit) Test caching: cache hit avoids DB query, miss populates cache, TTL works, cache clear invalidates.
-    *   `[ ]` Implement caching layer within `userHasActivePremiumSubscription` (e.g., `Cache::remember`). Use appropriate cache tags (e.g., `user:{id}`).
+    *   `[x]` (TDD - Unit) Test `SubscriptionService::userHasActivePremiumSubscription` covering scenarios: no sub, free plan, active premium, trialing premium, canceled (before/after `ends_at`), expired, past_due. Use factories.
+    *   `[x]` Implement logic in `SubscriptionService` querying `subscriptions` table (via User relationship), joining `plans`, checking status (`active`, `trialing`), `ends_at`. Ensure 'premium' plan type check.
+    *   `[x]` (TDD - Unit) Test caching: cache hit avoids DB query, miss populates cache, TTL works, cache clear invalidates.
+    *   `[x]` Implement caching layer within `userHasActivePremiumSubscription` (e.g., `Cache::remember`). Use appropriate cache tags (e.g., `user:{id}`).
 
 *   **Middleware:**
-    *   `[ ]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`.
-    *   `[ ]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
-    *   `[ ]` Register middleware alias in `app/Http/Kernel.php`.
-    *   `[ ]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass.
+    *   `[x]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`. # Assuming done as file exists
+    *   `[x]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
+    *   `[x]` Register middleware alias in `app/Http/Kernel.php`. (Updated in bootstrap/app.php for L11)
+    *   `[ ]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
 
 *   **Gated Content API:**
     *   `[ ]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
