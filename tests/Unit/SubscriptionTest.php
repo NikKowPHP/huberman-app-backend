@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\Event;
 use App\Modules\SubscriptionBilling\Models\Plan;
 use App\Modules\SubscriptionBilling\Models\Subscription;
 use App\Modules\UserManagement\Models\User;
@@ -81,5 +82,22 @@ class SubscriptionTest extends TestCase
 
         $this->assertEquals(1, $trialingSubscriptions->count());
         $this->assertNotNull($trialingSubscriptions->first()->trial_ends_at);
+    }
+
+    /** @test */
+    public function it_can_expire_a_subscription()
+    {
+        Event::fake();
+
+        $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::factory()->create([
+            'stripe_status' => 'active',
+        ]);
+
+        $subscription->expire();
+
+        $this->assertEquals('expired', $subscription->fresh()->stripe_status);
+        $this->assertEventDispatched(\App\Events\SubscriptionExpired::class, function ($event) {
+            return $event->subscription->id === $subscription->id;
+        });
     }
 }

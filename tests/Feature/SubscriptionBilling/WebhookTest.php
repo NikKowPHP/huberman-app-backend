@@ -193,4 +193,39 @@ class WebhookTest extends TestCase
         $this->assertEquals('canceled', $subscription->stripe_status);
         $this->assertEquals(now()->format('Y-m-d H:i:s'), $subscription->ends_at->format('Y-m-d H:i:s'));
     }
+
+    /**
+     * Test Apple DID_CHANGE_RENEWAL_STATUS event when autoRenewStatus is false.
+     *
+     * @return void
+     */
+    public function testAppleDidChangeRenewalStatusAutoRenewStatusOff()
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+        $user->appstore_transaction_id = 'test_transaction_id';
+        $user->save();
+
+        $subscription = Subscription::factory()->create([
+            'user_id' => $user->id,
+            'stripe_status' => 'active',
+            'ends_at' => now()->addDays(30),
+        ]);
+
+        $payload = [
+            'notificationType' => 'DID_CHANGE_RENEWAL_STATUS',
+            'autoRenewStatus' => false,
+            'originalTransactionId' => 'test_transaction_id',
+        ];
+
+        $this->postJson('/api/webhooks/apple', $payload)
+            ->assertStatus(200);
+
+        $subscription->refresh();
+
+        $this->assertEquals('canceled', $subscription->stripe_status);
+        $this->assertEquals(now()->format('Y-m-d H:i:s'), $subscription->ends_at->format('Y-m-d H:i:s'));
+        Event::assertDispatched(\App\Events\SubscriptionExpired::class);
+    }
 }

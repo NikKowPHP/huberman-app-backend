@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Laravel\Cashier\Events\SubscriptionStarted;
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierController;
+use App\Modules\SubscriptionBilling\Services\AppleSubscriptionService;
+use App\Events\SubscriptionSubscribed;
+use App\Events\SubscriptionRenewed;
 
 class WebhookController extends CashierController
 {
+    private $appleSubscriptionService;
+
+    public function __construct(AppleSubscriptionService $appleSubscriptionService)
+    {
+        $this->appleSubscriptionService = $appleSubscriptionService;
+    }
+
     /**
      * Handle a Stripe webhook.
      *
@@ -182,6 +192,90 @@ class WebhookController extends CashierController
             $subscription->stripe_status = 'canceled';
             $subscription->ends_at = now();
             $subscription->save();
+        }
+    }
+
+    public function handleAppleWebhook(Request $request)
+    {
+        try {
+            $jws = $request->getContent();
+            $data = $this->appleSubscriptionService->decodeAndVerifyJWS($jws);
+
+            if (isset($data['notificationType'])) {
+                if ($data['notificationType'] === 'SUBSCRIBED' || $data['notificationType'] === 'DID_RENEW') {
+                    $this->handleAppleSubscribed($data);
+                } elseif ($data['notificationType'] === 'DID_CHANGE_RENEWAL_STATUS' && isset($data['autoRenewStatus']) && $data['autoRenewStatus'] == false) {
+                    $this->handleAppleRenewalStatusChange($data);
+                }
+            }
+
+            // TODO: Process the data
+            \Log::info('Apple Webhook Data', $data);
+
+            return response('Apple Webhook Received', 200);
+        } catch (\Exception $e) {
+            \Log::error('Apple Webhook Error: ' . $e->getMessage());
+            return response('Invalid Apple Webhook', 400);
+        }
+    }
+
+    protected function handleAppleRenewalStatusChange(array $data)
+    {
+        $originalTransactionId = $data['originalTransactionId'] ?? null;
+
+        $user = User::where('appstore_transaction_id', $originalTransactionId)->first();
+
+        if ($user) {
+            $user->subscriptions()->update([
+                'stripe_status' => 'canceled',
+                'ends_at' => now(),
+            ]);
+
+            // Dispatch an event to notify that the subscription has been canceled
+            Event::dispatch(new \App\Events\SubscriptionExpired($user));
+
+            \Log::info('Apple Renewal Status Change Event processed', $data);
+        } else {
+            \Log::warning('User not found for Apple Renewal Status Change Event', $data);
+        }
+    }
+
+    /**
+     * Handle Apple SUBSCRIBED and DID_RENEW events.
+     *
+     * @param  array  $data
+     * @return void
+     */
+    protected function handleAppleSubscribed(array $data)
+    {
+        // Extract relevant data from the $data array
+        $productId = $data['productId'] ?? null;
+        $transactionId = $data['transactionId'] ?? null;
+        $originalTransactionId = $data['originalTransactionId'] ?? null;
+        $purchaseDate = $data['purchaseDate'] ?? null;
+        $subscriptionStatus = $data['subscriptionStatus'] ?? 'active'; // Default to active
+
+        // Find the user by some unique identifier (e.g., email or user ID)
+        // You'll need to adjust this based on your application's logic
+        $user = User::where('appstore_transaction_id', $originalTransactionId)->first();
+
+        if ($user) {
+            // Update the user's subscription status in the database
+            $user->subscriptions()->update([
+                'stripe_status' => $subscriptionStatus,
+                'ends_at' => now()->addYears(1), // Assuming a yearly subscription
+            ]);
+
+            // Dispatch events to notify other parts of the application
+            if ($data['notificationType'] === 'SUBSCRIBED') {
+                Event::dispatch(new SubscriptionSubscribed($user));
+            } elseif ($data['notificationType'] === 'DID_RENEW') {
+                Event::dispatch(new SubscriptionRenewed($user));
+            }
+
+            \Log::info('Apple Subscribed/Renewed Event processed', $data);
+        } else {
+            \Log::warning('User not found for Apple Subscribed/Renewed Event', $data);
         }
     }
 }

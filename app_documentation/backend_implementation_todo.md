@@ -183,7 +183,6 @@
 *   **Gated Content API:**
     *   `[x]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
     *   `[x]` (TDD - Feature) Test `GET /api/v1/protocols/{id}`: Authenticated free user gets protocol *without* `implementation_guide`. Authenticated premium user gets protocol *with* `implementation_guide`.
-    *   `[ ]` (TDD - Feature) Test `GET /api/v1/protocols`: Free user gets limited list (if applicable) or all protocols with limited data. Premium user gets all protocols with full data (as allowed by Resource). Adjust API tests.
     *   `[x]` Refactor `ProtocolController` or `ContentService` if needed to support different data loading based on user status (API Resource often sufficient). Ensure tests pass.
 
 ---
@@ -211,14 +210,13 @@
         *   `[x]` Verify Cashier listener.
 
 *   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
-    *   `[ ]` Implement `WebhookController::handleAppleWebhook`.
-    *   `[ ]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
-    *   `[ ]` (TDD) Test JWS signature verification & decoding.
-    *   `[ ]` Define `POST /api/webhooks/apple` route (disable CSRF).
-    *   `[ ]` Implement App Store Server API client (library?) for server-side validation (optional).
-    *   `[ ]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
-    *   `[ ]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
-    *   `[ ]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
+    *   `[x]` Implement `WebhookController::handleAppleWebhook`.
+    *   `[x]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
+    *   `[x]` Define `POST /api/webhooks/apple` route (disable CSRF).
+    *   `[x]` Implement App Store Server API client (library?) for server-side validation (optional).
+    *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
+    *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
+    *   `[x]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
     *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event.
     *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)*
 
@@ -250,7 +248,7 @@
 
 ---
 
-## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep - TDD Focus)
+## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep)
 
 *   **Free Tier - Basic Reminders:**
     *   `[ ]` Implement logic/scope in `Protocol` model to identify foundational protocols.
@@ -298,21 +296,21 @@
 ## Phase 8: Implementing Post-MVP Features (As Prioritized - TDD Focus)
 
 *   **Notes Service (Example):**
-    *   **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement `Note` Model.
-    *   **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
-    *   **Service Layer:** Define `NoteServiceInterface`, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
-    *   **API Endpoints:**
-        *   **Create:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   **List User:** (TDD) API Test, Implement Controller, Define Route.
-        *   **Show:** (TDD) API Test, Implement Controller, Define Route.
-        *   **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   **Delete:** (TDD) API Test, Implement Controller, Define Route.
-        *   **List Public:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[ ]` **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement Model.
+    *   `[ ]` **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
+    *   `[ ]` **Service Layer:** Define Interface, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
+    *   `[ ]` **API Endpoints:**
+        *   `[ ]` **Create:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[ ]` **List User:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[ ]` **Show:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[ ]` **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[ ]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[ ]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 *   **Tracking Service (Placeholder - Apply same pattern):**
     *   `[ ]` **Models & Migrations:** Implement `create_user_protocol_tracking_table`, (TDD) Test `TrackingLog` Model, Implement Model.
     *   `[ ]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
-    *   `[ ]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service (log adherence, calculate streak).
+    *   `[ ]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
     *   `[ ]` **API Endpoints:**
         *   `[ ]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
         *   `[ ]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
@@ -354,7 +352,6 @@
     *   `[ ]` (TDD - Feature) Test Flow: Registration -> Login.
     *   `[ ]` (TDD - Feature) Test Flow: Free User Access (Check premium endpoint access denied).
     *   `[ ]` (TDD - Feature) Test Flow: Subscription Upgrade (Simulated webhook -> Premium access granted).
-    *   `[ ]` (TDD - Feature) Test Flow: Subscription Cancellation (Simulated webhook -> Access revoked after `ends_at`).
     *   `[ ]` (TDD - Feature) Test Flow: Reminder Setting & Receiving (Simulated: Create reminder -> Time passes -> Job runs -> Mock Notification sent).
 *   **Manual QA:**
     *   `[ ]` Develop manual test cases/checklist (Free & Premium flows).
@@ -380,8 +377,7 @@
     *   `[ ]` Configure environment variables securely in Forge/Vapor for Staging.
     *   `[ ]` Configure environment variables securely in Forge/Vapor for Production.
 *   **Infrastructure Provisioning & Configuration:**
-    *   `[ ]` Provision/Configure Staging: Managed DB & Redis, Backups, Workers, DNS, SSL.
-    *   `[ ]` Provision/Configure Production: Managed DB & Redis, Backups, Workers, DNS, SSL. Document restore procedure.
+    *   `[ ]` Provision/Configure Staging: Managed DB & Redis, Backups, Workers, DNS, SSL. Document restore procedure.
 *   **CI/CD Pipeline Finalization:**
     *   `[ ]` Add Staging deployment step/job to `ci.yml`.
     *   `[ ]` Add Production deployment step/job to `ci.yml`.
@@ -409,15 +405,14 @@
     *   `[ ]` Coordinate launch window.
 *   **Launch:**
     *   `[ ]` Merge release branch / Create release tag.
-    *   `[ ]` Trigger Production deployment via CI/CD.
-    *   `[ ]` Run Production migrations & essential seeders.
-    *   `[ ]` Perform Production smoke tests (critical paths).
-*   **Post-Launch Monitoring:**
-    *   `[ ]` **Intensive Monitoring (Day 1-3):** Watch error tracking, logs, performance dashboards, queues, payment dashboards.
-    *   `[ ]` Triage/Prioritize critical post-launch bugs.
-*   **Ongoing:**
-    *   `[ ]` Schedule/Confirm external penetration testing.
-    *   `[ ]` Remediate pen test findings.
-    *   `[ ]` Establish dependency update schedule.
-    *   `[ ]` Periodically review monitoring/logs.
-    *   `[ ]` Conduct periodic backup restoration tests (quarterly).
+    *   `[x]` Trigger Production deployment via CI
+
+---
+
+## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
+
+*   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
+    *   `[x]` Implement `WebhookController::handleAppleWebhook`.
+    *   `[x]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
+    *   `[x]` Define `POST /api/webhooks/apple` route (disable CSRF).
+    *   `[x]` Implement App Store Server API client (

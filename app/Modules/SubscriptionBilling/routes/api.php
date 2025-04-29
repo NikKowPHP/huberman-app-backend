@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/webhooks/apple', [\App\Modules\SubscriptionBilling\Http\Controllers\WebhookController::class, 'handleAppleWebhook'])->withoutMiddleware('csrf');
+
 Route::middleware('auth:sanctum')->get('/user/subscription', [SubscriptionController::class, 'userSubscription']);
 
 Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook'])->withoutMiddleware('csrf')->middleware(VerifyStripeWebhookSignature::class);

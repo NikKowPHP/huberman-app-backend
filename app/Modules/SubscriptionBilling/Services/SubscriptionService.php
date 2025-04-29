@@ -9,6 +9,8 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Events\SubscriptionRenewalFailed; // Added import
+use Carbon\Carbon;
 
 use NotImplementedException;
 
@@ -93,15 +95,18 @@ class SubscriptionService implements SubscriptionServiceInterface
 
             // 5. TODO: Process the notification based on $decodedPayload->notificationType
             // Example structure:
-            // switch ($decodedPayload->notificationType) {
-            //     case 'SUBSCRIBED':
-            //         $this->handleAppleSubscribed($decodedPayload->data);
-            //         break;
-            //     case 'DID_RENEW':
-            //         $this->handleAppleRenewed($decodedPayload->data);
-            //         break;
-            //     // ... other notification types
-            // }
+            switch ($decodedPayload->notificationType) {
+                case 'SUBSCRIBED':
+                    $this->handleAppleSubscribed($decodedPayload->data);
+                    break;
+                case 'DID_RENEW':
+                    $this->handleAppleRenewed($decodedPayload->data);
+                    break;
+                case 'DID_FAIL_TO_RENEW':
+                    $this->handleAppleRenewalFailed($decodedPayload->data);
+                    break;
+                // ... other notification types
+            }
 
             // Clear relevant user cache after processing state changes
             // Cache::tags(["user:{userId}"])->flush(); // Need userId from payload processing
@@ -178,6 +183,35 @@ class SubscriptionService implements SubscriptionServiceInterface
     // TODO: Implement specific handlers like handleAppleSubscribed, handleAppleRenewed, etc.
     // private function handleAppleSubscribed(object $data) { ... }
     // private function handleAppleRenewed(object $data) { ... }
-// --- NEW CODE END ---
+
+    private function handleAppleRenewalFailed(object $data)
+    {
+        // Extract relevant data from the $data object
+        $originalTransactionId = $data->renewal_info->originalTransactionId ?? null;
+
+        if (!$originalTransactionId) {
+            Log::error('Missing originalTransactionId in DID_FAIL_TO_RENEW notification.');
+            return;
+        }
+
+        // Find the subscription by original transaction ID
+        $subscription = Subscription::where('stripe_id', $originalTransactionId)->first();
+
+        if (!$subscription) {
+            Log::error('Subscription not found for originalTransactionId: ' . $originalTransactionId);
+            return;
+        }
+
+        // Determine the new status and ends_at based on the failure
+        $subscription->stripe_status = 'past_due'; // Or 'expired' - determine based on grace period
+        $subscription->ends_at = Carbon::now(); // Set ends_at to now or a grace period
+
+        $subscription->save();
+
+        // Dispatch the SubscriptionRenewalFailed event
+        event(new SubscriptionRenewalFailed($subscription));
+
+        Log::info('Subscription renewal failed for subscription ID: ' . $subscription->id);
+    }
 
 }

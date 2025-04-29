@@ -45,4 +45,12 @@ class Subscription extends Model
     {
         return $query->whereNotNull('trial_ends_at')->where('trial_ends_at', '>', now());
     }
+
+    public function expire()
+    {
+        $this->stripe_status = 'expired';
+        $this->save();
+
+        event(new \App\Events\SubscriptionExpired($this));
+    }
 }

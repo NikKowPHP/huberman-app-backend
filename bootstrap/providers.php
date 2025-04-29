@@ -8,4 +8,5 @@ return [
     App\Modules\ContentManagement\Providers\RouteServiceProvider::class,
     App\Modules\NotesService\Providers\RouteServiceProvider::class,
     App\Modules\ProtocolEngine\Providers\RouteServiceProvider::class,
+    App\Modules\SubscriptionBilling\Providers\SubscriptionBillingServiceProvider::class,
 ];
