@@ -60,4 +60,21 @@ class AppleSubscriptionService
 
         return $data;
     }
+
+    public function handleDidChangeRenewalStatus(string $jws): void
+    {
+        $payload = $this->decodeAndVerifyJWS($jws);
+
+        $autoRenewStatus = $payload['data']['autoRenewStatus'] ?? null;
+        $productId = $payload['data']['productId'] ?? null;
+
+        if ($autoRenewStatus === false && $productId !== null) {
+            $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('plan_product_id', $productId)->first();
+
+            if ($subscription) {
+                $subscription->update(['status' => 'canceled']);
+                \Illuminate\Support\Facades\Event::dispatch(new \App\Events\SubscriptionExpired($subscription));
+            }
+        }
+    }
 }

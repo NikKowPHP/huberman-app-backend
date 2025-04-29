@@ -4,6 +4,12 @@ namespace Tests\Unit\SubscriptionBilling;
 
 use Tests\TestCase;
 use App\Modules\SubscriptionBilling\Services\AppleSubscriptionService;
+use Jose\Component\KeyManagement\JWKFactory; // Import JWKFactory
+use Jose\Component\Signature\Algorithm\ES256;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Core\Converter\StandardConverter;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 
 
 class AppleSubscriptionServiceTest extends TestCase
@@ -28,7 +34,7 @@ class AppleSubscriptionServiceTest extends TestCase
         // Mock the JWKFactory::createFromContent to return our public key
         // This is a simplified mock; a more robust solution might use mockery
         \Illuminate\Support\Facades\App::bind(JWKFactory::class, function () {
-            $mockFactory = $this->createMock(JWKFactory::class);
+            $mockFactory = $this->createMock(\Jose\Component\KeyManagement\JWKFactory::class);
             $mockFactory->method('createFromContent')->willReturn($this->publicKey);
             // Add mock for createFromUrl if needed for production key fetching simulation
             return $mockFactory;
@@ -131,4 +137,42 @@ class AppleSubscriptionServiceTest extends TestCase
 
          $this->appleSubscriptionService->decodeAndVerifyJWS($jwsString);
      }
+
+    public function testHandleDidChangeRenewalStatus_autoRenewOff_updatesSubscriptionStatusAndDispatchesEvent()
+    {
+        // Arrange
+        $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::factory()->create([
+            'status' => 'active',
+        ]);
+
+        $payload = [
+            'notificationType' => 'DID_CHANGE_RENEWAL_STATUS',
+            'subtype' => 'AUTO_RENEW_STATUS_CHANGE',
+            'notificationUUID' => 'some-uuid',
+            'data' => [
+                'autoRenewStatus' => false,
+                'autoRenewProductId' => $subscription->plan->product_id,
+                'environment' => 'Sandbox',
+                'expirationIntent' => null,
+                'productId' => $subscription->plan->product_id,
+                'recentTransactionInfo' => '...', // Mocked data
+                'renewalInfo' => '...', // Mocked data
+            ],
+            'version' => '2.0',
+            'signedDate' => time() * 1000, // Milliseconds
+        ];
+
+        $jwsString = $this->createTestJWS($payload);
+
+        // Act
+        $this->appleSubscriptionService->handleDidChangeRenewalStatus($jwsString);
+
+        // Assert
+        $subscription->refresh();
+        $this->assertEquals('canceled', $subscription->status);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\SubscriptionExpired::class, function ($event) use ($subscription) {
+            return $event->subscription->id === $subscription->id;
+        });
+    }
 }

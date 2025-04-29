@@ -24,11 +24,13 @@ class WebhookController extends CashierController
     /**
      * Handle a Stripe webhook.
      *
-     * @param  array  $payload
+     * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handleWebhook(array $payload)
+    public function handleWebhook(Request $request)
     {
+        $payload = json_decode($request->getContent(), true);
+
         // Handle specific webhook events here
         // For example:
         // if ($payload['type'] === 'checkout.session.completed') {
@@ -64,7 +66,7 @@ class WebhookController extends CashierController
             $this->handleCustomerSubscriptionDeleted($payload);
         }
 
-        return parent::handleWebhook($payload);
+        return parent::handleWebhook($request);
     }
 
     /**
@@ -75,9 +77,14 @@ class WebhookController extends CashierController
      */
     protected function handleCheckoutSessionCompleted(array $payload)
     {
-        $customerId = $payload['data']['object']['customer'];
-        $customerEmail = $payload['data']['object']['customer_email'];
-        $subscriptionId = $payload['data']['object']['subscription'];
+        $customerId = $payload['data']['object']['customer'] ?? null;
+        $customerEmail = $payload['data']['object']['customer_email'] ?? null;
+        $subscriptionId = $payload['data']['object']['subscription'] ?? null;
+
+        if (!$customerId || !$customerEmail || !$subscriptionId) {
+            \Log::warning('Missing data in checkout.session.completed event', $payload);
+            return;
+        }
 
         $user = User::where('email', $customerEmail)->first();
 
@@ -103,6 +110,8 @@ class WebhookController extends CashierController
                     $user->update(['stripe_id' => $customerId]);
                 }
             }
+        } else {
+            \Log::warning('User not found for checkout.session.completed event', $payload);
         }
     }
 
@@ -114,11 +123,15 @@ class WebhookController extends CashierController
      */
     protected function handleCustomerSubscriptionUpdatedTrialEnded(array $payload)
     {
-        $subscriptionId = $payload['data']['object']['id'];
+        $subscriptionId = $payload['data']['object']['id'] ?? null;
+        if (!$subscriptionId) {
+            \Log::warning('Missing data in customer.subscription.updated event (trial end)', $payload);
+            return;
+        }
         $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
         if ($subscription) {
-            $subscription->stripe_status = $payload['data']['object']['status'];
+            $subscription->stripe_status = $payload['data']['object']['status'] ?? 'active';
             $subscription->trial_ends_at = null;
             $subscription->ends_at = null; // Or set to the end of the current period
             $subscription->save();
@@ -133,11 +146,16 @@ class WebhookController extends CashierController
      */
     protected function handleInvoicePaymentSucceeded(array $payload)
     {
-        $subscriptionId = $payload['data']['object']['subscription'];
+        $subscriptionId = $payload['data']['object']['subscription'] ?? null;
+         if (!$subscriptionId) {
+            \Log::warning('Missing data in invoice.payment_succeeded event', $payload);
+            return;
+        }
         $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
         if ($subscription) {
-            $subscription->ends_at = now()->addSeconds($payload['data']['object']['lines']['data'][0]['period']['end'] - time());
+            $periodEnd = $payload['data']['object']['lines']['data'][0]['period']['end'] ?? time();
+            $subscription->ends_at = now()->addSeconds($periodEnd - time());
             $subscription->save();
         }
     }
@@ -150,7 +168,11 @@ class WebhookController extends CashierController
      */
     protected function handleInvoicePaymentFailed(array $payload)
     {
-        $subscriptionId = $payload['data']['object']['subscription'];
+        $subscriptionId = $payload['data']['object']['subscription'] ?? null;
+         if (!$subscriptionId) {
+            \Log::warning('Missing data in invoice.payment_failed event', $payload);
+            return;
+        }
         $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
         if ($subscription) {
@@ -167,12 +189,17 @@ class WebhookController extends CashierController
      */
     protected function handleCustomerSubscriptionUpdatedCancel(array $payload)
     {
-        $subscriptionId = $payload['data']['object']['id'];
+        $subscriptionId = $payload['data']['object']['id'] ?? null;
+         if (!$subscriptionId) {
+            \Log::warning('Missing data in customer.subscription.updated event (cancel)', $payload);
+            return;
+        }
         $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
         if ($subscription) {
+            $periodEnd = $payload['data']['object']['current_period_end'] ?? time();
             $subscription->stripe_status = 'canceled';
-            $subscription->ends_at =  now()->addSeconds($payload['data']['object']['current_period_end'] - time());
+            $subscription->ends_at =  now()->addSeconds($periodEnd - time());
             $subscription->save();
         }
     }
@@ -185,7 +212,11 @@ class WebhookController extends CashierController
      */
     protected function handleCustomerSubscriptionDeleted(array $payload)
     {
-         $subscriptionId = $payload['data']['object']['id'];
+         $subscriptionId = $payload['data']['object']['id'] ?? null;
+          if (!$subscriptionId) {
+            \Log::warning('Missing data in customer.subscription.deleted event', $payload);
+            return;
+        }
          $subscription = \App\Modules\SubscriptionBilling\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
         if ($subscription) {
@@ -204,8 +235,8 @@ class WebhookController extends CashierController
             if (isset($data['notificationType'])) {
                 if ($data['notificationType'] === 'SUBSCRIBED' || $data['notificationType'] === 'DID_RENEW') {
                     $this->handleAppleSubscribed($data);
-                } elseif ($data['notificationType'] === 'DID_CHANGE_RENEWAL_STATUS' && isset($data['autoRenewStatus']) && $data['autoRenewStatus'] == false) {
-                    $this->handleAppleRenewalStatusChange($data);
+                } elseif ($data['notificationType'] === 'DID_CHANGE_RENEWAL_STATUS') {
+                    $this->appleSubscriptionService->handleDidChangeRenewalStatus($jws);
                 }
             }
 
