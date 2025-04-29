@@ -228,4 +228,35 @@ class WebhookTest extends TestCase
         $this->assertEquals(now()->format('Y-m-d H:i:s'), $subscription->ends_at->format('Y-m-d H:i:s'));
         Event::assertDispatched(\App\Events\SubscriptionExpired::class);
     }
+
+    /**
+     * Test Google Pub/Sub message decoding and parsing.
+     *
+     * @return void
+     */
+    public function testGooglePubSubMessageDecodingAndParsing()
+    {
+        $payload = [
+            'message' => [
+                'data' => base64_encode(json_encode([
+                    'subscription' => 'projects/your-project/subscriptions/your-subscription',
+                    'message' => [
+                        'messageId' => '12345',
+                        'publishTime' => '2023-10-27T12:00:00.000Z',
+                        'attributes' => [
+                            'key' => 'value',
+                        ],
+                        'data' => base64_encode(json_encode([
+                            'userId' => 1,
+                            'productId' => 'premium',
+                            'purchaseToken' => 'test_token',
+                        ])),
+                    ],
+                ])),
+            ],
+        ];
+
+        $this->postJson('/api/webhooks/google', $payload)
+            ->assertStatus(200);
+    }
 }

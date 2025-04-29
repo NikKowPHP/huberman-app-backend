@@ -309,4 +309,116 @@ class WebhookController extends CashierController
             \Log::warning('User not found for Apple Subscribed/Renewed Event', $data);
         }
     }
+
+    /**
+     * Handle a Google Pub/Sub webhook.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handleGoogleWebhook(Request $request)
+    {
+        try {
+            $payload = json_decode($request->getContent(), true);
+
+            if (!isset($payload['message']['data'])) {
+                \Log::error('Missing data in Google Pub/Sub message', $payload);
+                return response('Invalid Google Pub/Sub message', 400);
+            }
+
+            $data = base64_decode($payload['message']['data']);
+            $message = json_decode($data, true);
+
+            if (config('services.google_play.mock_validation')) {
+                // Mock validation logic
+                \Log::info('Google Play Purchase (Mock Validated)', $message);
+                // TODO: Process the message with mock data
+            } else {
+                $packageName = config('services.google_play.package_name');
+
+                // TODO: Initialize Google Play Developer API client
+                $client = new \Google_Client();
+                $client->setApplicationName('Huberman App');
+                $client->setScopes([\Google_Service_AndroidPublisher::ANDROIDPUBLISHER]);
+                $client->setAuthConfig(storage_path('app/google-play-credentials.json')); // Path to your service account credentials JSON file
+
+                $androidPublisher = new \Google_Service_AndroidPublisher($client);
+
+                // TODO: Validate the purchase
+                try {
+                    $purchase = $androidPublisher->purchases_subscriptions->get(
+                        $packageName,
+                        $message['subscriptionId'],
+                        $message['purchaseToken']
+                    );
+
+                    \Log::info('Google Play Purchase Validated', $purchase);
+
+                    // TODO: Acknowledge the purchase
+                    $acknowledgeResult = $androidPublisher->purchases_subscriptions->acknowledge(
+                        $packageName,
+                        $message['subscriptionId'],
+                        $message['purchaseToken'],
+                        new \Google_Service_AndroidPublisher_SubscriptionPurchasesAcknowledgeRequest([
+                            'developerPayload' => 'Acknowledged'
+                        ])
+                    );
+
+                    \Log::info('Google Play Purchase Acknowledged', $acknowledgeResult);
+
+                } catch (\Exception $e) {
+                    \Log::error('Google Play Purchase Validation Error: ' . $e->getMessage());
+                    return response('Invalid Google Pub/Sub Webhook', 400);
+                }
+
+                \Log::info('Google Pub/Sub Message (Mock Processed)', $message);
+                // TODO: Implement actual validation and acknowledgement logic
+                // based on the message type (e.g., SUBSCRIPTION_PURCHASED,
+                // SUBSCRIPTION_RENEWED, SUBSCRIPTION_CANCELED, etc.)
+                if ($message['message']['attributes']['subscriptionNotificationType'] === 'SUBSCRIPTION_PURCHASED' || $message['message']['attributes']['subscriptionNotificationType'] === 'SUBSCRIPTION_RENEWED') {
+                    $userId = $message['message']['data']['userId'] ?? null;
+                    $productId = $message['message']['data']['productId'] ?? null;
+                    $purchaseToken = $message['message']['data']['purchaseToken'] ?? null;
+
+                    if (!$userId || !$productId || !$purchaseToken) {
+                        \Log::warning('Missing data in Google Pub/Sub message', $message);
+                        return response('Invalid Google Pub/Sub message', 400);
+                    }
+
+                    $user = User::find($userId);
+
+                    if ($user) {
+                        $subscription = $user->subscriptions()->create([
+                            'name' => 'default',
+                            'google_play_product_id' => $productId,
+                            'google_play_purchase_token' => $purchaseToken,
+                            'stripe_status' => 'active', // Assuming successful purchase
+                            'ends_at' => now()->addYears(1), // Assuming yearly subscription
+                        ]);
+
+                        Event::dispatch(new SubscriptionSubscribed($user));
+
+                        // Acknowledge the purchase
+                        $acknowledgeResult = $androidPublisher->purchases_subscriptions->acknowledge(
+                            $packageName,
+                            $message['subscriptionId'],
+                            $message['purchaseToken'],
+                            new \Google_Service_AndroidPublisher_SubscriptionPurchasesAcknowledgeRequest([
+                                'developerPayload' => 'Acknowledged'
+                            ])
+                        );
+
+                        \Log::info('Google Play Purchase Acknowledged', $acknowledgeResult);
+                    } else {
+                        \Log::warning('User not found for Google Pub/Sub message', $message);
+                    }
+                }
+            }
+
+            return response('Google Pub/Sub Webhook Received', 200);
+        } catch (\Exception $e) {
+            \Log::error('Google Pub/Sub Webhook Error: ' . $e->getMessage());
+            return response('Invalid Google Pub/Sub Webhook', 400);
+        }
+    }
 }

@@ -40,4 +40,9 @@ return [
         ],
     ],
 
+    'google_play' => [
+        'package_name' => env('GOOGLE_PLAY_PACKAGE_NAME'),
+        'mock_validation' => env('GOOGLE_PLAY_MOCK_VALIDATION', false),
+    ],
+
 ];

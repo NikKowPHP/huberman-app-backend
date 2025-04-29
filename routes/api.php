@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/webhooks/google', [\App\Modules\SubscriptionBilling\Http\Controllers\WebhookController::class, 'handleGoogleWebhook'])->withoutMiddleware('csrf');

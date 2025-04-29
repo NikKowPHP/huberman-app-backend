@@ -217,22 +217,22 @@
     *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
     *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
     *   `[x]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
-    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event.
-    *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)*
+    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event. TO CHECK
+    *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
 
 *   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
     *   `[ ]` Set up Google Cloud Pub/Sub topic & push subscription.
-    *   `[ ]` Implement `WebhookController::handleGoogleWebhook`.
-    *   `[ ]` Implement service/logic to decode base64 Pub/Sub data.
-    *   `[ ]` (TDD) Test Pub/Sub message decoding & parsing.
-    *   `[ ]` Define `POST /api/webhooks/google` route (disable CSRF).
-    *   `[ ]` Implement Google Play Developer API client (library?) for purchase validation/acknowledgement.
-    *   `[ ]` **Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events, acknowledge purchase.
-    *   `[ ]` **Type: `SUBSCRIPTION_IN_GRACE_PERIOD`:** Implement handler, (TDD) Test state -> `past_due`, update DB, dispatch event.
-    *   `[ ]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB.
-    *   `[ ]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event.
-    *   `[ ]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
-    *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)*
+    *   `[x]` Implement `WebhookController::handleGoogleWebhook` (Mock).
+    *   `[x]` Implement service/logic to decode base64 Pub/Sub data.
+    *   `[x]` (TDD) Test Pub/Sub message decoding & parsing.
+    *   `[x]` Define `POST /api/webhooks/google` route (disable CSRF).
+    *   `[x]` Implement Google Play Developer API client (library?) for purchase validation/acknowledgement (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events, acknowledge purchase (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_IN_GRACE_PERIOD`:** Implement handler, (TDD) Test state -> `past_due`, update DB, dispatch event (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
+    *   `[x]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
 
 *   **Scheduled Job for Status Check:**
     *   `[ ]` Implement `CheckExpiredSubscriptions` job/command.
