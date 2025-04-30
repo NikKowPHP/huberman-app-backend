@@ -278,12 +278,12 @@
         *   `[x]` Ensure command dispatches `SendProtocolReminderNotification` job.
         *   `[x]` Schedule command in `Kernel.php` (`everyMinute()`).
     *   **Notification Sending:**
-        *   `[ ]` Implement `SendProtocolReminderNotification` Job.
-        *   `[ ]` Implement `ProtocolReminder` Notification class (`toFcm`, `toApns`).
-        *   `[ ]` (TDD) Test Job retrieves data, fetches token, constructs payload, mocks `Notification::send()`.
-        *   `[ ]` Implement token fetching logic in Job.
-        *   `[ ]` Implement `Notification::send()` call in Job.
-        *   `[ ]` Implement `last_sent_at` update in Job.
+        *   `[x]` Implement `SendProtocolReminderNotification` Job.
+        *   `[x]` Implement `ProtocolReminder` Notification class (`toFcm`, `toApns`).
+        *   `[x]` (TDD) Test Job retrieves data, fetches token, constructs payload, mocks `Notification::send()`.
+        *   `[x]` Implement token fetching logic in Job.
+        *   `[x]` Implement `Notification::send()` call in Job.
+        *   `[x]` Implement `last_sent_at` update in Job.
     *   **Device Token Management:**
         *   `[ ]` Add `device_tokens` column to `users` table OR create `user_devices` table migration. Run migration.
         *   `[ ]` (TDD) Test storing/retrieving tokens for a user.

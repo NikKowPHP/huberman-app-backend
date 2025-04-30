@@ -2,24 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Modules\ContentManagement\Models\Protocol;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class ProtocolReminder extends Notification
+class ProtocolReminder extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    private $protocol;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Protocol $protocol)
+    public function __construct()
     {
-        $this->protocol = $protocol;
+        //
     }
 
     /**
@@ -29,19 +26,27 @@ class ProtocolReminder extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['fcm', 'apns']; // Assuming 'fcm' and 'apns' channels are configured
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Get the FCM representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toFcm(object $notifiable): array
     {
-        return (new MailMessage)
-            ->line('Reminder for foundational protocol: ' . $this->protocol->name)
-            ->line($this->protocol->description)
-            ->action('View Protocol', url('/protocols/' . $this->protocol->id))
-            ->line('Thank you for using our application!');
+        return [
+            // FCM payload structure
+        ];
+    }
+
+    /**
+     * Get the APNS representation of the notification.
+     */
+    public function toApns(object $notifiable): array
+    {
+        return [
+            // APNS payload structure
+        ];
     }
 
     /**
@@ -52,8 +57,7 @@ class ProtocolReminder extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'protocol_id' => $this->protocol->id,
-            'protocol_name' => $this->protocol->name,
+            //
         ];
     }
 }
