@@ -257,8 +257,8 @@
     *   `[x]` Schedule command in `Kernel.php`.
 
 *   **Premium Tier - Full Content Access:**
-    *   `[ ]` (TDD - Feature) Ensure `ProtocolResource` tests cover conditional loading of `implementation_guide`.
-    *   `[ ]` (TDD - Feature) Ensure `GET /protocols` tests cover premium user getting full list / rich data via Resource.
+    *   `[x]` (TDD - Feature) Ensure `ProtocolResource` tests cover conditional loading of `implementation_guide`.
+    *   `[x]` (TDD - Feature) Ensure `GET /protocols` tests cover premium user getting full list / rich data via Resource.
 
 *   **Premium Tier - Custom Reminders (MVP Scope):**
     *   **Database:**

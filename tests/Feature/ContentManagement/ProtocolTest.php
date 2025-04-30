@@ -170,4 +170,70 @@ class ProtocolTest extends ApiTestCase
             }
         }
     }
+
+    /**
+     * @test
+     */
+    public function test_premium_tier_protocols_resource_conditionally_loads_implementation_guide()
+    {
+        // Arrange
+        $premiumUser = User::factory()->create();
+        $premiumPlan = Plan::factory()->create(['is_premium' => true]);
+        Subscription::factory()->create([
+            'user_id' => $premiumUser->id,
+            'plan_id' => $premiumPlan->id,
+            'status' => 'active',
+        ]);
+
+        $protocol = Protocol::factory()->create([
+            'implementation_guide' => 'This is a premium implementation guide.',
+        ]);
+
+        // Act
+        $response = $this->actingAs($premiumUser, 'sanctum')
+            ->getJson('/api/v1/protocols/' . $protocol->id);
+
+        // Assert
+        $response->assertStatus(200)
+            ->assertJsonFragment(['implementation_guide' => 'This is a premium implementation guide.']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_premium_tier_get_protocols_endpoint_returns_full_list_with_rich_data()
+    {
+        // Arrange
+        $premiumUser = User::factory()->create();
+        $premiumPlan = Plan::factory()->create(['is_premium' => true]);
+        Subscription::factory()->create([
+            'user_id' => $premiumUser->id,
+            'plan_id' => $premiumPlan->id,
+            'status' => 'active',
+        ]);
+
+        Protocol::factory()->count(3)->create(['implementation_guide' => 'Premium Guide']);
+
+        // Act
+        $response = $this->actingAs($premiumUser, 'sanctum')
+            ->getJson('/api/v1/protocols');
+
+        // Assert
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'description',
+                        'episodes',
+                        'implementation_guide',
+                    ],
+                ],
+            ]);
+
+        foreach (json_decode($response->getContent(), true)['data'] as $protocol) {
+            $this->assertNotEmpty($protocol['implementation_guide']);
+        }
+    }
 }
