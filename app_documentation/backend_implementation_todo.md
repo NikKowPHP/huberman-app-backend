@@ -216,7 +216,7 @@
     *   `[x]` Implement App Store Server API client (library?) for server-side validation (optional).
     *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
     *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
-    *   `[x]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
+    *   `[ ]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
     *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event. TO CHECK
     *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
 
@@ -232,7 +232,7 @@
     *   `[x]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
-    *   `[x]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
+    *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
 
 *   **Scheduled Job for Status Check:**
     *   `[ ]` Implement `CheckExpiredSubscriptions` job/command.

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Events\SubscriptionRenewalFailed; // Added import
 use Carbon\Carbon;
+use App\Modules\UserManagement\Models\User; // Add if not already present
+use App\Events\SubscriptionExpired; 
 
 use NotImplementedException;
 
@@ -184,34 +186,74 @@ class SubscriptionService implements SubscriptionServiceInterface
     // private function handleAppleSubscribed(object $data) { ... }
     // private function handleAppleRenewed(object $data) { ... }
 
-    private function handleAppleRenewalFailed(object $data)
+    /**
+     * Handles the 'EXPIRED' notification from Apple.
+     *
+     * @param object $data Decoded payload data from the JWS.
+     * @return void
+     */
+    public function handleAppleExpired(object $data): void
     {
-        // Extract relevant data from the $data object
-        $originalTransactionId = $data->renewal_info->originalTransactionId ?? null;
+        // Extract the original transaction ID. Adjust path based on actual Apple payload structure.
+        // It might be directly in 'data' or within a 'transactionInfo' object.
+        $originalTransactionId = $data->originalTransactionId ?? ($data->transactionInfo->originalTransactionId ?? null);
 
         if (!$originalTransactionId) {
-            Log::error('Missing originalTransactionId in DID_FAIL_TO_RENEW notification.');
+            Log::error('Missing originalTransactionId in EXPIRED notification.', ['data' => (array)$data]);
             return;
         }
 
-        // Find the subscription by original transaction ID
+        // Find the subscription using the original transaction ID stored in stripe_id field
         $subscription = Subscription::where('stripe_id', $originalTransactionId)->first();
 
         if (!$subscription) {
-            Log::error('Subscription not found for originalTransactionId: ' . $originalTransactionId);
-            return;
+            // Also check User model if transaction ID stored there (depends on implementation)
+            $user = User::where('appstore_transaction_id', $originalTransactionId)->first();
+             if ($user) {
+                 $subscription = $user->subscriptions()->where('stripe_id', $originalTransactionId)->first();
+                  // If still not found, maybe log differently or handle user state
+                   if (!$subscription) {
+                        Log::warning('Subscription not found via User relation for originalTransactionId (EXPIRED): ' . $originalTransactionId);
+                        // Potentially handle user state directly if needed (e.g., remove premium role)
+                        return;
+                   }
+             } else {
+                 Log::error('Subscription and User not found for originalTransactionId (EXPIRED): ' . $originalTransactionId);
+                 return;
+             }
+
         }
 
-        // Determine the new status and ends_at based on the failure
-        $subscription->stripe_status = 'past_due'; // Or 'expired' - determine based on grace period
-        $subscription->ends_at = Carbon::now(); // Set ends_at to now or a grace period
-
-        $subscription->save();
-
-        // Dispatch the SubscriptionRenewalFailed event
-        event(new SubscriptionRenewalFailed($subscription));
-
-        Log::info('Subscription renewal failed for subscription ID: ' . $subscription->id);
+        // Use the existing expire method which sets status and dispatches event
+        if ($subscription->stripe_status !== 'expired') {
+             $subscription->expire(); // This already sets status and dispatches SubscriptionExpired
+             Log::info('Subscription marked as expired via Apple EXPIRED notification.', ['subscription_id' => $subscription->id]);
+        } else {
+             Log::info('Subscription already marked as expired.', ['subscription_id' => $subscription->id]);
+        }
     }
+
+     private function handleAppleRenewalFailed(object $data)
+     {
+         // Extract the original transaction ID. Path might differ based on actual payload.
+         $originalTransactionId = $data->originalTransactionId ?? ($data->transactionInfo->originalTransactionId ?? ($data->renewal_info->originalTransactionId ?? null));
+
+         if (!$originalTransactionId) {
+             Log::error('Missing originalTransactionId in DID_FAIL_TO_RENEW notification.');
+             return;
+         }
+         $subscription = Subscription::where('stripe_id', $originalTransactionId)->first();
+         if (!$subscription) {
+             Log::error('Subscription not found for originalTransactionId: ' . $originalTransactionId);
+             return;
+         }
+         $subscription->stripe_status = 'past_due'; // Or maybe 'expired' depending on grace period handling
+         //$subscription->ends_at = Carbon::now(); // Set ends_at if grace period ends immediately
+         $subscription->save();
+         event(new SubscriptionRenewalFailed($subscription)); // Or SubscriptionExpired if grace period doesn't apply
+         Log::info('Subscription renewal failed reported for subscription ID: ' . $subscription->id);
+     }
+
+
 
 }

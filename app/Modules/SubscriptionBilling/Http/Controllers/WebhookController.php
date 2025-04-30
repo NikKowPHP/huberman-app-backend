@@ -11,16 +11,22 @@ use Laravel\Cashier\Http\Controllers\WebhookController as CashierController;
 use App\Modules\SubscriptionBilling\Services\AppleSubscriptionService;
 use App\Events\SubscriptionSubscribed;
 use App\Events\SubscriptionRenewed;
+use App\Modules\SubscriptionBilling\Contracts\SubscriptionServiceInterface; 
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends CashierController
 {
     private $appleSubscriptionService;
+    private $subscriptionService; 
 
-    public function __construct(AppleSubscriptionService $appleSubscriptionService)
+   public function __construct(
+        AppleSubscriptionService $appleSubscriptionService,
+        SubscriptionServiceInterface $subscriptionService // Use interface
+    )
     {
         $this->appleSubscriptionService = $appleSubscriptionService;
+        $this->subscriptionService = $subscriptionService; // Assign service
     }
-
     /**
      * Handle a Stripe webhook.
      *
@@ -229,24 +235,55 @@ class WebhookController extends CashierController
     public function handleAppleWebhook(Request $request)
     {
         try {
-            $jws = $request->getContent();
-            $data = $this->appleSubscriptionService->decodeAndVerifyJWS($jws);
+            $jws = $request->input('signedPayload', $request->getContent()); // Handle potential form encoding too
+             if (empty($jws)) {
+                  throw new \InvalidArgumentException('Missing signedPayload or request body.');
+             }
 
-            if (isset($data['notificationType'])) {
-                if ($data['notificationType'] === 'SUBSCRIBED' || $data['notificationType'] === 'DID_RENEW') {
-                    $this->handleAppleSubscribed($data);
-                } elseif ($data['notificationType'] === 'DID_CHANGE_RENEWAL_STATUS') {
-                    $this->appleSubscriptionService->handleDidChangeRenewalStatus($jws);
-                }
+            // Decode and verify (assuming this method exists and works)
+            $decodedPayload = $this->appleSubscriptionService->decodeAndVerifyJWS($jws);
+            $notificationType = $decodedPayload['notificationType'] ?? null;
+            $payloadData = isset($decodedPayload['data']) ? (object)$decodedPayload['data'] : null; // Ensure data is object
+
+             if (!$notificationType || !$payloadData) {
+                  Log::error('Invalid Apple Webhook payload structure after decoding.', ['decoded' => $decodedPayload]);
+                  return response('Invalid Apple Webhook payload structure', 400);
+             }
+
+            Log::info('Processing Apple Notification:', ['type' => $notificationType]);
+
+            // Route based on notification type
+            switch ($notificationType) {
+                case 'SUBSCRIBED':
+                case 'DID_RENEW':
+                    // Assuming handleAppleSubscribed exists and handles both
+                    $this->handleAppleSubscribed($decodedPayload); // Pass full decoded payload if needed
+                    break;
+                case 'DID_CHANGE_RENEWAL_STATUS':
+                     // Let AppleSubscriptionService handle this complex one for now
+                    $this->appleSubscriptionService->handleDidChangeRenewalStatus($jws); // Pass original JWS if needed
+                    break;
+                 case 'DID_FAIL_TO_RENEW':
+                      // Call handler in SubscriptionService
+                     $this->subscriptionService->handleAppleRenewalFailed($payloadData);
+                      break;
+                 case 'EXPIRED': // **** ADDED CASE ****
+                      // Call handler in SubscriptionService
+                     $this->subscriptionService->handleAppleExpired($payloadData);
+                      break;
+                // Add cases for other types like 'REVOKED', 'GRACE_PERIOD_EXPIRED', etc.
+                default:
+                    Log::info('Received unhandled Apple notification type: ' . $notificationType);
+                    break;
             }
-
-            // TODO: Process the data
-            \Log::info('Apple Webhook Data', $data);
 
             return response('Apple Webhook Received', 200);
         } catch (\Exception $e) {
-            \Log::error('Apple Webhook Error: ' . $e->getMessage());
-            return response('Invalid Apple Webhook', 400);
+            Log::error('Apple Webhook Error: ' . $e->getMessage(), [
+                 'trace' => $e->getTraceAsString() // Add trace for debugging
+            ]);
+            // Return 500 for unexpected errors so Apple might retry
+            return response('Error processing Apple Webhook: ' . $e->getMessage(), 500);
         }
     }
 
