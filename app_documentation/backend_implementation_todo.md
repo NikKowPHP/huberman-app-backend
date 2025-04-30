@@ -262,21 +262,21 @@
 
 *   **Premium Tier - Custom Reminders (MVP Scope):**
     *   **Database:**
-        *   `[ ]` Implement `create_user_reminders_table` migration. Run migration.
-        *   `[ ]` (TDD) Test `UserReminder` model attributes & relationships.
-        *   `[ ]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`).
+        *   `[x]` Implement `create_user_reminders_table` migration. Run migration.
+        *   `[x]` (TDD) Test `UserReminder` model attributes & relationships.
+        *   `[x]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`).
     *   **API CRUD:**
-        *   `[ ]` Implement `ReminderPolicy`.
-        *   `[ ]` (TDD) Test `ReminderPolicy` (premium check, ownership).
-        *   `[ ]` **Create:** (TDD) API Test, Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
-        *   `[ ]` **List:** (TDD) API Test, Implement `ReminderController::index`, `ReminderService::getUserReminders`, Define Route + Middleware.
-        *   `[ ]` **Update:** (TDD) API Test, Implement `UpdateReminderRequest`, `ReminderController::update`, `ReminderService::updateReminder`, Define Route + Middleware/Policy.
-        *   `[ ]` **Delete:** (TDD) API Test, Implement `ReminderController::destroy`, `ReminderService::deleteReminder`, Define Route + Middleware/Policy.
+        *   `[x]` Implement `ReminderPolicy`.
+        *   `[x]` (TDD) Test `ReminderPolicy` (premium check, ownership).
+        *   `[x]` **Create:** (TDD) API Test, Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
+        *   `[x]` **List:** (TDD) API Test, Implement `ReminderController::index`, `ReminderService::getUserReminders`, Define Route + Middleware.
+        *   `[x]` **Update:** (TDD) API Test, Implement `UpdateReminderRequest`, `ReminderController::update`, `ReminderService::updateReminder`, Define Route + Middleware/Policy.
+        *   `[x]` **Delete:** (TDD) API Test, Implement `ReminderController::destroy`, `ReminderService::deleteReminder`, Define Route + Middleware/Policy.
     *   **Scheduling Logic:**
-        *   `[ ]` Implement `reminders:send-due` command logic (query, timezone conversion, frequency check).
-        *   `[ ]` (TDD) Test `reminders:send-due` command finds due reminders (mock `now()`).
-        *   `[ ]` Ensure command dispatches `SendProtocolReminderNotification` job.
-        *   `[ ]` Schedule command in `Kernel.php` (`everyMinute()`).
+        *   `[x]` Implement `reminders:send-due` command logic (query, timezone conversion, frequency check).
+        *   `[x]` (TDD) Test `reminders:send-due` command finds due reminders (mock `now()`).
+        *   `[x]` Ensure command dispatches `SendProtocolReminderNotification` job.
+        *   `[x]` Schedule command in `Kernel.php` (`everyMinute()`).
     *   **Notification Sending:**
         *   `[ ]` Implement `SendProtocolReminderNotification` Job.
         *   `[ ]` Implement `ProtocolReminder` Notification class (`toFcm`, `toApns`).
