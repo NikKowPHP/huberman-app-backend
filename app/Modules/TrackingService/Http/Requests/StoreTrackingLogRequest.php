@@ -19,15 +19,13 @@ class StoreTrackingLogRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public function rules()
     {
         return [
-            'protocol_id' => 'required|integer|exists:protocols,id',
-            'tracked_at' => 'required|date',
-            'notes' => 'nullable|string',
-            'metadata' => 'nullable|array',
+            'action' => 'required|string',
+            'details' => 'nullable|string',
         ];
     }
 }

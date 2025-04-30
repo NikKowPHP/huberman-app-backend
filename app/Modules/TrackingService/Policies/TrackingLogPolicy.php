@@ -3,8 +3,8 @@
 namespace App\Modules\TrackingService\Policies;
 
 use App\Modules\UserManagement\Models\User;
+use App\Modules\TrackingService\Models\TrackingLog;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Modules\SubscriptionBilling\Contracts\SubscriptionServiceInterface;
 
 class TrackingLogPolicy
 {
@@ -14,13 +14,11 @@ class TrackingLogPolicy
      * Determine whether the user can view any models.
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function viewAny(User $user)
     {
-        return resolve(SubscriptionServiceInterface::class)->userHasActivePremiumSubscription($user)
-            ? true
-            : false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
@@ -28,26 +26,22 @@ class TrackingLogPolicy
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
      * @param  \App\Modules\TrackingService\Models\TrackingLog  $trackingLog
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function view(User $user, TrackingLog $trackingLog)
     {
-        return resolve(SubscriptionServiceInterface::class)->userHasActivePremiumSubscription($user)
-            ? true
-            : false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
      * Determine whether the user can create models.
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function create(User $user)
     {
-        return resolve(SubscriptionServiceInterface::class)->userHasActivePremiumSubscription($user)
-            ? true
-            : false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
@@ -55,11 +49,11 @@ class TrackingLogPolicy
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
      * @param  \App\Modules\TrackingService\Models\TrackingLog  $trackingLog
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function update(User $user, TrackingLog $trackingLog)
     {
-        return false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
@@ -67,11 +61,11 @@ class TrackingLogPolicy
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
      * @param  \App\Modules\TrackingService\Models\TrackingLog  $trackingLog
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function delete(User $user, TrackingLog $trackingLog)
     {
-        return false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
@@ -79,11 +73,11 @@ class TrackingLogPolicy
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
      * @param  \App\Modules\TrackingService\Models\TrackingLog  $trackingLog
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function restore(User $user, TrackingLog $trackingLog)
     {
-        return false;
+        return $user->hasActivePremiumSubscription();
     }
 
     /**
@@ -91,24 +85,10 @@ class TrackingLogPolicy
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
      * @param  \App\Modules\TrackingService\Models\TrackingLog  $trackingLog
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return mixed
      */
     public function forceDelete(User $user, TrackingLog $trackingLog)
     {
-        return false;
-    }
-
-    /**
-     * Allow admins to do anything.
-     *
-     * @param  \App\Modules\UserManagement\Models\User  $user
-     * @param  string  $ability
-     * @return bool
-     */
-    public function before(User $user, $ability)
-    {
-        if ($user->isAdmin()) {
-            return true;
-        }
+        return $user->hasActivePremiumSubscription();
     }
 }

@@ -3,77 +3,132 @@
 namespace App\Modules\TrackingService\Services;
 
 use App\Modules\TrackingService\Contracts\TrackingServiceInterface;
-use App\Modules\UserManagement\Models\User;
 use App\Modules\TrackingService\Models\TrackingLog;
-use Illuminate\Support\Collection;
-use Carbon\Carbon;
+use App\Modules\UserManagement\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class TrackingService implements TrackingServiceInterface
 {
     /**
-     * Log adherence for a given protocol.
+     * Create a new tracking log.
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
-     * @param  int  $protocolId
-     * @param  string|null  $notes
-     * @param  array|null  $metadata
+     * @param  array  $data
      * @return \App\Modules\TrackingService\Models\TrackingLog
      */
-    public function logAdherence(User $user, int $protocolId, ?string $notes = null, ?array $metadata = null): TrackingLog
+    public function create(User $user, array $data): TrackingLog
     {
         return TrackingLog::create([
             'user_id' => $user->id,
-            'protocol_id' => $protocolId,
-            'tracked_at' => Carbon::now()->toDateString(),
-            'notes' => $notes,
-            'metadata' => $metadata,
+            'data' => $data,
         ]);
     }
 
     /**
-     * Get the adherence streak for a user and protocol.
+     * Get a tracking log by ID.
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
-     * @param  int  $protocolId
-     * @return int
+     * @param  int  $id
+     * @return \App\Modules\TrackingService\Models\TrackingLog|null
      */
-    public function getStreak(User $user, int $protocolId): int
+    public function getById(User $user, int $id): ?TrackingLog
     {
-        $logs = TrackingLog::where('user_id', $user->id)
-            ->where('protocol_id', $protocolId)
-            ->orderBy('tracked_at', 'desc')
-            ->get();
+        return TrackingLog::where('user_id', $user->id)->find($id);
+    }
 
-        if ($logs->isEmpty()) {
-            return 0;
+    /**
+     * Get all tracking logs for a user.
+     *
+     * @param  \App\Modules\UserManagement\Models\User  $user
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAll(User $user): Collection
+    {
+        return TrackingLog::where('user_id', $user->id)->get();
+    }
+
+    /**
+     * Update a tracking log.
+     *
+     * @param  \App\Modules\UserManagement\Models\User  $user
+     * @param  int  $id
+     * @param  array  $data
+     * @return \App\Modules\TrackingService\Models\TrackingLog|null
+     */
+    public function update(User $user, int $id, array $data): ?TrackingLog
+    {
+        $trackingLog = $this->getById($user, $id);
+
+        if (!$trackingLog) {
+            return null;
         }
 
-        $streak = 1;
-        $previousDate = Carbon::parse($logs->first()->tracked_at);
+        $trackingLog->update($data);
 
-        foreach ($logs as $key => $log) {
-            if ($key === 0) continue;
+        return $trackingLog;
+    }
 
-            $currentDate = Carbon::parse($log->tracked_at);
-            if ($currentDate->diffInDays($previousDate) === 1) {
+    /**
+     * Delete a tracking log.
+     *
+     * @param  \App\Modules\UserManagement\Models\User  $user
+     * @param  int  $id
+     * @return bool
+     */
+    public function delete(User $user, int $id): bool
+    {
+        $trackingLog = $this->getById($user, $id);
+
+        if (!$trackingLog) {
+            return false;
+        }
+
+        return $trackingLog->delete();
+    }
+
+    /**
+     * Get the streak for a user.
+     *
+     * @param  \App\Modules\UserManagement\Models\User  $user
+     * @return int
+     */
+    public function getStreak(User $user): int
+    {
+        $today = Carbon::today();
+        $logs = $this->getAll($user)
+            ->sortByDesc('created_at')
+            ->values();
+
+        $streak = 0;
+        foreach ($logs as $log) {
+            $logDate = Carbon::parse($log->created_at)->toDateString();
+            $diff = $today->diffInDays($logDate);
+
+            if ($diff === 0) {
                 $streak++;
+                $today = $today->subDay();
+            } else if ($diff === 1) {
+                $streak++;
+                $today = Carbon::parse($log->created_at)->subDay()->toDateString();
             } else {
                 break;
             }
-            $previousDate = $currentDate;
         }
 
         return $streak;
     }
 
     /**
-     * Get a list of tracking logs for a user.
+     * Get the public list of tracking logs.
      *
      * @param  \App\Modules\UserManagement\Models\User  $user
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getLogsForUser(User $user): Collection
+    public function getPublicList(User $user): Collection
     {
-        return TrackingLog::where('user_id', $user->id)->get();
+        // Assuming there's a way to determine if a log is public.
+        // For example, a 'is_public' column in the tracking_logs table.
+        return TrackingLog::where('is_public', true)->get();
     }
 }

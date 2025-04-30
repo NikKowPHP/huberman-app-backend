@@ -5,18 +5,21 @@ namespace App\Modules\TrackingService\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\TrackingService\Contracts\TrackingServiceInterface;
 use App\Modules\TrackingService\Http\Requests\StoreTrackingLogRequest;
-use App\Modules\TrackingService\Http\Resources\TrackingLogResource;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class TrackingController extends Controller
 {
+    /**
+     * @var TrackingServiceInterface
+     */
     protected $trackingService;
 
     public function __construct(TrackingServiceInterface $trackingService)
     {
         $this->trackingService = $trackingService;
-        $this->authorizeResource(TrackingLog::class, 'tracking_log');
+        $this->middleware('auth:sanctum');
+        $this->middleware('can:create,App\Modules\TrackingService\Models\TrackingLog');
     }
 
     /**
@@ -27,15 +30,9 @@ class TrackingController extends Controller
      */
     public function store(StoreTrackingLogRequest $request): JsonResponse
     {
-        $trackingLog = $this->trackingService->logAdherence(
-            $request->user(),
-            $request->protocol_id,
-            $request->notes,
-            $request->metadata
-        );
+        $user = Auth::user();
+        $trackingLog = $this->trackingService->create($user, $request->validated());
 
-        return (new TrackingLogResource($trackingLog))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return response()->json($trackingLog, 201);
     }
 }

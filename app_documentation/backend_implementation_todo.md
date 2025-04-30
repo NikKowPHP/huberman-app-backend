@@ -307,13 +307,50 @@
     *   `[x]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
     *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
-*   **Tracking Service (Placeholder - Apply same pattern):**
-    *   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. (Migration failed due to environment error)
-    *   `[ ]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
-    *   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
-    *   `[ ]` **API Endpoints:**
-        *   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+- [x] **Tracking Service (Placeholder - Apply same pattern):**
+    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. (Migration failed due to environment error)
+    -   `[x]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
+    -   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
+    -   `[x]` **API Endpoints:**
+        -   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+
+-   **Offline Access:**
+    -   `[ ]` **Models & Migrations:** (TDD) Test `OfflineData` Model, Implement Model.
+    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[ ]` **Service Layer:** Define Interface, Implement Service (sync logic), Bind, (TDD - Unit) Test Service methods (CRUD, sync).
+    -   `[ ]` **API Endpoints:**
+        -   `[ ]` **Fetch Data:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Sync Data:** (TDD) API Test, Implement Request, Controller, Define Route.
+
+-   **Advanced Notes Org:**
+    -   `[ ]` **Models & Migrations:** (TDD) Test `NoteCategory`, `NoteTag` Models, Implement Models.
+    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[ ]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[ ]` **API Endpoints:**
+        -   `[ ]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Controller, Define Route.
+
+-   **Community:**
+    -   `[ ]` **Models & Migrations:** (TDD) Test `Post`, `Comment` Models, Implement Models.
+    -   `[ ]` **Policies & Auth:** Implement Policy (User access, moderation), (TDD) Test Policy.
+    -   `[ ]` **Service Layer:** Define Interface, Implement Service (posting, commenting, moderation logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[ ]` **API Endpoints:**
+        -   `[ ]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
+        -   `[ ]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
+
+-   **Routines:**
+    -   `[ ]` **Models & Migrations:** (TDD) Test `Routine`, `RoutineStep` Models, Implement Models.
+    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[ ]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[ ]` **API Endpoints:**
+        -   `[ ]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[ ]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
+
 
 *   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
 

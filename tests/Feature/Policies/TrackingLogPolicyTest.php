@@ -11,39 +11,32 @@ class TrackingLogPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test that admin users can bypass the premium check.
-     */
-    public function test_admin_users_can_bypass_premium_check(): void
+    public function test_user_can_view_tracking_log_if_premium(): void
     {
-        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+        $user->subscriptions()->create(['plan_id' => 1, 'ends_at' => now()->addDay()]);
         $trackingLog = TrackingLog::factory()->create();
 
-        $this->assertTrue($admin->can('view', $trackingLog));
-        $this->assertTrue($admin->can('create', TrackingLog::class));
+        $this->assertTrue($user->can('view', $trackingLog));
+        $this->assertTrue($user->can('viewAny', TrackingLog::class));
+        $this->assertTrue($user->can('create', TrackingLog::class));
+        $this->assertTrue($user->can('update', $trackingLog));
+        $this->assertTrue($user->can('delete', $trackingLog));
+        $this->assertTrue($user->can('restore', $trackingLog));
+        $this->assertTrue($user->can('forceDelete', $trackingLog));
     }
 
-    /**
-     * Test that premium users can view and create tracking logs.
-     */
-    public function test_premium_users_can_view_and_create_tracking_logs(): void
+    public function test_user_cannot_view_tracking_log_if_not_premium(): void
     {
-        $premiumUser = User::factory()->premium()->create();
+        $user = User::factory()->create();
         $trackingLog = TrackingLog::factory()->create();
 
-        $this->assertTrue($premiumUser->can('view', $trackingLog));
-        $this->assertTrue($premiumUser->can('create', TrackingLog::class));
-    }
-
-    /**
-     * Test that free users cannot view and create tracking logs.
-     */
-    public function test_free_users_cannot_view_and_create_tracking_logs(): void
-    {
-        $freeUser = User::factory()->create();
-        $trackingLog = TrackingLog::factory()->create();
-
-        $this->assertFalse($freeUser->can('view', $trackingLog));
-        $this->assertFalse($freeUser->can('create', TrackingLog::class));
+        $this->assertFalse($user->can('view', $trackingLog));
+        $this->assertFalse($user->can('viewAny', TrackingLog::class));
+        $this->assertFalse($user->can('create', TrackingLog::class));
+        $this->assertFalse($user->can('update', $trackingLog));
+        $this->assertFalse($user->can('delete', $trackingLog));
+        $this->assertFalse($user->can('restore', $trackingLog));
+        $this->assertFalse($user->can('forceDelete', $trackingLog));
     }
 }

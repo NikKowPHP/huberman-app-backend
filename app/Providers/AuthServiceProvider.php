@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        'App\Modules\TrackingService\Models\TrackingLog' => 'App\Modules\TrackingService\Policies\TrackingLogPolicy',
+        \App\Modules\TrackingService\Models\TrackingLog::class => \App\Modules\TrackingService\Policies\TrackingLogPolicy::class,
     ];
 
     /**
