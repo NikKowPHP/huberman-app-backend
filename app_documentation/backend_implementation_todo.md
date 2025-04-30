@@ -240,11 +240,11 @@
     *   `[x]` Schedule job in `Kernel.php` (e.g., `daily()`).
 
 *   **Cache Invalidation:**
-    *   `[ ]` Create `ClearUserEntitlementCache` Listener.
-    *   `[ ]` Implement cache clearing logic (`Cache::tags("user:{$event->subscription->user_id}")->flush();` or similar).
-    *   `[ ]` (TDD) Test Listener clears the correct cache tag/key.
-    *   `[ ]` Register Listener for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events in `EventServiceProvider`.
-    *   `[ ]` (TDD) Verify webhook tests dispatch events correctly using `Event::fake()`.
+    *   `[x]` Create `ClearUserEntitlementCache` Listener.
+    *   `[x]` Implement cache clearing logic (`Cache::tags("user:{$event->subscription->user_id}")->flush();` or similar).
+    *   `[x]` (TDD) Test Listener clears the correct cache tag/key.
+    *   `[x]` Register Listener for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events in `EventServiceProvider`.
+    *   `[x]` (TDD) Verify webhook tests dispatch events correctly using `Event::fake()`.
 
 ---
 
