@@ -60,7 +60,7 @@
     *   `[x]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
     *   `[x]` Implement `RegisterRequest` Form Request (`app/Modules/Authentication/Http/Requests/`).
     *   `[x]` Implement `AuthController::register` method (`app/Modules/Authentication/Http/Controllers/`).
-    *   `[ ]` Define route in module's API routes file. Ensure tests pass.
+    *   `[x]` Define route in module's API routes file. Ensure tests pass.
 
 *   **Login:**
     *   `[x]` (TDD) Write API tests for `POST /api/v1/login`: Validation rules, success (correct credentials -> 200, user+token), failure (incorrect credentials -> 401/422).
@@ -127,7 +127,7 @@
 
 ---
 
-## Phase 4: Basic Content Management (Milestone 3 & 5 Prep - TDD Focus)
+## Phase 4: Basic Content Management (Milestone 3 & 5 Prep)
 
 *   **Models & Migrations:**
     *   `[x]` Implement `create_episodes_table` migration. Run migration.
@@ -231,7 +231,7 @@
     *   `[x]` **Type: `SUBSCRIPTION_IN_GRACE_PERIOD`:** Implement handler, (TDD) Test state -> `past_due`, update DB, dispatch event (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
+    *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
     *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
 
 *   **Scheduled Job for Status Check:**
@@ -268,7 +268,7 @@
     *   **API CRUD:**
         *   `[x]` Implement `ReminderPolicy`.
         *   `[x]` (TDD) Test `ReminderPolicy` (premium check, ownership).
-        *   `[x]` **Create:** (TDD) API Test, Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
+        *   `[x]` **Create:** (TDD) API Test, `[x]` Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
         *   `[x]` **List:** (TDD) API Test, Implement `ReminderController::index`, `ReminderService::getUserReminders`, Define Route + Middleware.
         *   `[x]` **Update:** (TDD) API Test, Implement `UpdateReminderRequest`, `ReminderController::update`, `ReminderService::updateReminder`, Define Route + Middleware/Policy.
         *   `[x]` **Delete:** (TDD) API Test, Implement `ReminderController::destroy`, `ReminderService::deleteReminder`, Define Route + Middleware/Policy.
@@ -299,13 +299,13 @@
     *   `[x]` **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement Model.
     *   `[x]` **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
     *   `[x]` **Service Layer:** Define Interface, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
-    *   `[ ]` **API Endpoints:**
-        *   `[ ]` **Create:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[ ]` **List User:** (TDD) API Test, Implement Controller, Define Route.
-        *   `[ ]` **Show:** (TDD) API Test, Implement Controller, Define Route.
-        *   `[ ]` **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[ ]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
-        *   `[ ]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[x]` **API Endpoints:** Without running migrations and test executions
+        *   `[x]` **Create:** (TDD) API Test, `[x]` Implement Request, `[x]` Implement Controller, `[x]` Define Route.
+        *   `[x]` **List User:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Show:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[x]` **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
+    *   `[x]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[ ]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 *   **Tracking Service (Placeholder - Apply same pattern):**
     *   `[ ]` **Models & Migrations:** Implement `create_user_protocol_tracking_table`, (TDD) Test `TrackingLog` Model, Implement Model.

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Authentication\Http\Requests;
+namespace App\Modules\NotesService\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class CreateNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
         ];
     }
 }

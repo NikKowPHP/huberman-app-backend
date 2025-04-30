@@ -3,39 +3,23 @@
 namespace App\Modules\ContentManagement\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\ContentManagement\Contracts\ContentServiceInterface;
-use App\Modules\ContentManagement\Http\Resources\EpisodeResource;
+use App\Modules\ContentManagement\Models\Episode;
+use App\Modules\NotesService\Models\Note;
 use Illuminate\Http\JsonResponse;
 
 class EpisodeController extends Controller
 {
-    private ContentServiceInterface $contentService;
-
-    public function __construct(ContentServiceInterface $contentService)
-    {
-        $this->contentService = $contentService;
-    }
-
     /**
-     * Display a listing of the resource.
+     * Display a listing of the public notes for the specified episode.
      */
-    public function index(): JsonResponse
+    public function publicNotes(Episode $episode): JsonResponse
     {
-        $episodes = $this->contentService->getEpisodes();
+        $notes = Note::where('episode_id', $episode->id)
+            ->where('is_public', true)
+            ->get();
 
-        return response()->json(EpisodeResource::collection($episodes));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return JsonResponse
-     */
-    public function show(int $id): JsonResponse
-    {
-        $episode = $this->contentService->getEpisodeDetails($id);
-
-        return response()->json(new EpisodeResource($episode));
+        return response()->json([
+            'data' => $notes,
+        ]);
     }
 }

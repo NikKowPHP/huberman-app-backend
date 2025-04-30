@@ -130,5 +130,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Modules\NotesService\Providers\NotesServiceProvider::class,
+        Laravel\Cashier\CashierServiceProvider::class,
     ],
 ];

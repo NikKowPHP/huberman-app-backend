@@ -1,15 +1,6 @@
 <?php
 
-use App\Modules\Authentication\Http\Controllers\AuthController;
-use App\Modules\Authentication\Http\Controllers\ForgotPasswordController;
-use App\Modules\Authentication\Http\Controllers\NewPasswordController;
 use Illuminate\Support\Facades\Route;
+use App\Modules\Authentication\Http\Controllers\AuthController;
 
-Route::middleware('throttle:5,1')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::post('/reset-password', [NewPasswordController::class, 'reset'])->name('password.update');
-});
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/register', [AuthController::class, 'register']);

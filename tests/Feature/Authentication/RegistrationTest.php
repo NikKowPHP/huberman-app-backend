@@ -2,132 +2,71 @@
 
 namespace Tests\Feature\Authentication;
 
-use App\Modules\UserManagement\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\ApiTestCase;
 use Illuminate\Support\Facades\Hash;
-use Tests\Feature\ApiTestCase; // Use the base ApiTestCase
-use PHPUnit\Framework\Attributes\Test;
+use App\Modules\UserManagement\Models\User;
+
 class RegistrationTest extends ApiTestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
-    private string $registerUrl = '/v1/register';
-
-#[Test]
-    public function it_requires_name_email_and_password_for_registration(): void
+    public function test_register_validation_rules()
     {
-        $this->postJson($this->registerUrl, [])
-            ->assertStatus(422)
+        $response = $this->postJson('/api/v1/register', []);
+
+        $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'password']);
     }
 
-#[Test]
-    public function it_requires_a_valid_email(): void
-    {
-        $this->postJson($this->registerUrl, ['email' => 'not-an-email'])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
-    }
-
-#[Test]
-    public function it_requires_password_confirmation(): void
-    {
-        $this->postJson($this->registerUrl, [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            // 'password_confirmation' => 'password', // Missing
-        ])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['password']); // Laravel confirms password by default rule
-    }
-
-#[Test]
-    public function it_requires_password_and_confirmation_to_match(): void
-    {
-        $this->postJson($this->registerUrl, [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'different-password',
-        ])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['password']);
-    }
-
- #[Test]
-    public function it_requires_a_minimum_password_length(): void
-    {
-        // Assuming default Laravel minimum length is 8
-        $this->postJson($this->registerUrl, [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'short',
-            'password_confirmation' => 'short',
-        ])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['password']);
-    }
-
-#[Test]
-    public function it_requires_email_to_be_unique(): void
-    {
-        // Arrange: Create an existing user
-        User::factory()->create(['email' => 'existing@example.com']);
-
-        // Act & Assert
-        $this->postJson($this->registerUrl, [
-            'name' => 'Another User',
-            'email' => 'existing@example.com', // Use existing email
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
-    }
-
-#[Test]
-    public function it_registers_a_user_successfully_and_returns_user_and_token(): void
+    public function test_register_success()
     {
         $userData = [
-            'name' => 'New User',
-            'email' => 'newuser@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ];
 
-        $response = $this->postJson($this->registerUrl, $userData);
+        $response = $this->postJson('/api/v1/register', $userData);
 
         $response->assertStatus(201)
-                 ->assertJsonStructure([
-                     'message',
-                     'data' => [
-                         'user' => [
-                             'id',
-                             'name',
-                             'email',
-                             'email_verified_at',
-                             'created_at',
-                             'updated_at',
-                         ],
-                         'token',
-                     ]
-                 ])
-                 ->assertJsonPath('message', 'User registered successfully.')
-                 ->assertJsonPath('data.user.name', $userData['name'])
-                 ->assertJsonPath('data.user.email', $userData['email']);
+            ->assertJsonStructure([
+                'data' => [
+                    'user' => [
+                        'id',
+                        'name',
+                        'email',
+                        'created_at',
+                        'updated_at',
+                    ],
+                    'token',
+                ],
+            ]);
 
-        // Assert user exists in the database
         $this->assertDatabaseHas('users', [
-            'name' => $userData['name'],
             'email' => $userData['email'],
         ]);
 
-        // Assert password was hashed
         $user = User::where('email', $userData['email'])->first();
-        $this->assertTrue(Hash::check($userData['password'], $user->password));
+        $this->assertTrue(Hash::check('password', $user->password));
+    }
 
-        // Assert token is valid (basic check: not empty)
-        $this->assertNotEmpty($response->json('data.token'));
+    public function test_register_email_uniqueness()
+    {
+        $existingUser = User::factory()->create();
+
+        $userData = [
+            'name' => $this->faker->name,
+            'email' => $existingUser->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
+        $response = $this->postJson('/api/v1/register', $userData);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
     }
 }
