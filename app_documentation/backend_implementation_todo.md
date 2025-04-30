@@ -251,10 +251,10 @@
 ## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep)
 
 *   **Free Tier - Basic Reminders:**
-    *   `[ ]` Implement logic/scope in `Protocol` model to identify foundational protocols.
-    *   `[ ]` Implement `SendFoundationalReminders` command/job.
-    *   `[ ]` (TDD) Test command selects correct protocols & users (mock Notification).
-    *   `[ ]` Schedule command in `Kernel.php`.
+    *   `[x]` Implement logic/scope in `Protocol` model to identify foundational protocols.
+    *   `[x]` Implement `SendFoundationalReminders` command/job.
+    *   `[x]` (TDD) Test command selects correct protocols & users (mock Notification).
+    *   `[x]` Schedule command in `Kernel.php`.
 
 *   **Premium Tier - Full Content Access:**
     *   `[ ]` (TDD - Feature) Ensure `ProtocolResource` tests cover conditional loading of `implementation_guide`.

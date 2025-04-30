@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // Schedule job in `Kernel.php` (e.g., `daily()`).
+        $schedule->command('app:send-foundational-reminders')->daily();
     }
 
     /**
