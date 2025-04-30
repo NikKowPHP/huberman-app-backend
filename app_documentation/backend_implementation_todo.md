@@ -305,7 +305,7 @@
         *   `[x]` **Show:** (TDD) API Test, Implement Controller, Define Route.
     *   `[x]` **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
     *   `[x]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
-    *   `[ ]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 *   **Tracking Service (Placeholder - Apply same pattern):**
     *   `[ ]` **Models & Migrations:** Implement `create_user_protocol_tracking_table`, (TDD) Test `TrackingLog` Model, Implement Model.

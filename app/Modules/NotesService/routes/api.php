@@ -10,3 +10,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/notes/{note}', [NoteController::class, 'update']);
     Route::delete('/notes/{note}', [NoteController::class, 'destroy']);
 });
+
+Route::get('/episodes/{episode}/public-notes', [NoteController::class, 'listPublicNotesForEpisode']);

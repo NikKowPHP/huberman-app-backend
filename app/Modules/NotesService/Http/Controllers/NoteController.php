@@ -86,4 +86,18 @@ class NoteController extends Controller
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * Display a listing of public notes for a given episode.
+     */
+    public function listPublicNotesForEpisode(Episode $episode): JsonResponse
+    {
+        $notes = Note::where('episode_id', $episode->id)
+            ->where('is_public', true)
+            ->get();
+
+        return response()->json([
+            'data' => $notes,
+        ]);
+    }
 }

@@ -201,4 +201,52 @@ class NotesApiTest extends ApiTestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_list_public_notes_for_episode()
+    {
+        $episode = Episode::factory()->create();
+        $publicNote1 = Note::factory()->create(['episode_id' => $episode->id, 'is_public' => true]);
+        $publicNote2 = Note::factory()->create(['episode_id' => $episode->id, 'is_public' => true]);
+        $privateNote = Note::factory()->create(['episode_id' => $episode->id, 'is_public' => false]);
+
+        $response = $this->getJson("/api/v1/episodes/{$episode->id}/public-notes");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'title',
+                    'content',
+                    'user_id',
+                    'episode_id',
+                    'is_public',
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+        ]);
+
+        $response->assertJsonCount(2, 'data');
+
+        $response->assertJsonFragment([
+            'id' => $publicNote1->id,
+            'title' => $publicNote1->title,
+            'content' => $publicNote1->content,
+            'episode_id' => $episode->id,
+            'is_public' => true,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $publicNote2->id,
+            'title' => $publicNote2->title,
+            'content' => $publicNote2->content,
+            'episode_id' => $episode->id,
+            'is_public' => true,
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $privateNote->id,
+        ]);
+    }
 }
