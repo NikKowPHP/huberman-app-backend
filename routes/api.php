@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Modules\TrackingService\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/webhooks/google', [\App\Modules\SubscriptionBilling\Http\Controllers\WebhookController::class, 'handleGoogleWebhook'])->withoutMiddleware('csrf');
+
+Route::post('/api/v1/tracking/log', [TrackingController::class, 'store'])->middleware('auth:sanctum');

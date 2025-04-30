@@ -308,12 +308,12 @@
     *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 *   **Tracking Service (Placeholder - Apply same pattern):**
-    *   `[ ]` **Models & Migrations:** Implement `create_user_protocol_tracking_table`, (TDD) Test `TrackingLog` Model, Implement Model.
+    *   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. (Migration failed due to environment error)
     *   `[ ]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
-    *   `[ ]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
+    *   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
     *   `[ ]` **API Endpoints:**
-        *   `[ ]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[ ]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
 
 *   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
 

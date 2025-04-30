@@ -131,5 +131,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Modules\NotesService\Providers\NotesServiceProvider::class,
         Laravel\Cashier\CashierServiceProvider::class,
+        App\Modules\TrackingService\Providers\TrackingServiceProvider::class,
     ],
 ];
