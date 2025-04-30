@@ -296,9 +296,9 @@
 ## Phase 8: Implementing Post-MVP Features (As Prioritized - TDD Focus)
 
 *   **Notes Service (Example):**
-    *   `[ ]` **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement Model.
-    *   `[ ]` **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
-    *   `[ ]` **Service Layer:** Define Interface, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
+    *   `[x]` **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement Model.
+    *   `[x]` **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
+    *   `[x]` **Service Layer:** Define Interface, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
     *   `[ ]` **API Endpoints:**
         *   `[ ]` **Create:** (TDD) API Test, Implement Request, Controller, Define Route.
         *   `[ ]` **List User:** (TDD) API Test, Implement Controller, Define Route.
