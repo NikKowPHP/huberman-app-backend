@@ -9,4 +9,6 @@ return [
     App\Modules\NotesService\Providers\RouteServiceProvider::class,
     App\Modules\ProtocolEngine\Providers\RouteServiceProvider::class,
     App\Modules\SubscriptionBilling\Providers\SubscriptionBillingServiceProvider::class,
+    App\Modules\TrackingService\Providers\TrackingServiceProvider::class,
+    App\Modules\TrackingService\Providers\RouteServiceProvider::class,
 ];

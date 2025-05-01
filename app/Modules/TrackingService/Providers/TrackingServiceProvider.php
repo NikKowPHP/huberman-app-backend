@@ -10,21 +10,20 @@ class TrackingServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->bind(TrackingServiceInterface::class, TrackingService::class);
+        $this->app->bind(
+            TrackingServiceInterface::class,
+            TrackingService::class
+        );
     }
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        // No boot actions needed for this service binding
     }
 }
