@@ -324,12 +324,13 @@
         -   `[ ]` **Sync Data:** (TDD) API Test, Implement Request, Controller, Define Route.
 
 -   **Advanced Notes Org:**
-    -   `[ ]` **Models & Migrations:** (TDD) Test `NoteCategory`, `NoteTag` Models, Implement Models.
+    -   `[x]` **Models & Migrations:** (TDD) Test `NoteTag` Model, Implement Model.
+    -   `[ ]` **Models & Migrations:** (TDD) Test `NoteCategory` Model, Implement Model.
     -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
     -   `[ ]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
     -   `[ ]` **API Endpoints:**
-        -   `[ ]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
         -   `[ ]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Controller, Define Route.
 
 -   **Community:**
