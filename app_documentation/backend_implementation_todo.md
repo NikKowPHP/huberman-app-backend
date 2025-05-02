@@ -308,7 +308,7 @@
     *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 - [x] **Tracking Service (Placeholder - Apply same pattern):**
-    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. (Migration failed due to environment error)
+    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. `[x]` Implement migration `create_user_protocol_tracking_table`
     -   `[x]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
     -   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
     -   `[x]` **API Endpoints:**
@@ -316,41 +316,41 @@
         -   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
 
 -   **Offline Access:**
-    -   `[ ]` **Models & Migrations:** (TDD) Test `OfflineData` Model, Implement Model.
-    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[ ]` **Service Layer:** Define Interface, Implement Service (sync logic), Bind, (TDD - Unit) Test Service methods (CRUD, sync).
-    -   `[ ]` **API Endpoints:**
-        -   `[ ]` **Fetch Data:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Sync Data:** (TDD) API Test, Implement Request, Controller, Define Route.
+    -   `[x]` **Models & Migrations:** (TDD) Test `OfflineData` Model, Implement Model.
+    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[x]` **Service Layer:** Define Interface, Implement Service (sync logic), Bind, (TDD - Unit) Test Service methods (CRUD, sync).
+    -   `[x]` **API Endpoints:**
+        -   `[x]` **Fetch Data:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Sync Data:** (TDD) API Test, Implement Request, Controller, Define Route.
 
 -   **Advanced Notes Org:**
     -   `[x]` **Models & Migrations:** (TDD) Test `NoteTag` Model, Implement Model.
-    -   `[ ]` **Models & Migrations:** (TDD) Test `NoteCategory` Model, Implement Model.
-    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[ ]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[ ]` **API Endpoints:**
+    -   `[x]` **Models & Migrations:** (TDD) Test `NoteCategory` Model, Implement Model.
+    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[x]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[x]` **API Endpoints:**
         -   `[x]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
         -   `[x]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Controller, Define Route.
+        -   `[x]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Controller, Define Route.
 
 -   **Community:**
-    -   `[ ]` **Models & Migrations:** (TDD) Test `Post`, `Comment` Models, Implement Models.
-    -   `[ ]` **Policies & Auth:** Implement Policy (User access, moderation), (TDD) Test Policy.
-    -   `[ ]` **Service Layer:** Define Interface, Implement Service (posting, commenting, moderation logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[ ]` **API Endpoints:**
-        -   `[ ]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
-        -   `[ ]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
+    -   `[x]` **Models & Migrations:** (TDD) Test `Post`, `Comment` Models, Implement Models.
+    -   `[x]` **Policies & Auth:** Implement Policy (User access, moderation), (TDD) Test Policy.
+    -   `[x]` **Service Layer:** Define Interface, Implement Service (posting, commenting, moderation logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[x]` **API Endpoints:**
+        -   `[x]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
+        -   `[x]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
 
 -   **Routines:**
-    -   `[ ]` **Models & Migrations:** (TDD) Test `Routine`, `RoutineStep` Models, Implement Models.
-    -   `[ ]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[ ]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[ ]` **API Endpoints:**
-        -   `[ ]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[ ]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
+    -   `[x]` **Models & Migrations:** (TDD) Test `Routine`, `RoutineStep` Models, Implement Models.
+    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
+    -   `[x]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
+    -   `[x]` **API Endpoints:**
+        -   `[x]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        -   `[x]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
 
 
 *   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
