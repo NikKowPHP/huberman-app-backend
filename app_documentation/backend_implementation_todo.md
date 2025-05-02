@@ -217,7 +217,6 @@
     *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
     *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
     *   `[ ]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
-    *   `[ ]` **Event: `DID_CHANGE_RENEWAL_STATUS` (Off):** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event. TO CHECK
     *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
 
 *   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
@@ -308,12 +307,13 @@
     *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
 
 - [x] **Tracking Service (Placeholder - Apply same pattern):**
-    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model. `[x]` Implement migration `create_user_protocol_tracking_table`
+    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model.
     -   `[x]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
     -   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
     -   `[x]` **API Endpoints:**
-        -   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
+    -   Migration file created: database/migrations/2025_05_01_100004_create_user_protocol_tracking_table.php
 
 -   **Offline Access:**
     -   `[x]` **Models & Migrations:** (TDD) Test `OfflineData` Model, Implement Model.
@@ -329,28 +329,28 @@
     -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
     -   `[x]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
     -   `[x]` **API Endpoints:**
-        -   `[x]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Request, Controller, Define Route.
 
 -   **Community:**
     -   `[x]` **Models & Migrations:** (TDD) Test `Post`, `Comment` Models, Implement Models.
     -   `[x]` **Policies & Auth:** Implement Policy (User access, moderation), (TDD) Test Policy.
     -   `[x]` **Service Layer:** Define Interface, Implement Service (posting, commenting, moderation logic), Bind, (TDD - Unit) Test Service methods.
     -   `[x]` **API Endpoints:**
-        -   `[x]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
-        -   `[x]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
+        *   `[x]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
 
 -   **Routines:**
     -   `[x]` **Models & Migrations:** (TDD) Test `Routine`, `RoutineStep` Models, Implement Models.
     -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[x]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[x]` **API Endpoints:**
-        -   `[x]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
+    *   `[x]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
+    *   `[x]` **API Endpoints:**
+        *   `[x]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
+        *   `[x]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
 
 
 *   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
@@ -394,63 +394,4 @@
 *   **Manual QA:**
     *   `[ ]` Develop manual test cases/checklist (Free & Premium flows).
     *   `[ ]` Execute manual tests on Staging.
-    *   `[ ]` Perform exploratory testing on Staging.
-    *   `[ ]` Perform Design QA against Figma mocks.
-    *   `[ ]` Log bugs in tracking tool.
-    *   `[ ]` Verify bug fixes on Staging.
-*   **Security Testing:**
-    *   `[ ]` Run final `composer audit`.
-    *   `[ ]` Run final SAST scans (PHPStan/Psalm), address findings.
-    *   `[ ]` Perform basic DAST scan (OWASP ZAP) against Staging, analyze critical findings.
-*   **Performance Testing (Basic):**
-    *   `[ ]` Manually assess key API endpoint response times on Staging.
-    *   `[ ]` (Optional MVP+) Perform basic load test (k6) against read-heavy endpoints.
-
----
-
-## Phase 11: Deployment Preparation
-
-*   **Environment Configuration:**
-    *   `[ ]` Finalize `.env` templates (`.env.staging.example`, `.env.production.example`).
-    *   `[ ]` Configure environment variables securely in Forge/Vapor for Staging.
-    *   `[ ]` Configure environment variables securely in Forge/Vapor for Production.
-*   **Infrastructure Provisioning & Configuration:**
-    *   `[ ]` Provision/Configure Staging: Managed DB & Redis, Backups, Workers, DNS, SSL. Document restore procedure.
-*   **CI/CD Pipeline Finalization:**
-    *   `[ ]` Add Staging deployment step/job to `ci.yml`.
-    *   `[ ]` Add Production deployment step/job to `ci.yml`.
-    *   `[ ]` Ensure CI pipeline runs build steps (`composer install --no-dev`, assets?).
-    *   `[ ]` Ensure pipeline runs migrations (`php artisan migrate --force`).
-    *   `[ ]` Test full Staging deployment via CI/CD.
-*   **Monitoring & Logging Setup:**
-    *   `[ ]` Integrate Error Tracking SDK (Sentry/Flare) for Staging/Prod.
-    *   `[ ]` Configure Laravel logging (stack, daily file, aggregation service/driver, JSON format, Prod level WARN+, Staging level DEBUG).
-    *   `[ ]` Set up monitoring dashboards (System, App, Queue metrics).
-    *   `[ ]` Configure critical alerts (Errors, Resources, Queue).
-*   **Pre-computation/Seeding:**
-    *   `[ ]` Prepare/Review production seeders (`PlanSeeder`).
-    *   `[ ]` Identify any other essential production seed data.
-
----
-
-## Phase 12: Production Launch & Post-Launch
-
-*   **Pre-Launch Checks:**
-    *   `[ ]` Perform final Staging deployment dry-run.
-    *   `[ ]` Complete final Staging manual QA / Smoke Testing.
-    *   `[ ]` Confirm Production environment variables.
-    *   `[ ]` Confirm Production database backups configured.
-    *   `[ ]` Coordinate launch window.
-*   **Launch:**
-    *   `[ ]` Merge release branch / Create release tag.
-    *   `[x]` Trigger Production deployment via CI
-
----
-
-## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
-
-*   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
-    *   `[x]` Implement `WebhookController::handleAppleWebhook`.
-    *   `[x]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
-    *   `[x]` Define `POST /api/webhooks/apple` route (disable CSRF).
-    *   `[x]` Implement App Store Server API client (
+    *   `[ ]
