@@ -4,58 +4,45 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoutineRequest;
 use App\Http\Requests\UpdateRoutineRequest;
+use App\Services\RoutineService;
 use App\Models\Routine;
 use Illuminate\Http\JsonResponse;
 
 class RoutineController extends Controller
 {
+    public function __construct(
+        private RoutineService $routineService
+    ) {}
+
     public function index(): JsonResponse
     {
-        $routines = Routine::where('user_id', auth()->id())->get();
-
-        return response()->json([
-            'data' => $routines
-        ]);
+        $routines = $this->routineService->getAllRoutines();
+        return response()->json($routines);
     }
 
     public function store(StoreRoutineRequest $request): JsonResponse
     {
-        $routine = Routine::create([
-            'user_id' => auth()->id(),
-            ...$request->validated()
-        ]);
-
-        return response()->json([
-            'data' => $routine
-        ], 201);
+        $routine = $this->routineService->createRoutine($request->validated());
+        return response()->json($routine, 201);
     }
 
     public function show(Routine $routine): JsonResponse
     {
         $this->authorize('view', $routine);
-
-        return response()->json([
-            'data' => $routine
-        ]);
+        return response()->json($routine);
     }
 
     public function update(UpdateRoutineRequest $request, Routine $routine): JsonResponse
     {
         $this->authorize('update', $routine);
-
-        $routine->update($request->validated());
-
-        return response()->json([
-            'data' => $routine
-        ]);
+        $updatedRoutine = $this->routineService->updateRoutine($routine, $request->validated());
+        return response()->json($updatedRoutine);
     }
 
     public function destroy(Routine $routine): JsonResponse
     {
         $this->authorize('delete', $routine);
-
-        $routine->delete();
-
+        $this->routineService->deleteRoutine($routine);
         return response()->json(null, 204);
     }
 }
