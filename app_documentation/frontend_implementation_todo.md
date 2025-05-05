@@ -16,7 +16,7 @@
 ## Phase 1: Project Setup & Foundation
 
 *   **Environment & Tooling:**
-    *   `[ ]` Initialize React Native project (`npx react-native init hubermanAppFrontend --template react-native-template-typescript` recommended).
+    *   `[ ]` Initialize React Native project (`npx @react-native-community/cli init hubermanAppFrontend --template react-native-template-typescript` recommended).
     *   `[ ]` Install core dependencies:
         *   `[ ]` Navigation: `@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs` (or other required navigators).
         *   `[ ]` State Management: `zustand`.

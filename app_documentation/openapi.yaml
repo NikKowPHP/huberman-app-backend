@@ -1,320 +1,131 @@
-
-openapi: 3.0.3
+openapi: 3.0.0
 info:
   title: Huberman App API
-  description: API for the Huberman Companion App (Optimize Guide) supporting free and premium features.
   version: 1.0.0
+  description: API documentation for the Huberman App backend.
 servers:
-  - url: http://localhost:8000/api/v1 # Local development
-  - url: https://staging.hubermanapp.com/api/v1 # Staging
-  - url: https://api.hubermanapp.com/api/v1 # Production
+  - url: http://localhost:8000/api/v1
+    description: Local development server
 tags:
   - name: Authentication
-    description: User registration, login, logout, password reset.
+    description: User authentication and registration
   - name: UserManagement
-    description: User profile operations.
+    description: User profile management
   - name: SubscriptionBilling
-    description: Managing subscription plans and user status.
+    description: Subscription plans and user subscriptions
   - name: ContentManagement
-    description: Accessing episodes, protocols, and summaries.
+    description: Episodes, protocols, and summaries
   - name: NotesService
-    description: User notes management.
+    description: User notes
   - name: ProtocolEngine
-    description: Premium features - Reminders and Tracking.
+    description: Protocol reminders and tracking
   - name: Webhooks
-    description: Incoming webhooks from payment providers.
-
-components:
-  schemas:
-    # --- Data Models ---
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        # ... other user fields
-        is_premium: # Convenience flag based on subscription
-          type: boolean
-          readOnly: true
-    Plan:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string # e.g., 'Free', 'Premium Monthly'
-        # ... provider IDs if needed by frontend
-        features:
-          type: array
-          items:
-            type: string
-    Subscription:
-      type: object
-      properties:
-        plan:
-          $ref: '#/components/schemas/Plan'
-        status:
-          type: string
-          enum: [active, trialing, past_due, canceled, expired, incomplete]
-        ends_at:
-          type: string
-          format: date-time
-        # ... other fields
-    Episode:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        description:
-          type: string
-        published_at:
-          type: string
-          format: date
-        # ... other fields
-    Protocol:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        category:
-          type: string
-        description: # Short description always available
-          type: string
-        implementation_guide: # Potentially premium only
-          type: string
-          nullable: true
-        # ... other fields
-    Note:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        episode_id:
-          type: integer
-        content:
-          type: string
-        is_public:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        # ... other fields
-    Reminder:
-      # Schema for Reminder (Premium)
-      type: object
-      properties:
-        id:
-          type: integer
-        protocol_id:
-          type: integer
-        user_id:
-          type: integer
-        # ... reminder settings (time, frequency)
-    TrackingLog:
-      # Schema for Tracking Log (Premium)
-      type: object
-      properties:
-        id:
-          type: integer
-        protocol_id:
-          type: integer
-        user_id:
-          type: integer
-        tracked_at:
-          type: string
-          format: date
-        # ... other tracking fields
-
-    # --- Error Responses ---
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: General error message.
-      required:
-        - message
-    ValidationErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Validation failed message (e.g., "The given data was invalid.").
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Field-specific validation errors.
-      required:
-        - message
-        - errors
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      description: Use the token obtained from /login or /register.
-
-  responses:
-    UnauthorizedError:
-      description: Authentication information is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Unauthenticated.
-    ForbiddenError:
-      description: Authenticated user does not have permission for the resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: This action is unauthorized.
-    NotFoundError:
-      description: The specified resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Not Found
-    ValidationError:
-      description: Input validation failed.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationErrorResponse'
-          example:
-            message: The given data was invalid.
-            errors:
-              email: ["The email field is required."]
-              password: ["The password must be at least 8 characters."]
-    InternalServerError:
-      description: An unexpected error occurred on the server.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Internal Server Error
+    description: Webhook endpoints for third-party services
 
 paths:
-  # --- Authentication ---
   /register:
     post:
-      tags: [Authentication]
-      summary: Register a new user.
+      summary: Register a new user
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name: { type: string }
-                email: { type: string, format: email }
-                password: { type: string, format: password }
-                password_confirmation: { type: string, format: password }
-              required: [name, email, password, password_confirmation]
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
         '201':
-          description: User registered successfully, returns user and token.
+          description: User registered successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user: { $ref: '#/components/schemas/User' }
-                  token: { type: string }
+                $ref: '#/components/schemas/AuthSuccessResponse'
         '422':
-          $ref: '#/components/responses/ValidationError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ValidationError'
   /login:
     post:
-      tags: [Authentication]
-      summary: Log in a user.
+      summary: Log in a user
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email: { type: string, format: email }
-                password: { type: string, format: password }
-                # device_name: { type: string } # Optional for Sanctum token naming
-              required: [email, password]
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Login successful, returns user and token.
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ValidationError'
+  /logout:
+    post:
+      summary: Log out the authenticated user
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User logged out successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  user: { $ref: '#/components/schemas/User' }
-                  token: { type: string }
-        '401': # Specific error for invalid credentials
-          description: Invalid credentials.
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                message: Invalid credentials.
-        '422':
-          $ref: '#/components/responses/ValidationError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /logout:
-    post:
-      tags: [Authentication]
-      summary: Log out the current user (invalidate token).
-      security:
-        - bearerAuth: []
-      responses:
-        '204':
-          description: Logout successful.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/responses/UnauthorizedError'
 
-  # --- User Management ---
   /user/profile:
     get:
-      tags: [UserManagement]
-      summary: Get the current user's profile.
+      summary: Get the authenticated user's profile
+      tags:
+        - UserManagement
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: User profile data.
+          description: User profile
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
     put:
-      tags: [UserManagement]
-      summary: Update the current user's profile.
+      summary: Update the authenticated user's profile
+      tags:
+        - UserManagement
       security:
         - bearerAuth: []
       requestBody:
@@ -322,30 +133,35 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name: { type: string }
-                # Other updatable fields
+              $ref: '#/components/schemas/UpdateUserProfileRequest'
       responses:
         '200':
-          description: Profile updated successfully.
+          description: User profile updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
         '422':
-          $ref: '#/components/responses/ValidationError'
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 
-  # --- Subscription/Billing ---
   /plans:
     get:
-      tags: [SubscriptionBilling]
-      summary: Get available subscription plans.
+      summary: Get a list of available subscription plans
+      tags:
+        - SubscriptionBilling
       responses:
         '200':
-          description: List of plans.
+          description: List of plans
           content:
             application/json:
               schema:
@@ -354,80 +170,141 @@ paths:
                   $ref: '#/components/schemas/Plan'
   /user/subscription:
     get:
-      tags: [SubscriptionBilling]
-      summary: Get the current user's subscription status.
+      summary: Get the authenticated user's subscription status
+      tags:
+        - SubscriptionBilling
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: User's current subscription details.
+          description: User subscription details
           content:
             application/json:
               schema:
-                # Might be null if no subscription
-                nullable: true
                 $ref: '#/components/schemas/Subscription'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
 
-  # --- Content Management ---
-  /protocols:
+  /episodes:
     get:
-      tags: [ContentManagement]
-      summary: Get list of protocols.
-      description: Returns foundational protocols for free users, all for premium. Backend filters based on auth/subscription status.
-      parameters:
-        - name: category
-          in: query
-          required: false
-          schema:
-            type: string
+      summary: Get a list of episodes
+      tags:
+        - ContentManagement
       responses:
         '200':
-          description: List of protocols.
+          description: List of episodes
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Protocol' # Note: 'implementation_guide' might be null for free users
-  /protocols/{id}:
+                  $ref: '#/components/schemas/Episode'
+  /episodes/{id}:
     get:
-      tags: [ContentManagement]
-      summary: Get details for a specific protocol.
-      description: Returns full details (incl. implementation guide) for premium users, potentially limited details for free users. Backend handles logic.
+      summary: Get episode details by ID
+      tags:
+        - ContentManagement
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: integer
+          description: ID of the episode to retrieve
       responses:
         '200':
-          description: Protocol details.
+          description: Episode details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        '404':
+          description: Episode not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /protocols:
+    get:
+      summary: Get a list of protocols
+      tags:
+        - ContentManagement
+      responses:
+        '200':
+          description: List of protocols (content may vary based on subscription status)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Protocol'
+  /protocols/{id}:
+    get:
+      summary: Get protocol details by ID
+      tags:
+        - ContentManagement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the protocol to retrieve
+      responses:
+        '200':
+          description: Protocol details (content may vary based on subscription status)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Protocol'
         '404':
-          $ref: '#/components/responses/NotFoundError'
-
-  # --- Notes Service ---
-  /notes:
+          description: Protocol not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /summaries:
     get:
-      tags: [NotesService]
-      summary: Get the current user's notes.
-      security:
-        - bearerAuth: []
+      summary: Get a list of summaries
+      tags:
+        - ContentManagement
       parameters:
         - name: episode_id
           in: query
           required: false
           schema:
             type: integer
+          description: Filter summaries by episode ID
+        - name: protocol_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter summaries by protocol ID
       responses:
         '200':
-          description: List of user's notes.
+          description: List of summaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Summary'
+
+  /notes:
+    get:
+      summary: Get a list of the authenticated user's notes
+      tags:
+        - NotesService
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of notes
           content:
             application/json:
               schema:
@@ -435,11 +312,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/Note'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
     post:
-      tags: [NotesService]
-      summary: Create a new note.
-      description: Free users may have limits. Premium users can create public notes. Backend enforces limits/permissions.
+      summary: Create a new note
+      tags:
+        - NotesService
       security:
         - bearerAuth: []
       requestBody:
@@ -447,37 +328,193 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                episode_id: { type: integer }
-                content: { type: string }
-                is_public: { type: boolean, default: false } # Requires premium permission if true
-              required: [episode_id, content]
+              $ref: '#/components/schemas/CreateNoteRequest'
       responses:
         '201':
-          description: Note created successfully.
+          description: Note created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Note'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403': # If limit reached or trying public note without premium
-          $ref: '#/components/responses/ForbiddenError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (e.g., premium limit reached)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
         '422':
-          $ref: '#/components/responses/ValidationError'
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ValidationError'
+  /notes/{id}:
+    get:
+      summary: Get a specific note by ID
+      tags:
+        - NotesService
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the note to retrieve
+      responses:
+        '200':
+          description: Note details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (user does not own the note)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Note not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Update a specific note by ID
+      tags:
+        - NotesService
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the note to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNoteRequest'
+      responses:
+        '200':
+          description: Note updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (user does not own the note)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Note not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+    delete:
+      summary: Delete a specific note by ID
+      tags:
+        - NotesService
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the note to delete
+      responses:
+        '204':
+          description: Note deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (user does not own the note)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Note not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /episodes/{id}/public-notes:
+    get:
+      summary: Get public notes for a specific episode
+      tags:
+        - NotesService
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the episode to retrieve public notes for
+      responses:
+        '200':
+          description: List of public notes for the episode
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+        '404':
+          description: Episode not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
 
-  # --- Protocol Engine (Premium) ---
   /reminders:
     get:
-      tags: [ProtocolEngine]
-      summary: Get user's reminders.
-      description: Requires active Premium subscription.
+      summary: Get a list of the authenticated user's reminders (Premium)
+      tags:
+        - ProtocolEngine
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: List of reminders.
+          description: List of reminders
           content:
             application/json:
               schema:
@@ -485,61 +522,1047 @@ paths:
                 items:
                   $ref: '#/components/schemas/Reminder'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403': # If user is not premium
-          $ref: '#/components/responses/ForbiddenError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
     post:
-      tags: [ProtocolEngine]
-      summary: Create a new reminder.
-      description: Requires active Premium subscription.
+      summary: Create a new reminder (Premium)
+      tags:
+        - ProtocolEngine
       security:
         - bearerAuth: []
       requestBody:
-        # ... Reminder details (protocol_id, time, frequency)
         required: true
         content:
           application/json:
             schema:
-              # ... schema for creating a reminder
-              type: object
-              properties:
-                protocol_id: { type: integer }
-                # ... other fields
+              $ref: '#/components/schemas/StoreReminderRequest'
       responses:
         '201':
-          description: Reminder created.
+          description: Reminder created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Reminder'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403': # If user is not premium
-          $ref: '#/components/responses/ForbiddenError'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
         '422':
-          $ref: '#/components/responses/ValidationError'
-
-  # --- Webhooks ---
-  /webhooks/stripe:
-    post:
-      tags: [Webhooks]
-      summary: Stripe webhook handler.
-      description: Handles incoming events from Stripe. Security via signature verification (handled by backend, not bearer token).
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ValidationError'
+  /reminders/{id}:
+    get:
+      summary: Get a specific reminder by ID (Premium)
+      tags:
+        - ProtocolEngine
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the reminder to retrieve
+      responses:
+        '200':
+          description: Reminder details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium or user does not own reminder)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Reminder not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update a specific reminder by ID (Premium)
+      tags:
+        - ProtocolEngine
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the reminder to update
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              # Schema matching Stripe event object structure
-              type: object
-              description: Structure depends on Stripe event type.
+              $ref: '#/components/schemas/UpdateReminderRequest'
       responses:
         '200':
-          description: Webhook received successfully.
-        '400': # e.g., Invalid signature, malformed payload
-          $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  # ... similar entries for /webhooks/apple, /webhooks/google
+          description: Reminder updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium or user does not own reminder)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Reminder not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+    delete:
+      summary: Delete a specific reminder by ID (Premium)
+      tags:
+        - ProtocolEngine
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the reminder to delete
+      responses:
+        '204':
+          description: Reminder deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium or user does not own reminder)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Reminder not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /tracking/log:
+    post:
+      summary: Log adherence to a protocol step (Premium)
+      tags:
+        - ProtocolEngine
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreTrackingLogRequest'
+      responses:
+        '201':
+          description: Tracking log created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingLog'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ValidationError'
+  /tracking/summary:
+    get:
+      summary: Get the authenticated user's protocol tracking summary (Premium)
+      tags:
+        - ProtocolEngine
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Protocol tracking summary
+          content:
+            application/json:
+              schema:
+                type: object # Define a specific schema for tracking summary if needed
+                properties:
+                  # Example properties - adjust based on actual implementation
+                  total_logs:
+                    type: integer
+                    example: 100
+                  streak:
+                    type: integer
+                    example: 7
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Forbidden (requires Premium)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ForbiddenError'
 
-```
+  /webhooks/stripe:
+    post:
+      summary: Stripe webhook endpoint
+      tags:
+        - Webhooks
+      description: Receives webhook events from Stripe. Security is via signature verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object # Stripe webhook payload structure
+      responses:
+        '200':
+          description: Webhook received successfully
+        '400':
+          description: Invalid request or signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /webhooks/apple:
+    post:
+      summary: Apple App Store server notifications webhook endpoint
+      tags:
+        - Webhooks
+      description: Receives server notifications from Apple App Store. Security is via signature verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object # Apple server notification payload structure
+      responses:
+        '200':
+          description: Webhook received successfully
+        '400':
+          description: Invalid request or signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /webhooks/google:
+    post:
+      summary: Google Play Store real-time developer notifications webhook endpoint
+      tags:
+        - Webhooks
+      description: Receives real-time developer notifications from Google Play Store. Security is via signature verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object # Google Play Store notification payload structure
+      responses:
+        '200':
+          description: Webhook received successfully
+        '400':
+          description: Invalid request or signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User's name
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: password123
+        password_confirmation:
+          type: string
+          format: password
+          description: Password confirmation
+          example: password123
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: password123
+      required:
+        - email
+        - password
+    AuthSuccessResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: Authentication token
+          example: 1|abcdefghijklmnopqrstuvwxyz1234567890
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User ID
+          example: 1
+        name:
+          type: string
+          description: User's name
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        created_at:
+          type: string
+          format: date-time
+          description: User creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: User update timestamp
+    UpdateUserProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User's name
+          example: Jane Doe
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: jane.doe@example.com
+    Plan:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Plan ID
+          example: 1
+        name:
+          type: string
+          description: Plan name
+          example: Premium
+        stripe_price_id:
+          type: string
+          description: Stripe price ID
+          example: price_12345
+        apple_product_id:
+          type: string
+          description: Apple App Store product ID
+          example: com.example.premium
+        google_product_id:
+          type: string
+          description: Google Play Store product ID
+          example: premium_monthly
+        created_at:
+          type: string
+          format: date-time
+          description: Plan creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Plan update timestamp
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Subscription ID
+          example: 1
+        user_id:
+          type: integer
+          description: User ID
+          example: 1
+        plan_id:
+          type: integer
+          description: Plan ID
+          example: 1
+        stripe_subscription_id:
+          type: string
+          nullable: true
+          description: Stripe subscription ID
+          example: sub_12345
+        apple_subscription_id:
+          type: string
+          nullable: true
+          description: Apple App Store subscription ID
+          example: 1234567890
+        google_subscription_id:
+          type: string
+          nullable: true
+          description: Google Play Store subscription ID
+          example: abcdefg
+        active:
+          type: boolean
+          description: Whether the subscription is active
+          example: true
+        renews_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the subscription renews
+        ends_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the subscription ends
+        created_at:
+          type: string
+          format: date-time
+          description: Subscription creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Subscription update timestamp
+    Episode:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Episode ID
+          example: 1
+        title:
+          type: string
+          description: Episode title
+          example: The Science of Sleep
+        description:
+          type: string
+          description: Episode description
+          example: Dr. Andrew Huberman discusses the science of sleep...
+        video_url:
+          type: string
+          format: url
+          description: URL to the episode video
+          example: https://www.youtube.com/watch?v=nm1TxQ9IsPQ
+        published_date:
+          type: string
+          format: date
+          description: Date the episode was published
+          example: 2023-01-15
+        created_at:
+          type: string
+          format: date-time
+          description: Episode creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Episode update timestamp
+    Protocol:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Protocol ID
+          example: 1
+        title:
+          type: string
+          description: Protocol title
+          example: Morning Sunlight Exposure
+        description:
+          type: string
+          description: Description of the protocol
+          example: Expose your eyes to sunlight within 30 minutes of waking...
+        is_free:
+          type: boolean
+          description: Indicates if the protocol is free or requires premium
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: Protocol creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Protocol update timestamp
+    Summary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Summary ID
+          example: 1
+        episode_id:
+          type: integer
+          nullable: true
+          description: Associated episode ID
+          example: 1
+        protocol_id:
+          type: integer
+          nullable: true
+          description: Associated protocol ID
+          example: 1
+        content:
+          type: string
+          description: Summary content
+          example: Key takeaways from the episode/protocol...
+        created_at:
+          type: string
+          format: date-time
+          description: Summary creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Summary update timestamp
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Note ID
+          example: 1
+        user_id:
+          type: integer
+          description: User ID
+          example: 1
+        episode_id:
+          type: integer
+          nullable: true
+          description: Associated episode ID
+          example: 1
+        protocol_id:
+          type: integer
+          nullable: true
+          description: Associated protocol ID
+          example: 1
+        content:
+          type: string
+          description: Note content
+          example: My thoughts on this topic...
+        is_public:
+          type: boolean
+          description: Indicates if the note is public
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Note creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Note update timestamp
+    CreateNoteRequest:
+      type: object
+      properties:
+        episode_id:
+          type: integer
+          nullable: true
+          description: Associated episode ID
+          example: 1
+        protocol_id:
+          type: integer
+          nullable: true
+          description: Associated protocol ID
+          example: 1
+        content:
+          type: string
+          description: Note content
+          example: My thoughts on this topic...
+        is_public:
+          type: boolean
+          description: Indicates if the note is public
+          example: false
+      required:
+        - content
+    UpdateNoteRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Note content
+          example: Updated thoughts on this topic...
+        is_public:
+          type: boolean
+          description: Indicates if the note is public
+          example: true
+      required:
+        - content
+    Reminder:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Reminder ID
+          example: 1
+        user_id:
+          type: integer
+          description: User ID
+          example: 1
+        protocol_id:
+          type: integer
+          description: Associated protocol ID
+          example: 1
+        reminder_time:
+          type: string
+          format: date-time
+          description: Timestamp for the reminder
+        created_at:
+          type: string
+          format: date-time
+          description: Reminder creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Reminder update timestamp
+    TrackingLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Tracking log ID
+          example: 1
+        user_id:
+          type: integer
+          description: User ID
+          example: 1
+        protocol_id:
+          type: integer
+          description: Associated protocol ID
+          example: 1
+        logged_at:
+          type: string
+          format: date-time
+          description: Timestamp when adherence was logged
+        created_at:
+          type: string
+          format: date-time
+          description: Tracking log creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Tracking log update timestamp
+    StoreReminderRequest:
+      type: object
+      properties:
+        protocol_id:
+          type: integer
+          description: Associated protocol ID
+          example: 1
+        reminder_time:
+          type: string
+          format: date-time
+          description: Timestamp for the reminder
+      required:
+        - protocol_id
+        - reminder_time
+    UpdateReminderRequest:
+      type: object
+      properties:
+        reminder_time:
+          type: string
+          format: date-time
+          description: Timestamp for the reminder
+      required:
+        - reminder_time
+    StoreTrackingLogRequest:
+      type: object
+      properties:
+        protocol_id:
+          type: integer
+          description: Associated protocol ID
+          example: 1
+        logged_at:
+          type: string
+          format: date-time
+          description: Timestamp when adherence was logged
+      required:
+        - protocol_id
+        - logged_at
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  responses:
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: General error message.
+          example: An error occurred.
+    ValidationErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: General error message for validation failures.
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Field-specific validation errors.
+          example:
+            email:
+              - The email field is required.
+            password:
+              - The password field is required.
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+<environment_details>
+# VSCode Visible Files
+app_documentation/openapi.yaml
+
+# VSCode Open Tabs
+../../Library/Application Support/Code/User/settings.json
+docker-compose.yml
+config/sanctum.php
+.gitignore
+app/Modules/Authentication/Providers/RouteServiceProvider.php
+app/Modules/UserManagement/Providers/RouteServiceProvider.php
+app/Modules/NotesService/Providers/RouteServiceProvider.php
+app/Modules/ProtocolEngine/Providers/RouteServiceProvider.php
+app_documentation/route_refactor_todo.md
+database/migrations/2025_04_24_205454_create_plans_table.php
+database/migrations/2025_04_24_205510_create_subscriptions_table.php
+tests/Unit/PlanTest.php
+app/Modules/SubscriptionBilling/Models/Plan.php
+config/cashier.php
+app/Modules/SubscriptionBilling/Contracts/SubscriptionServiceInterface.php
+app/Modules/SubscriptionBilling/Providers/RouteServiceProvider.php
+database/seeders/PlanSeeder.php
+app/Modules/SubscriptionBilling/Http/Resources/PlanResource.php
+tests/Feature/SubscriptionBilling/PlanTest.php
+app/Modules/SubscriptionBilling/Http/Resources/SubscriptionResource.php
+app/Modules/SubscriptionBilling/Http/Controllers/SubscriptionController.php
+tests/Feature/SubscriptionBilling/UserSubscriptionTest.php
+app/Http/Middleware/VerifyStripeWebhookSignature.php
+tests/Feature/SubscriptionBilling/WebhookSignatureTest.php
+database/migrations/2025_04_24_211846_create_episodes_table.php
+database/migrations/2025_04_24_211928_create_protocols_table.php
+database/migrations/2025_04_24_212127_create_summaries_table.php
+database/migrations/2025_04_24_212153_create_episode_protocol_table.php
+app/Modules/ContentManagement/Models/Summary.php
+app/Modules/ContentManagement/Models/Episode.php
+tests/Unit/ProtocolTest.php
+tests/Unit/SummaryTest.php
+tests/Unit/EpisodeTest.php
+database/seeders/EpisodeSeeder.php
+database/seeders/SummarySeeder.php
+database/seeders/EpisodeProtocolSeeder.php
+app/Modules/ContentManagement/Providers/RouteServiceProvider.php
+app/Modules/ContentManagement/Http/Resources/EpisodeResource.php
+app/Modules/ContentManagement/Http/Resources/SummaryResource.php
+tests/Feature/ContentManagement/EpisodeTest.php
+app/Modules/ContentManagement/Http/Controllers/SummaryController.php
+tests/Feature/ContentManagement/SummaryTest.php
+tests/Unit/SubscriptionServiceTest.php
+app/Http/Middleware/CheckPremiumAccess.php
+tests/Feature/Middleware/CheckPremiumAccessTest.php
+tests/Feature/SubscriptionBilling/WebhookCheckoutSessionCompletedTest.php
+database/migrations/2025_04_24_195725_add_is_free_to_protocols_table.php
+database/factories/ProtocolFactory.php
+database/seeders/ProtocolSeeder.php
+database/seeders/DatabaseSeeder.php
+app/Modules/ContentManagement/Http/Resources/ProtocolResource.php
+app/Modules/ContentManagement/Http/Controllers/ProtocolController.php
+app/Modules/ContentManagement/Contracts/ContentServiceInterface.php
+app/Modules/ContentManagement/Services/ContentService.php
+app/Notifications/ResetPasswordNotification.php
+app/Modules/Authentication/Http/Requests/ForgotPasswordRequest.php
+app/Modules/Authentication/Http/Requests/ResetPasswordRequest.php
+app/Modules/Authentication/Http/Controllers/ForgotPasswordController.php
+app/Modules/Authentication/Http/Controllers/NewPasswordController.php
+tests/Feature/Authentication/RateLimitTest.php
+bootstrap/app.php
+bootstrap/providers.php
+app/Modules/SubscriptionBilling/routes/api.php
+app_documentation/api_design_documentation.md
+app_documentation/openapi.yaml
+app/Modules/SubscriptionBilling/Contracts/AppStoreServerApiClientInterface.php
+app/Modules/SubscriptionBilling/Services/AppStoreServerApiClient.php
+app/Modules/SubscriptionBilling/Providers/SubscriptionBillingServiceProvider.php
+app/Listeners/SubscriptionRenewalFailedListener.php
+app/Listeners/SubscriptionExpiredListener.php
+tests/Unit/SubscriptionBilling/SubscriptionRenewalFailedTest.php
+tests/Unit/SubscriptionBilling/SubscriptionExpiredTest.php
+tests/Unit/SubscriptionBilling/GooglePubSubTest.php
+app/Listeners/ClearUserEntitlementCache.php
+tests/Unit/ClearUserEntitlementCacheTest.php
+app_documentation/app_description.md
+app/Modules/ContentManagement/Models/Protocol.php
+app/Console/Commands/SendFoundationalReminders.php
+tests/Feature/SendFoundationalRemindersTest.php
+tests/Feature/ContentManagement/ProtocolTest.php
+database/factories/UserReminderFactory.php
+tests/Feature/Policies/ReminderPolicyTest.php
+app/Modules/ProtocolEngine/Http/Requests/StoreReminderRequest.php
+app/Modules/ProtocolEngine/Contracts/ReminderServiceInterface.php
+app/Modules/ProtocolEngine/Http/Resources/ReminderResource.php
+app/Modules/ProtocolEngine/Policies/ReminderPolicy.php
+app/Modules/ProtocolEngine/routes/api.php
+app/Modules/ProtocolEngine/Http/Requests/UpdateReminderRequest.php
+tests/Feature/ProtocolEngine/ReminderApiTest.php
+app/Modules/ProtocolEngine/Http/Controllers/ReminderController.php
+app/Modules/ProtocolEngine/Services/ReminderService.php
+tests/Unit/Console/Commands/SendDueRemindersTest.php
+app/Console/Kernel.php
+app/Console/Commands/SendDueReminders.php
+app/Notifications/ProtocolReminder.php
+tests/Unit/Jobs/SendProtocolReminderNotificationTest.php
+app/Jobs/SendProtocolReminderNotification.php
+database/migrations/2025_04_30_104700_create_user_devices_table.php
+tests/Unit/UserDeviceTest.php
+app/Modules/UserManagement/Models/User.php
+app/Modules/UserManagement/Models/UserDevice.php
+app/Modules/UserManagement/Http/Requests/UpdateDeviceTokenRequest.php
+app/Modules/UserManagement/Http/Controllers/UserController.php
+app/Modules/UserManagement/routes/api.php
+database/migrations/2025_04_30_074905_create_notes_table.php
+tests/Unit/NoteTest.php
+tests/Unit/NotePolicyTest.php
+app/Modules/NotesService/Contracts/NoteServiceInterface.php
+app/Modules/NotesService/Providers/NotesServiceProvider.php
+tests/Unit/NoteServiceTest.php
+app/Modules/Authentication/routes/api.php
+app/Modules/Authentication/Http/Requests/CreateUserRequest.php
+app/Modules/Authentication/Http/Controllers/AuthController.php
+app/Modules/NotesService/Http/Requests/CreateNoteRequest.php
+app/Modules/NotesService/Http/Requests/UpdateNoteRequest.php
+app/Modules/ContentManagement/Http/Controllers/EpisodeController.php
+app/Modules/ContentManagement/routes/api.php
+tests/Feature/NotesApiTest.php
+app/Modules/NotesService/Http/Controllers/NoteController.php
+app/Modules/NotesService/routes/api.php
+app/Modules/TrackingService/Models/TrackingLog.php
+tests/Unit/TrackingService/TrackingLogTest.php
+app/Modules/TrackingService/Providers/TrackingServiceProvider.php
+app/Modules/TrackingService/Providers/RouteServiceProvider.php
+config/app.php
+app/Modules/TrackingService/routes/api.php
+app/Modules/TrackingService/Policies/TrackingLogPolicy.php
+tests/Feature/Policies/TrackingLogPolicyTest.php
+app/Modules/TrackingService/Contracts/TrackingServiceInterface.php
+app/Modules/TrackingService/Services/TrackingService.php
+tests/Unit/TrackingService/TrackingServiceTest.php
+tests/Feature/TrackingService/TrackingLogAdherenceTest.php
+app/Modules/TrackingService/Http/Requests/StoreTrackingLogRequest.php
+app/Modules/TrackingService/Http/Controllers/TrackingController.php
+app/OfflineData.php
+database/migrations/2025_05_01_092540_create_offline_data_table.php
+database/factories/OfflineDataFactory.php
+tests/Unit/OfflineDataTest.php
+app/Modules/NotesService/Models/NoteCategory.php
+app/Modules/NotesService/Models/NoteTag.php
+database/migrations/2025_05_01_100000_create_note_categories_table.php
+database/migrations/2025_05_01_100001_create_note_tags_table.php
+database/migrations/2025_05_01_100002_create_note_category_pivot_table.php
+database/migrations/2023_05_01_100003_create_note_tag_pivot_table.php
+database/migrations/2025_05_01_100003_create_note_tag_pivot_table.php
+app/Models/NoteTag.php
+app/Http/Controllers/NoteTagController.php
+tests/Feature/NoteTagTest.php
+database/factories/NoteTagFactory.php
+app/Http/Controllers/NoteCategoryController.php
+tests/Feature/NoteCategoryTest.php
+app/Http/Controllers/NoteController.php
+app/Services/RoutineServiceInterface.php
+app/Services/RoutineService.php
+app/Http/Controllers/RoutineController.php
+app/Services/NoteServiceInterface.php
+database/migrations/2025_05_01_100004_create_user_protocol_tracking_table.php
+app_documentation/backend_implementation_todo.md
+app/Policies/OfflineDataPolicy.php
+tests/Unit/OfflineDataPolicyTest.php
+app/Services/OfflineDataServiceInterface.php
+app/Services/OfflineDataService.php
+app/Providers/AppServiceProvider.php
+tests/Unit/OfflineDataServiceTest.php
+app/Http/Requests/SyncOfflineDataRequest.php
+app/Http/Controllers/OfflineDataController.php
+routes/api.php
+tests/Feature/OfflineDataApiTest.php
+app/Policies/NoteCategoryPolicy.php
+app/Policies/NoteTagPolicy.php
+tests/Unit/NoteCategoryPolicyTest.php
+tests/Unit/NoteCategoryTest.php
+tests/Unit/NoteTagPolicyTest.php
+app_documentation/frontend_implementation_todo.md
+app/Services/NoteService.php
+database/migrations/2025_05_01_000000_create_routines_table.php
+app/Policies/RoutinePolicy.php
+app/Models/Routine.php
+app/Models/RoutineStep.php
+database/migrations/2025_05_01_000001_create_routine_steps_table.php
+database/factories/RoutineStepFactory.php
+tests/Unit/RoutineTest.php
+tests/Unit/RoutinePolicyTest.php
+tests/Unit/RoutineStepTest.php
+database/factories/RoutineFactory.php
+tests/Feature/RoutineApiTest.php
+app/Http/Requests/StoreRoutineRequest.php
+app/Http/Requests/UpdateRoutineRequest.php
+app/Providers/AuthServiceProvider.php
+database/migrations/2025_05_01_100004_create_posts_table.php
+database/migrations/2025_05_01_100005_create_comments_table.php
+app/Policies/PostPolicy.php
+app/Models/Post.php
+app/Models/Comment.php
+app/Services/PostService.php
+app/Http/Requests/StorePostRequest.php
+app/Http/Controllers/PostController.php
+app/Http/Requests/StoreCommentRequest.php
+tests/Feature/Authentication/RegistrationTest.php
+app/Modules/Authentication/Http/Requests/RegisterRequest.php
+composer.json
+app/Providers/EventServiceProvider.php
+app/Providers/RouteServiceProvider.php
+app/Policies/NotePolicy.php
+database/migrations/2025_04_30_110629_add_is_public_to_notes_table.php
+app/Modules/NotesService/Models/Note.php
+app/Modules/NotesService/Services/NoteService.php
+database/migrations/2025_04_30_071413_create_user_reminders_table.php
+tests/Unit/UserReminderTest.php
+app/Modules/ProtocolEngine/Models/UserReminder.php
+tests/Feature/CheckExpiredSubscriptionsTest.php
+repomix.config.json
+app/Console/Commands/CheckExpiredSubscriptions.php
+tests/Unit/CheckExpiredSubscriptionsTest.php
+app/Modules/SubscriptionBilling/Http/Controllers/WebhookController.php
+config/services.php
+.env
+tests/Feature/SubscriptionBilling/WebhookTest.php
+app/Modules/SubscriptionBilling/Services/AppleSubscriptionService.php
+tests/Unit/SubscriptionBilling/AppleSubscriptionServiceTest.php
+phpunit.xml
+app/Events/SubscriptionExpired.php
+app/Modules/SubscriptionBilling/Models/Subscription.php
+tests/Unit/SubscriptionTest.php
+app/Modules/SubscriptionBilling/Services/SubscriptionService.php
+app/Events/SubscriptionSubscribed.php
+app/Events/SubscriptionRenewed.php
+tests/Feature/SubscriptionBilling/WebhookAppleTest.php
+tests/Unit/UserTest.php
+tests/Feature/Authentication/LoginTest.php
+tests/Feature/UserManagement/UserProfileTest.php
+app/Modules/Authentication/Http/Requests/LoginRequest.php
+tests/Feature/Authentication/PasswordResetTest.php
+tests/Feature/ApiTestCase.php
+
+# Current Time
+5/5/2025, 8:59:02 AM (Europe/Minsk, UTC+3:00)
+
+# Context Window Usage
+108,876 / 1,048.576K tokens used (10%)
+
+# Current Mode
+ACT MODE
+</environment_details>
