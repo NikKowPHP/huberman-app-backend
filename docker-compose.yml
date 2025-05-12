@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "${APP_PORT:-8000}:80" # Expose app port from .env or default 8000
+      - "${APP_PORT:-8085}:80" # Expose app port from .env or default 8085
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/ # Mount custom Nginx config
