@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
-import Stripe from 'stripe';
+import { Stripe } from 'stripe';
 import { AppleService } from './apple.service';
 
 @Injectable()
@@ -11,14 +11,14 @@ export class SubscriptionBillingService {
     private readonly prisma: PrismaService,
     private readonly appleService: AppleService
   ) {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
       apiVersion: '2025-05-28.basil',
     });
   }
 
-  verifyStripeWebhook(rawBody: Buffer, signature: string) {
+  verifyStripeWebhook(body: string, signature: string) {
     return this.stripe.webhooks.constructEvent(
-      rawBody,
+      body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
@@ -38,8 +38,51 @@ export class SubscriptionBillingService {
         },
       },
     });
-
     return !!activeSubscription;
+  }
+
+  async getPlans() {
+    return this.prisma.plan.findMany();
+  }
+
+  async getUserSubscription(userId: string) {
+    return this.prisma.subscription.findFirst({
+      where: {
+        userId,
+        stripeStatus: {
+          in: ['ACTIVE', 'TRIALING']
+        }
+      },
+      include: {
+        plan: true
+      }
+    });
+  }
+
+  async handleStripeEvent(event: any) {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        await this.handleCheckoutSessionCompleted(event);
+        break;
+      case 'customer.subscription.updated':
+        if (event.data.object.trial_end && event.data.object.status === 'active') {
+          await this.handleCustomerSubscriptionUpdatedTrialEnded(event);
+        } else if (event.data.object.cancel_at_period_end) {
+          await this.handleCustomerSubscriptionUpdatedCancel(event);
+        }
+        break;
+      case 'invoice.payment_succeeded':
+        await this.handleInvoicePaymentSucceeded(event);
+        break;
+      case 'invoice.payment_failed':
+        await this.handleInvoicePaymentFailed(event);
+        break;
+      case 'customer.subscription.deleted':
+        await this.handleCustomerSubscriptionDeleted(event);
+        break;
+      default:
+        console.warn(`Unhandled Stripe event type: ${event.type}`);
+    }
   }
 
   async handleCheckoutSessionCompleted(payload: any) {
@@ -166,7 +209,6 @@ export class SubscriptionBillingService {
       case 'DID_CHANGE_RENEWAL_STATUS':
         await this.handleDidChangeRenewalStatus(payload);
         break;
-      // Add cases for other notification types as needed
       default:
         console.warn(`Unhandled Apple notification type: ${notificationType}`);
     }
@@ -186,39 +228,41 @@ export class SubscriptionBillingService {
           where: { id: subscription.id },
           data: { status: 'CANCELED' }
         });
-        // TODO: Dispatch SubscriptionExpired event when event system is implemented
         console.log(`Canceled subscription ${subscription.id} for product ${productId}`);
       }
     }
   }
-}
-async handleAppleNotification(jws: string, notificationType: string): Promise<void> {
-  const payload = await this.appleService.decodeAndVerifyJWS(jws);
-  
-  switch (notificationType) {
-    case 'DID_CHANGE_RENEWAL_STATUS':
-      await this.handleDidChangeRenewalStatus(payload);
-      break;
-    default:
-      console.warn(`Unhandled Apple notification type: ${notificationType}`);
-  }
-}
 
-private async handleDidChangeRenewalStatus(payload: any): Promise<void> {
-  const autoRenewStatus = payload?.data?.autoRenewStatus;
-  const productId = payload?.data?.productId;
-  
-  if (autoRenewStatus === false && productId) {
-    const subscription = await this.prisma.subscription.findFirst({
-      where: { plan_product_id: productId }
-    });
+  async handleGoogleNotification(message: any) {
+    try {
+      const notificationType = message?.subscriptionNotification?.notificationType;
+      const subscriptionId = message?.subscriptionNotification?.subscriptionId;
+      
+      if (!notificationType || !subscriptionId) {
+        throw new Error('Invalid Google Play notification - missing required fields');
+      }
 
-    if (subscription) {
-      await this.prisma.subscription.update({
-        where: { id: subscription.id },
-        data: { status: 'CANCELED' }
-      });
-      console.log(`Canceled subscription ${subscription.id} for product ${productId}`);
+      switch (notificationType) {
+        case 'SUBSCRIPTION_PURCHASED':
+        case 'SUBSCRIPTION_RENEWED':
+          await this.prisma.subscription.update({
+            where: { googlePlaySubscriptionId: subscriptionId },
+            data: { status: 'ACTIVE' }
+          });
+          break;
+        case 'SUBSCRIPTION_CANCELED':
+        case 'SUBSCRIPTION_EXPIRED':
+          await this.prisma.subscription.update({
+            where: { googlePlaySubscriptionId: subscriptionId },
+            data: { status: 'CANCELED' }
+          });
+          break;
+        default:
+          console.warn(`Unhandled Google Play notification type: ${notificationType}`);
+      }
+    } catch (error) {
+      console.error('Error handling Google Play notification:', error);
+      throw error;
     }
   }
 }
