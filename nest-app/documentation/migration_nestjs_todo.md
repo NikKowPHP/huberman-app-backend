@@ -390,7 +390,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
     *   For each Laravel Queued Job (e.g., `SendProtocolReminderNotification`):
         *   `[x]` **(JOB) Create BullMQ Processor:**
             *   **(LLM Prompt):** "Translate the Laravel Job `app/Jobs/SendProtocolReminderNotification.php` [paste handle() method content] into a NestJS BullMQ Processor class (e.g., `ReminderProcessor.ts`). It should define a handler method decorated with `@Process('jobName')`. The logic should fetch necessary data using Prisma and send the notification."
-        *   `[ ]` **(SVC) Add Job to Queue:**
+        *   `[x]` **(SVC) Add Job to Queue:**
             *   **(LLM Prompt):** "In the NestJS service that originally dispatched the Laravel job (e.g., `ReminderService` in `protocol-engine.service.ts` after creating a reminder, or the `reminders:send-due` command equivalent), inject the BullMQ Queue (`@InjectQueue('queueName')`) and add a job to it (e.g., `await this.reminderQueue.add('jobName', { reminderId: ... });`)."
 *   **Notifications:**
     *   For each Laravel Notification class (e.g., `ProtocolReminder`, `ResetPasswordNotification`):

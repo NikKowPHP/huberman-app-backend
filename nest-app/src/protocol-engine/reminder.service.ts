@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { StoreReminderDto } from './dto/store-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 
 @Injectable()
 export class ReminderService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        @InjectQueue('reminders') private readonly reminderQueue: Queue
+    ) {}
 
     async setReminder(storeReminderDto: StoreReminderDto, user: { id: string }) {
-        return this.prisma.userReminder.create({
+        const reminder = await this.prisma.userReminder.create({
             data: {
                 userId: user.id,
                 reminderTime: storeReminderDto.reminderTime,
@@ -19,6 +24,15 @@ export class ReminderService {
                 protocolId: storeReminderDto.protocolId,
             },
         });
+
+        // Add job to queue for the new reminder
+        if (reminder.isActive) {
+            await this.reminderQueue.add('send-reminder', {
+                reminderId: reminder.id,
+            });
+        }
+
+        return reminder;
     }
 
     async getUserReminders(user: { id: string }) {
@@ -32,10 +46,19 @@ export class ReminderService {
     }
 
     async updateReminder(id: number, updateReminderDto: UpdateReminderDto) {
-        return this.prisma.userReminder.update({
+        const reminder = await this.prisma.userReminder.update({
             where: { id },
             data: updateReminderDto,
         });
+
+        // Update job in queue if reminder is active
+        if (reminder.isActive) {
+            await this.reminderQueue.add('send-reminder', {
+                reminderId: reminder.id,
+            });
+        }
+
+        return reminder;
     }
 
     async deleteReminder(id: number) {
