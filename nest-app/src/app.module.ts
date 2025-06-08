@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TrackingServiceModule } from './tracking-service/tracking-service.module';
 import { OfflineDataModule } from './offline-data/offline-data.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OfflineDataModule } from './offline-data/offline-data.module';
     }),
     TrackingServiceModule,
     OfflineDataModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
