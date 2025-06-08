@@ -374,7 +374,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/miki/projects/huberman-app-backend/nest-app/src/generated/prisma",
+      "value": "/app/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -383,12 +383,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/miki/projects/huberman-app-backend/nest-app/prisma/schema.prisma",
+    "sourceFilePath": "/app/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -402,7 +402,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
