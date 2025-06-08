@@ -60,7 +60,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.service.ts`. Add a basic `TrackingService` class decorated with `@Injectable()`. Inject `PrismaService`. Include placeholder methods based on Laravel's `TrackingServiceInterface`: `logAdherence(user, protocolId, date, notes, metadata)`, `getUserTrackingData(user, protocolId, dateRange)`, `calculateStreak(user, protocolId)`, `getTrackingLogById(user, logId)`, `updateTrackingLog(user, logId, data)`, `deleteTrackingLog(user, logId)`. These methods can initially just log a message or throw `NotImplementedException`."
     *   **(Verification):** File created with the service class, PrismaService injection, and stubbed methods.
 
-*   `[ ]` **FIX.MM.TS.2: Create `tracking.controller.ts`**
+*   `[x]` **FIX.MM.TS.2: Create `tracking.controller.ts`**
     *   **(File):** `nest-app/src/tracking-service/tracking.controller.ts`
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.controller.ts`. Add a `TrackingController` class decorated with `@Controller('tracking')` and `@UseGuards(SupabaseAuthGuard)`. Inject `TrackingService`. Add placeholder methods for `store(@Req() req, @Body() storeTrackingLogDto: StoreTrackingLogDto)` and `getSummary(@Req() req, @Param('protocolId') protocolId: string)`. These methods should call the respective service methods."
     *   **(Verification):** File created with the controller class, service injection, guards, and stubbed endpoint handlers.
