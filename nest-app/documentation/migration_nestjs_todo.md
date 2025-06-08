@@ -1,19 +1,23 @@
-Of course. Here is a highly specialized and detailed TODO list, tailored for a small LLM to execute the migration from Laravel to Nest.js, with the specific requirement that the new project resides in a `./nest-app` subdirectory.
+Understood. This is a crucial clarification for working with a code-generation-only LLM. The model will generate code and file content, but you (the user) will be responsible for running all commands.
 
-Each step is designed to be atomic and includes explicit commands and file paths reflecting this new directory structure.
+The plan is now updated to reflect this workflow. All commands are explicitly marked as **(User Action)**, and instructions are structured as prompts you would give to the LLM.
 
 ---
 
-# Migration Plan: Laravel to Nest.js, Prisma, and Supabase (in `./nest-app`)
+# Migration Plan: Laravel to Nest.js, Prisma, and Supabase (Code Generation Only)
 
-**Project Goal:** To migrate the existing Laravel backend to a Nest.js backend, replacing Eloquent with Prisma ORM and leveraging Supabase for database hosting and user authentication.
+**Project Goal:** To generate the complete source code for migrating the existing Laravel backend to a Nest.js backend within a `./nest-app` directory.
 
-**IMPORTANT NOTE:** All commands must be executed from the **project root directory**, not from within `nest-app`. All file paths will be relative to the root, e.g., `nest-app/src/main.ts`.
+**Workflow:**
+1.  **User (You):** Execute any command-line actions marked as **(User Action)**.
+2.  **LLM (AI Model):** Generate only the code or file content for each step when prompted.
+
+**IMPORTANT NOTE:** All file paths in the instructions are relative to the project root (e.g., `nest-app/src/main.ts`).
 
 **Legend:**
 *   `[ ]` - To Do
-*   `(DB)` - Database-related task (Prisma Schema, Migrations)
-*   `(AUTH)` - Authentication-related task (Supabase Auth)
+*   `(DB)` - Database-related task
+*   `(AUTH)` - Authentication-related task
 *   `(API)` - API Endpoint/Controller task
 *   `(LOGIC)` - Business logic/Service task
 *   `(SETUP)` - Project configuration or setup task
@@ -23,179 +27,124 @@ Each step is designed to be atomic and includes explicit commands and file paths
 ## Phase 0: Project Foundation & Environment Setup
 
 *   `[ ]` **(SETUP)** **Initialize Nest.js Project in `nest-app` Directory:**
-    *   From the project root, run the NestJS CLI to create the new project inside the `nest-app` folder.
+    *   **_** (User Action)**_** From the project root, run the NestJS CLI:
         ```bash
         npx @nestjs/cli new nest-app
         ```
 
 *   `[ ]` **(SETUP)** **Supabase Project Setup:**
-    *   `[ ]` Go to [supabase.com](https://supabase.com) and create a new project.
-    *   `[ ]` Navigate to "Project Settings" > "Database" and copy the **Connection String (URI)**.
-    *   `[ ]` Navigate to "Project Settings" > "API" and copy the **Project URL** and the `anon` **public key**.
+    *   **_** (User Action)**_** Go to [supabase.com](https://supabase.com), create a new project, and note the following:
+        *   Database Connection String (URI)
+        *   Project URL
+        *   `anon` public key
 
 *   `[ ]` **(SETUP)** **Environment Configuration:**
-    *   `[ ]` Create a file at `nest-app/.env`.
-    *   `[ ]` Add the following environment variables, pasting the values from Supabase and your Stripe test keys.
-        ```env
-        # Supabase
-        DATABASE_URL="<YOUR_SUPABASE_CONNECTION_STRING_URI>"
-        SUPABASE_URL="<YOUR_SUPABASE_PROJECT_URL>"
-        SUPABASE_ANON_KEY="<YOUR_SUPABASE_ANON_KEY>"
+    *   `[ ]` **Prompt to LLM:** "Generate the content for the file `nest-app/.env` with placeholders for Supabase and Stripe credentials."
+        *   **Expected LLM Output:**
+          ```env
+          # Supabase
+          DATABASE_URL="<PASTE_YOUR_SUPABASE_CONNECTION_STRING_URI_HERE>"
+          SUPABASE_URL="<PASTE_YOUR_SUPABASE_PROJECT_URL_HERE>"
+          SUPABASE_ANON_KEY="<PASTE_YOUR_SUPABASE_ANON_KEY_HERE>"
 
-        # Stripe
-        STRIPE_SECRET_KEY="sk_test_..."
-        STRIPE_WEBHOOK_SECRET="whsec_..."
-        
-        # App
-        PORT=3000
-        ```
+          # Stripe
+          STRIPE_SECRET_KEY="sk_test_..."
+          STRIPE_WEBHOOK_SECRET="whsec_..."
+          
+          # App
+          PORT=3000
+          ```
+    *   **_** (User Action)**_** Manually paste your credentials into the generated `nest-app/.env` file.
 
 *   `[ ]` **(SETUP)** **Prisma Integration:**
-    *   `[ ]` Install Prisma CLI and Client within the `nest-app` project.
+    *   **_** (User Action)**_** Install Prisma dependencies:
         ```bash
         cd nest-app && npm install prisma --save-dev && npm install @prisma/client && cd ..
         ```
-    *   `[ ]` Initialize Prisma. This creates the `nest-app/prisma` directory.
+    *   **_** (User Action)**_** Initialize Prisma:
         ```bash
         npx prisma init --schema-path=./nest-app/prisma/schema.prisma
         ```
-    *   `[ ]` In `nest-app/prisma/schema.prisma`, ensure the `datasource db` block points to the Supabase PostgreSQL database via the environment variable.
-        ```prisma
-        datasource db {
-          provider = "postgresql"
-          url      = env("DATABASE_URL")
-        }
+    *   `[ ]` **Prompt to LLM:** "Generate the content for `nest-app/prisma/schema.prisma` to configure the PostgreSQL datasource and client generator."
+        *   **Expected LLM Output:**
+          ```prisma
+          datasource db {
+            provider = "postgresql"
+            url      = env("DATABASE_URL")
+          }
 
-        generator client {
-          provider = "prisma-client-js"
-        }
-        ```
+          generator client {
+            provider = "prisma-client-js"
+          }
+          ```
 
 *   `[ ]` **(SETUP)** **Create Core NestJS Modules:**
-    *   `[ ]` From the project root, generate a `PrismaService` for database access.
+    *   **_** (User Action)**_** Generate the necessary modules, services, and controllers using the NestJS CLI from the project root.
         ```bash
+        # Common Services
+        nest g module nest-app/src/common
         nest g service nest-app/src/common/prisma --no-spec
+        nest g service nest-app/src/common/supabase --no-spec
+        
+        # Feature Modules
+        nest g module nest-app/src/authentication && nest g controller nest-app/src/authentication --no-spec && nest g service nest-app/src/authentication --no-spec
+        nest g module nest-app/src/user-management && nest g controller nest-app/src/user-management --no-spec && nest g service nest-app/src/user-management --no-spec
+        nest g module nest-app/src/subscription-billing && nest g controller nest-app/src/subscription-billing --no-spec && nest g service nest-app/src/subscription-billing --no-spec
+        nest g module nest-app/src/content-management && nest g controller nest-app/src/content-management --no-spec && nest g service nest-app/src/content-management --no-spec
+        nest g module nest-app/src/notes-service && nest g controller nest-app/src/notes-service --no-spec && nest g service nest-app/src/notes-service --no-spec
+        nest g module nest-app/src/protocol-engine && nest g controller nest-app/src/protocol-engine --no-spec && nest g service nest-app/src/protocol-engine --no-spec
+        nest g module nest-app/src/tracking-service && nest g controller nest-app/src/tracking-service --no-spec && nest g service nest-app/src/tracking-service --no-spec
         ```
-    *   `[ ]` In `nest-app/src/common/prisma/prisma.service.ts`, implement the service to extend the Prisma Client.
-        ```typescript
-        import { Injectable, OnModuleInit } from '@nestjs/common';
-        import { PrismaClient } from '@prisma/client';
-
-        @Injectable()
-        export class PrismaService extends PrismaClient implements OnModuleInit {
-          async onModuleInit() {
-            await this.$connect();
-          }
-        }
-        ```
-    *   `[ ]` From the root, generate the necessary modules.
-        ```bash
-        nest g module nest-app/src/authentication
-        nest g module nest-app/src/user-management
-        nest g module nest-app/src/subscription-billing
-        nest g module nest-app/src/content-management
-        nest g module nest-app/src/notes-service
-        nest g module nest-app/src/protocol-engine
-        nest g module nest-app/src/tracking-service
-        ```
+    *   `[ ]` **Prompt to LLM:** "Generate the implementation for the PrismaService in `nest-app/src/common/prisma/prisma.service.ts`."
+        *   **(User Action)** Place the generated code in the file.
 
 ---
 
 ## Phase 1: User Authentication with Supabase
 
-*   `[ ]` **(AUTH)** **Supabase Auth Integration:**
-    *   `[ ]` Install the Supabase client library.
+*   `[ ]` **(AUTH)** **Supabase Client Library:**
+    *   **_** (User Action)**_** Install the Supabase client library:
         ```bash
         cd nest-app && npm install @supabase/supabase-js && cd ..
         ```
-    *   `[ ]` Generate a `SupabaseService` for Auth interactions.
-        ```bash
-        nest g service nest-app/src/common/supabase --no-spec
-        ```
-    *   `[ ]` Implement the `SupabaseService` in `nest-app/src/common/supabase/supabase.service.ts`.
 
-*   `[ ]` **(DB)** **Define User Schema in Prisma:**
-    *   `[ ]` In `nest-app/prisma/schema.prisma`, define the `User` model. This model will sync with `auth.users` via a trigger. **Do not add a password field.**
-        ```prisma
-        model User {
-          id                  String    @id @default(uuid()) // Match Supabase Auth UUID
-          email               String    @unique
-          name                String?
-          profilePictureUrl   String?   @map("profile_picture_url")
-          stripeId            String?   @unique @map("stripe_id")
-          appstoreTransactionId String? @unique @map("appstore_transaction_id")
-          createdAt           DateTime  @default(now()) @map("created_at")
-          updatedAt           DateTime  @updatedAt @map("updated_at")
-          deletedAt           DateTime? @map("deleted_at")
+*   `[ ]` **(AUTH)** **Supabase Service Implementation:**
+    *   `[ ]` **Prompt to LLM:** "Generate the implementation for the SupabaseService in `nest-app/src/common/supabase/supabase.service.ts` to initialize the client using environment variables."
 
-          // Relationships will be added here
+*   `[ ]` **(DB)** **Prisma User Schema:**
+    *   `[ ]` **Prompt to LLM:** "Based on the Laravel User model and the need to sync with Supabase Auth, generate the `User` model for `nest-app/prisma/schema.prisma`." (Provide the old Laravel model for context if needed).
 
-          @@map("users") // Maps to the 'users' table in the 'public' schema
-        }
-        ```
+*   `[ ]` **(DB)** **User Sync Trigger (Manual Step):**
+    *   `[ ]` **Prompt to LLM:** "Generate the SQL function and trigger needed to sync new users from `auth.users` to `public.users` in Supabase."
+    *   **_** (User Action)**_** Copy the generated SQL and run it in the Supabase "SQL Editor".
 
-*   `[ ]` **(DB)** **Create User Sync Trigger in Supabase:**
-    *   `[ ]` In the Supabase dashboard, go to "SQL Editor".
-    *   `[ ]` Run the following SQL to create a function and trigger that automatically populates your `public.users` table whenever a new user signs up via Supabase Auth.
-        ```sql
-        -- SQL function to run on new user creation
-        create or replace function public.handle_new_user()
-        returns trigger
-        language plpgsql
-        security definer set search_path = public
-        as $$
-        begin
-          insert into public.users (id, email)
-          values (new.id, new.email);
-          return new;
-        end;
-        $$;
+*   `[ ]` **(API)** **Authentication Endpoints:**
+    *   `[ ]` **Prompt to LLM:** "Generate the code for `nest-app/src/authentication/authentication.controller.ts` and `authentication.service.ts` to implement the `register`, `login`, and `logout` endpoints using the SupabaseService."
 
-        -- Trigger to call the function
-        create or replace trigger on_auth_user_created
-          after insert on auth.users
-          for each row execute procedure public.handle_new_user();
-        ```
-
-*   `[ ]` **(API)** **Implement Authentication Endpoints:**
-    *   `[ ]` Generate the `AuthController` in the `authentication` module.
-    *   `[ ]` **Register:** Implement `POST /auth/register` to call `supabase.auth.signUp()`.
-    *   `[ ]` **Login:** Implement `POST /auth/login` to call `supabase.auth.signInWithPassword()`.
-    *   `[ ]` **Logout:** Implement `POST /auth/logout` to call `supabase.auth.signOut()`.
-
-*   `[ ]` **(AUTH)** **Create Authentication Guard:**
-    *   `[ ]` Create an `AuthGuard` in the `authentication` module.
-    *   `[ ]` The guard should extract the JWT from the `Authorization: Bearer` header, validate it with `supabase.auth.getUser(jwt)`, and attach the user to the request.
+*   `[ ]` **(AUTH)** **Authentication Guard:**
+    *   `[ ]` **Prompt to LLM:** "Generate a NestJS `AuthGuard` named `supabase-auth.guard.ts` inside `nest-app/src/authentication/guards/`. It should use the SupabaseService to validate the JWT from the Authorization header."
 
 ---
 
-## Phase 2: Database Schema Migration & Seeding
+## Phase 2: Database Schema Migration
 
-*   `[ ]` **(DB)** **Translate All Laravel Migrations to Prisma Schema:**
-    *   `[ ]` Open `nest-app/prisma/schema.prisma`.
-    *   `[ ]` Systematically go through every `create_*_table.php` file from the Laravel project.
-    *   `[ ]` For each Laravel migration, create a corresponding `model` in `schema.prisma`. Use `@map` to keep snake_case table and column names.
-        *   `[ ]` `Plan` model (`plans` table).
-        *   `[ ]` `Subscription` model (`subscriptions` table).
-        *   `[ ]` `Episode`, `Protocol`, `Summary` models.
-        *   `[ ]` `Note`, `NoteCategory`, `NoteTag` models and their pivots.
-        *   `[ ]` `UserReminder` model (`user_reminders` table).
-        *   `[ ]` `Routine`, `RoutineStep` models.
-        *   `[ ]` `TrackingLog` model (`user_protocol_tracking` table).
-        *   `[ ]` `Post`, `Comment` models.
-    *   `[ ]` Add `@relation` fields to all models to define relationships (e.g., `user User @relation(fields: [userId], references: [id])`).
+*   `[ ]` **(DB)** **Translate Laravel Migrations to Prisma Schema:**
+    *   `[ ]` For each Laravel migration file:
+        *   `[ ]` **Prompt to LLM:** "Here is the Laravel migration content for `create_plans_table`. Generate the corresponding Prisma model to be added to `nest-app/prisma/schema.prisma`."
+        *   **_** (User Action)**_** Copy the generated model into your `schema.prisma` file.
+        *   Repeat for all tables: `subscriptions`, `episodes`, `protocols`, `summaries`, `notes`, `note_categories`, `note_tags`, `user_reminders`, `routines`, `routine_steps`, `tracking_logs`, `posts`, `comments`, and all pivot tables. Ensure you prompt the LLM to add `@relation` attributes for foreign keys.
 
 *   `[ ]` **(DB)** **Run Prisma Migration:**
-    *   `[ ]` Generate and apply the migration to your Supabase DB.
+    *   **_** (User Action)**_** Review the complete `nest-app/prisma/schema.prisma` file for accuracy.
+    *   **_** (User Action)**_** Create and apply the migration against your Supabase database. This command will create the tables.
         ```bash
         npx prisma migrate dev --schema=./nest-app/prisma/schema.prisma --name "initial-schema"
         ```
 
 *   `[ ]` **(DB)** **Create Seed Script:**
-    *   `[ ]` In `nest-app/package.json`, add the seed script: `"prisma": { "seed": "ts-node prisma/seed.ts" }`.
-    *   `[ ]` Create the file `nest-app/prisma/seed.ts`.
-    *   `[ ]` Translate the logic from Laravel's seeders into this file, using the Prisma Client to create records.
-    *   `[ ]` Run the seeder.
+    *   `[ ]` **Prompt to LLM:** "Here is the content of the Laravel `PlanSeeder.php`. Generate the TypeScript code for a Prisma seed script in `nest-app/prisma/seed.ts` that accomplishes the same thing."
+    *   `[ ]` Repeat this process for all other Laravel seeders (`EpisodeSeeder`, `ProtocolSeeder`, etc.), appending the logic to the `seed.ts` file.
+    *   **_** (User Action)**_** Run the seeder to populate your database.
         ```bash
         npx prisma db seed --schema=./nest-app/prisma/schema.prisma
         ```
@@ -204,50 +153,32 @@ Each step is designed to be atomic and includes explicit commands and file paths
 
 ## Phase 3-6: Feature & API Endpoint Migration
 
-For each feature module, follow this pattern:
-1.  Generate the `Controller` and `Service`.
-2.  Implement the service methods using `PrismaService`.
-3.  Implement the controller methods, calling the service.
-4.  Apply `AuthGuard` and the `PremiumGuard` (created in the next step) where necessary.
+**For each module (Content, Billing, Notes, etc.):**
 
-*   `[ ]` **(LOGIC)** **Implement Feature Gating Guard:**
-    *   `[ ]` Create `PremiumGuard` in a shared location (e.g., `nest-app/src/common/guards`).
-    *   `[ ]` The guard injects `PrismaService`, finds the logged-in user's subscription, and verifies their premium status (`active` or `trialing`). Throws `ForbiddenException` if not premium.
-
-*   `[ ]` **(API)** **Subscription & Billing Module:**
-    *   `[ ]` Implement `GET /plans` endpoint.
-    *   `[ ]` Implement `GET /user/subscription` endpoint (protected by `AuthGuard`).
-    *   `[ ]` Implement `POST /webhooks/stripe` endpoint with Stripe signature verification.
-
-*   `[ ]` **(API)** **Notes Service Module:**
-    *   `[ ]` Implement all CRUD endpoints for notes, protected by `AuthGuard`.
-
-*   `[ ]` **(API & LOGIC)** **Protocol Engine Module:**
-    *   `[ ]` Implement CRUD endpoints for `UserReminder`, protected by `AuthGuard` and `PremiumGuard`.
-    *   `[ ]` Set up NestJS scheduler (`@nestjs/schedule`) with a `@Cron()` job to handle sending reminders.
-
-*   `[ ]` **(API)** **Tracking Service Module:**
-    *   `[ ]` Implement `POST /tracking/log` and `GET /tracking/summary`, protected by `AuthGuard` and `PremiumGuard`.
-    *   `[ ]` Port the `calculateStreak` logic into the `TrackingService`.
+1.  **Service Logic:**
+    *   `[ ]` **Prompt to LLM:** "Here is the Laravel `ContentService.php`. Generate the equivalent `ContentService.ts` in `nest-app/src/content-management/` using PrismaService for database queries." (Repeat for each service).
+2.  **Controller Logic:**
+    *   `[ ]` **Prompt to LLM:** "Here is the Laravel `ProtocolController.php`. Generate the equivalent `ProtocolController.ts` in `nest-app/src/content-management/`. It should use the `ContentService` and apply the `AuthGuard` and a placeholder `PremiumGuard` where necessary." (Repeat for each controller).
+3.  **DTOs (Data Transfer Objects):**
+    *   `[ ]` **Prompt to LLM:** "Here is the Laravel `StoreRoutineRequest.php`. Generate the equivalent NestJS DTO class with validation decorators (`class-validator`) in a file named `nest-app/src/protocol-engine/dto/store-routine.dto.ts`." (Repeat for each request validation file).
+4.  **Guards:**
+    *   `[ ]` **Prompt to LLM:** "Generate the code for the `PremiumGuard` in `nest-app/src/common/guards/premium.guard.ts`. It should inject PrismaService, get the user from the request, and check their subscription status, throwing a `ForbiddenException` if they are not premium."
 
 ---
 
 ## Phase 7: Finalization & Documentation
 
 *   `[ ]` **(SETUP)** **API Documentation with Swagger:**
-    *   `[ ]` Install `@nestjs/swagger`.
+    *   **_** (User Action)**_** Install Swagger dependencies:
         ```bash
         cd nest-app && npm install @nestjs/swagger && cd ..
         ```
-    *   `[ ]` In `nest-app/src/main.ts`, configure the Swagger module to generate interactive API documentation.
-    *   `[ ]` Annotate DTOs (Data Transfer Objects) and controller methods across the application with Swagger decorators.
-
-*   `[ ]` **(SETUP)** **Testing:**
-    *   `[ ]` Write unit tests for services, mocking the `PrismaService`.
-    *   `[ ]` Write E2E tests for controllers to test the full request/response flow against a separate test database instance if possible.
+    *   `[ ]` **Prompt to LLM:** "Generate the necessary code to add Swagger (OpenAPI) documentation setup to the `nest-app/src/main.ts` file."
+    *   `[ ]` For each DTO and Controller:
+        *   `[ ]` **Prompt to LLM:** "Add the necessary `@Api...` decorators from `@nestjs/swagger` to this DTO file to document its properties."
+        *   `[ ]` **Prompt to LLM:** "Add the necessary `@ApiOperation` and `@ApiResponse` decorators to this Controller file to document its endpoints."
 
 *   `[ ]` **(SETUP)** **Final Review & Cleanup:**
-    *   `[ ]` Review all code, ensuring consistency and proper use of NestJS/Prisma patterns.
-    *   `[ ]` Verify all `.env` variables are being loaded and used correctly.
-    *   `[ ]` Delete all old Laravel project files and documentation from the root directory, leaving only the `nest-app` folder and root configuration files (`.gitignore`, etc.).
-    *   `[ ]` Update the root `README.md` to describe the new Nest.js project.
+    *   **_** (User Action)**_** Manually review all generated code for correctness.
+    *   **_** (User Action)**_** Delete the old Laravel project files and documentation.
+    *   `[ ]` **Prompt to LLM:** "Generate a new `README.md` for the project root that describes the Nest.js application in the `nest-app` directory."
