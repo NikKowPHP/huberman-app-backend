@@ -11,4 +11,7 @@ export class CreateNoteDto {
     @IsOptional()
     @IsBoolean()
     isPublic?: boolean;
+
+    @IsString()
+    userId: string;
 }

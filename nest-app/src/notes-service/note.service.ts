@@ -1,44 +1,103 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
+import { SubscriptionBillingService } from '../../subscription-billing/subscription-billing.service';
+import { CreateNoteDto } from './dto/create-note.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Injectable()
 export class NoteService {
-  constructor(private readonly prisma: PrismaService) {}
+    private readonly MAX_FREE_NOTES = 5;
 
-  async createNote(data: any) {
-    const user = { id: 1 }; // Placeholder for the authenticated user
-    data.userId = user.id;
-    return this.prisma.note.create({ data });
-  }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly subscriptionBillingService: SubscriptionBillingService
+    ) {}
 
-  async getNote(id: number) {
-    return this.prisma.note.findUnique({ where: { id } });
-  }
+    async createNote(createNoteDto: CreateNoteDto) {
+        const { userId, ...data } = createNoteDto;
 
-  async updateNote(id: number, data: any) {
-    return this.prisma.note.update({ where: { id }, data });
-  }
+        if (await this.subscriptionBillingService.userHasActivePremiumSubscription(userId)) {
+            return this.prisma.note.create({
+                data: {
+                    ...data,
+                    userId
+                }
+            });
+        }
 
-  async deleteNote(id: number) {
-    return this.prisma.note.delete({ where: { id } });
-  }
+        const noteCount = await this.prisma.note.count({
+            where: { userId },
+        });
 
-  async getUserNotesCount(userId: number) {
-    return this.prisma.note.count({ where: { userId } });
-  }
+        if (noteCount >= this.MAX_FREE_NOTES) {
+            throw new ForbiddenException('Free note limit reached');
+        }
 
-  async getPublicNotes() {
-    return this.prisma.note.findMany({ where: { isPublic: true } });
-  }
+        return this.prisma.note.create({
+            data: {
+                ...data,
+                userId
+            }
+        });
+    }
 
-  async getUserNotes() {
-    const user = { id: 1 }; // Placeholder for the authenticated user
-    return this.prisma.note.findMany({ where: { userId: user.id } });
-  }
+    async getNote(id: string, userId: string) {
+        const note = await this.prisma.note.findUnique({ where: { id } });
+        
+        if (!note || note.userId !== userId) {
+            throw new ForbiddenException('Note not found or access denied');
+        }
+        
+        return note;
+    }
 
-  async getPublicNotesForEpisode(episodeId: number) {
-    return this.prisma.note.findMany({
-      where: { episodeId, isPublic: true },
-    });
-  }
+    async updateNote(id: string, updateNoteDto: UpdateNoteDto, userId: string) {
+        const note = await this.prisma.note.findUnique({ where: { id } });
+        
+        if (!note || note.userId !== userId) {
+            throw new ForbiddenException('Note not found or access denied');
+        }
+        
+        return this.prisma.note.update({
+            where: { id },
+            data: updateNoteDto
+        });
+    }
+
+    async deleteNote(id: string, userId: string) {
+        const note = await this.prisma.note.findUnique({ where: { id } });
+        
+        if (!note || note.userId !== userId) {
+            throw new ForbiddenException('Note not found or access denied');
+        }
+        
+        return this.prisma.note.delete({ where: { id } });
+    }
+
+    async getPublicNotes() {
+        return this.prisma.note.findMany({
+            where: { isPublic: true }
+        });
+    }
+
+    async getUserNotes(userId: string) {
+        return this.prisma.note.findMany({
+            where: { userId }
+        });
+    }
+
+    async getPublicNotesForEpisode(episodeId: string) {
+        return this.prisma.note.findMany({
+            where: { episodeId, isPublic: true },
+        });
+    }
+
+    async attachCategoryToNote(noteId: string, categoryId: string) {
+        return this.prisma.noteCategoryPivot.create({
+            data: {
+                noteId,
+                categoryId,
+            },
+        });
+    }
 }

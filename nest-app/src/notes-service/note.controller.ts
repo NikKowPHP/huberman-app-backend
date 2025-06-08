@@ -8,7 +8,6 @@ import {
     Delete,
     UseGuards,
     Req,
-    NotFoundException,
 } from '@nestjs/common';
 import { NoteService } from './note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -39,10 +38,8 @@ export class NoteController {
     @Get(':id')
     @UseGuards(SupabaseAuthGuard)
     async show(@Req() req: Request, @Param('id') id: string) {
-        const note = await this.noteService.getNote(id);
-        if (!note || note.userId !== (req as any).user.sub) {
-            throw new NotFoundException('Note not found');
-        }
+        const userId = (req as any).user.sub;
+        const note = await this.noteService.getNote(id, userId);
         return { data: note };
     }
 
@@ -53,22 +50,16 @@ export class NoteController {
         @Param('id') id: string,
         @Body() updateNoteDto: UpdateNoteDto,
     ) {
-        const note = await this.noteService.getNote(id);
-        if (!note || note.userId !== (req as any).user.sub) {
-            throw new NotFoundException('Note not found');
-        }
-        const updatedNote = await this.noteService.updateNote(id, updateNoteDto);
+        const userId = (req as any).user.sub;
+        const updatedNote = await this.noteService.updateNote(id, updateNoteDto, userId);
         return { data: updatedNote };
     }
 
     @Delete(':id')
     @UseGuards(SupabaseAuthGuard)
     async destroy(@Req() req: Request, @Param('id') id: string) {
-        const note = await this.noteService.getNote(id);
-        if (!note || note.userId !== (req as any).user.sub) {
-            throw new NotFoundException('Note not found');
-        }
-        await this.noteService.deleteNote(id);
+        const userId = (req as any).user.sub;
+        await this.noteService.deleteNote(id, userId);
         return { data: null };
     }
 
