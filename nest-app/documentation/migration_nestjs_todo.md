@@ -75,7 +75,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking-service.module.ts`. Define `TrackingServiceModule` importing necessary common modules (like `PrismaModule` if you have one, or provide `PrismaService` directly). Declare `TrackingController` and `TrackingService`."
     *   **(Verification):** Module file created, controller and service declared.
 
-*   `[ ]` **FIX.MM.TS.5: Register `TrackingServiceModule` in `app.module.ts`**
+*   `[x]` **FIX.MM.TS.5: Register `TrackingServiceModule` in `app.module.ts`**
     *   **(File):** `nest-app/src/app.module.ts`
     *   **(LLM Prompt):** "In `nest-app/src/app.module.ts`, import and add `TrackingServiceModule` to the `imports` array."
     *   **(Verification):** `TrackingServiceModule` is imported and added.
