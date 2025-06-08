@@ -7,7 +7,7 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 export class ReminderService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async setReminder(user: any, storeReminderDto: StoreReminderDto) {
+    async setReminder(storeReminderDto: StoreReminderDto, user: { id: string }) {
         return this.prisma.userReminder.create({
             data: {
                 userId: user.id,
@@ -21,7 +21,7 @@ export class ReminderService {
         });
     }
 
-    async getUserReminders(user: any) {
+    async getUserReminders(user: { id: string }) {
         return this.prisma.userReminder.findMany({
             where: { userId: user.id },
         });

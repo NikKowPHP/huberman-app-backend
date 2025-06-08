@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { ReminderService } from './reminder.service';
 import { StoreReminderDto } from './dto/store-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
@@ -10,14 +11,14 @@ export class ReminderController {
 
   @Post()
   @UseGuards(SupabaseAuthGuard)
-  async store(@Body() storeReminderDto: StoreReminderDto) {
-    return this.reminderService.setReminder(storeReminderDto);
+  async store(@Body() storeReminderDto: StoreReminderDto, @Req() request: Request) {
+      return this.reminderService.setReminder(storeReminderDto, { id: request['user'].sub });
   }
 
   @Get()
   @UseGuards(SupabaseAuthGuard)
-  async index() {
-    return this.reminderService.getUserReminders();
+  async index(@Req() request: Request) {
+      return this.reminderService.getUserReminders({ id: request['user'].sub });
   }
 
   @Get(':id')
