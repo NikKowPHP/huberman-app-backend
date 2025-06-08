@@ -176,7 +176,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 ## Phase FIX.4: Guard & Authorization Refinement
 
-*   `[ ]` **FIX.GUARD.PG.1: `PremiumGuard` - Refine to use `SubscriptionBillingService`**
+*   `[x]` **FIX.GUARD.PG.1: `PremiumGuard` - Refine to use `SubscriptionBillingService`**
     *   **(File):** `nest-app/src/common/guards/premium.guard.ts`
     *   **(LLM Prompt):** "Modify `nest-app/src/common/guards/premium.guard.ts`. Inject `SubscriptionBillingService`. In the `canActivate` method, instead of querying Prisma directly, call `this.subscriptionBillingService.userHasActivePremiumSubscription(user.id)` (or `user.sub` depending on how Supabase user ID is populated on `request.user`). Ensure `user` and `user.id`/`user.sub` are correctly accessed from the request."
     *   **(Verification):** `PremiumGuard` now uses `SubscriptionBillingService`.

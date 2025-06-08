@@ -1,9 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { SubscriptionBillingService } from '../../subscription-billing/subscription-billing.service';
 
 @Injectable()
 export class PremiumGuard implements CanActivate {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly subscriptionBillingService: SubscriptionBillingService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -13,10 +13,6 @@ export class PremiumGuard implements CanActivate {
       return false;
     }
 
-    const subscription = await this.prisma.subscription.findFirst({
-      where: { userId: user.id, plan: { isActive: true } },
-    });
-
-    return !!subscription;
+    return this.subscriptionBillingService.userHasActivePremiumSubscription(user.id);
   }
 }
