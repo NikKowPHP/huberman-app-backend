@@ -115,7 +115,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Review the existing `nest-app/src/content-management/content.service.ts`. Ensure all methods from Laravel's `ContentServiceInterface` (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`) are fully implemented using Prisma Client, matching the logic of `app/Modules/ContentManagement/Services/ContentService.php`. Pay attention to any conditional logic for free/premium content if it was handled in the Laravel service."
     *   **(Verification):** Service methods correctly query and return data using Prisma, matching Laravel's logic.
 
-*   `[ ]` **FIX.BL.NS.1: `NoteService` - Review & Complete**
+*   `[x]` **FIX.BL.NS.1: `NoteService` - Review & Complete**
     *   **(File):** `nest-app/src/notes-service/note.service.ts`
     *   **(LLM Prompt):** "Review `nest-app/src/notes-service/note.service.ts`. Ensure all methods like `createNote`, `getNote`, `updateNote`, `deleteNote`, `getUserNotesCount`, `getPublicNotes`, `getPublicNotesForEpisode`, `attachCategoryToNote` accurately port logic from `app/Modules/NotesService/Services/NoteService.php` and `app/Services/NoteService.php` using Prisma. Ensure free note limit (`MAX_FREE_NOTES`) and ownership checks are correctly implemented, throwing `ForbiddenException` or `NotFoundException` as appropriate. The `attachCategoryToNote` method should create a record in `NoteCategoryPivot`."
     *   **(Verification):** All methods implemented with correct Prisma queries and authorization logic.
