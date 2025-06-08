@@ -150,7 +150,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Ensure `StoreTrackingLogDto` in `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts` matches the validation rules from Laravel's `app/Modules/TrackingService/Http/Requests/StoreTrackingLogRequest.php`: `protocol_id` (required, integer, exists:protocols,id), `tracked_at` (required, date_format:Y-m-d), `notes` (nullable, string, max:10000), `metadata` (nullable, array), `metadata.*` (nullable, string, max:255). Use `class-validator` decorators. Add `@ApiProperty()` for Swagger."
     *   **(Verification):** DTO has correct properties, validation, and Swagger decorators.
 
-*   `[ ]` **FIX.CTRL.TS.1: `TrackingController` - Implement Endpoints**
+*   `[x]` **FIX.CTRL.TS.1: `TrackingController` - Implement Endpoints**
     *   **(File):** `nest-app/src/tracking-service/tracking.controller.ts`
     *   **(LLM Prompt):** "Implement the `store` and `getSummary` methods in `nest-app/src/tracking-service/tracking.controller.ts`.
         *   `store`: Use `@Post('/log')`, `@Body() storeTrackingLogDto: StoreTrackingLogDto`, `@Req() req`. Call `trackingService.logAdherence()`. Add `@ApiOperation` and `@ApiResponse` decorators.
