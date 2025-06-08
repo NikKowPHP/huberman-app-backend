@@ -357,7 +357,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
             2.  Call the appropriate method in `SubscriptionBillingService` based on `event.type`.
             3.  Return a 200 OK response to Stripe."
 *   **Apple App Store Server Notifications (V2):**
-    *   `[ ]` **(SVC) JWS Verification & Processing:**
+    *   `[x]` **(SVC) JWS Verification & Processing:**
         *   **(LLM Prompt):** "Review the `AppleSubscriptionService.php` from Laravel [paste content]. Implement similar JWS decoding and verification logic within `nest-app/src/subscription-billing/subscription-billing.service.ts` (or a new `apple.service.ts`). Use a suitable JWT library for Node.js/NestJS (e.g., `jsonwebtoken` or NestJS's `@nestjs/jwt`). Include logic for fetching Apple's public keys."
     *   For each Apple notification type handled (e.g., `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`):
         *   `[ ]` **(SVC) Migrate Apple Notification Handler:**
