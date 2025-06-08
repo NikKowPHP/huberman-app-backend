@@ -120,7 +120,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Review `nest-app/src/notes-service/note.service.ts`. Ensure all methods like `createNote`, `getNote`, `updateNote`, `deleteNote`, `getUserNotesCount`, `getPublicNotes`, `getPublicNotesForEpisode`, `attachCategoryToNote` accurately port logic from `app/Modules/NotesService/Services/NoteService.php` and `app/Services/NoteService.php` using Prisma. Ensure free note limit (`MAX_FREE_NOTES`) and ownership checks are correctly implemented, throwing `ForbiddenException` or `NotFoundException` as appropriate. The `attachCategoryToNote` method should create a record in `NoteCategoryPivot`."
     *   **(Verification):** All methods implemented with correct Prisma queries and authorization logic.
 
-*   `[ ]` **FIX.BL.RS.1: `ReminderService` - Review & Complete**
+*   `[x]` **FIX.BL.RS.1: `ReminderService` - Review & Complete**
     *   **(File):** `nest-app/src/protocol-engine/reminder.service.ts`
     *   **(LLM Prompt):** "Review `nest-app/src/protocol-engine/reminder.service.ts`. Ensure methods `setReminder`, `getUserReminders`, `getReminder`, `updateReminder`, `deleteReminder` port logic from `app/Modules/ProtocolEngine/Services/ReminderService.php` using Prisma. Ensure jobs are correctly added to the BullMQ 'reminders' queue when reminders are created/updated and active."
     *   **(Verification):** Methods implemented with Prisma and BullMQ integration.
