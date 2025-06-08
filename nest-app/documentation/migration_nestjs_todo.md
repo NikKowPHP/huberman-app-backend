@@ -98,21 +98,186 @@ Okay, this is an excellent request. Based on my previous observations, here's a 
     *   `[x]` **(DB) Comment Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `Comment` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100005_create_comments_table.php` and model `app/Models/Comment.php`. Include `user_id`, `post_id`, `content`. Define relations."
     *   `[x]` **(DB) UserDevice Model:** (Already covered and seems fine)
-        *   **(LLM Prompt):** "Refine the existing `UserDevice` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_104700_create_user_devices_table.php` and model `app/Modules/UserManagement/Models/UserDevice.php`. Ensure it includes `userId`, `device_token`, `platform`."
+        *   **(LLM Prompt):** "Refine the existing `UserDevice` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_104700_create_user_devices_table.php` and model `app/Modules/UserManagement/Models/UserDevice.php`. Ensure it includes `userId`, `device_token`, `platform`.
 
-*   `[ ]` **(DB) Prisma Enums:**
-    *   **(LLM Prompt):** "Review all Laravel migrations and models. If any fields use enums (like `Plan.interval` which is already done), ensure corresponding enums are defined in `nest-app/prisma/schema.prisma`."
-*   `[ ]` **(DB) Apply Prisma Migrations (User Action):**
-    *   **_**(User Action)**_** Review the complete `nest-app/prisma/schema.prisma` file for accuracy.
-    *   **_**(User Action)**_** Create and apply the migration against your Supabase database:
-        ```bash
-        npx prisma migrate dev --schema=./nest-app/prisma/schema.prisma --name "complete-laravel-schema-migration"
+
+
+
+Okay, you're right. "Review all" is too broad for an LLM that generates code based on specific instructions. Let's break down the **"(DB) Prisma Enums"** and the subsequent **"(DB) Apply Prisma Migrations"** steps into a much more granular, actionable list for your LLM.
+
+We will go field by field for potential enums identified from the Laravel codebase.
+
+---
+
+## Phase 2 (Continued): Comprehensive Database Schema Migration to Prisma - Detailed Enum Implementation
+
+**Previous Step Context:** You have already prompted the LLM to generate the basic Prisma models for most tables. Now we refine them with enums.
+
+**Action Item:** Update the `nest-app/prisma/schema.prisma` file by adding the following Enum definitions first, and then prompting the LLM to modify existing model fields to use these enums.
+
+---
+
+**2.A. Define All Necessary Enums in `nest-app/prisma/schema.prisma`**
+
+*   `[x]` **(DB) `PlanInterval` Enum (Already Done & Verified)**
+    *   **Context:** This enum is already present in your `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_205454_create_plans_table.php`.
+    *   **No LLM action needed if it's exactly:**
+        ```prisma
+        enum PlanInterval {
+          MONTH
+          YEAR
+        }
         ```
+
+*   `[ ]` **(DB) `SubscriptionStatus` Enum:**
+    *   **Context:** Based on Laravel's `subscriptions.stripe_status` field and common subscription states seen in models like `app/Modules/SubscriptionBilling/Models/Subscription.php` (e.g., 'active', 'trialing', 'canceled', 'expired', 'past_due').
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `SubscriptionStatus` with the following values: `ACTIVE`, `TRIALING`, `CANCELED`, `EXPIRED`, `PAST_DUE`, `INCOMPLETE`."
+    *   **Expected LLM Output (to be added to schema.prisma):**
+        ```prisma
+        enum SubscriptionStatus {
+          ACTIVE
+          TRIALING
+          CANCELED
+          EXPIRED
+          PAST_DUE
+          INCOMPLETE // Added for completeness, often an initial state
+        }
+        ```
+
+*   `[ ]` **(DB) `RoutineFrequency` Enum:**
+    *   **Context:** Based on Laravel's `routines.frequency` field and values like 'daily', 'weekly', 'weekdays', 'custom' from `app/Http/Requests/StoreRoutineRequest.php`.
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `RoutineFrequency` with the following values: `DAILY`, `WEEKLY`, `WEEKDAYS`, `CUSTOM`."
+    *   **Expected LLM Output (to be added to schema.prisma):**
+        ```prisma
+        enum RoutineFrequency {
+          DAILY
+          WEEKLY
+          WEEKDAYS
+          CUSTOM
+        }
+        ```
+
+*   `[ ]` **(DB) `PostStatus` Enum:**
+    *   **Context:** Based on Laravel's `posts.status` field, which defaults to 'published'. Common statuses might include 'DRAFT', 'ARCHIVED'.
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `PostStatus` with the following values: `PUBLISHED`, `DRAFT`, `ARCHIVED`."
+    *   **Expected LLM Output (to be added to schema.prisma):**
+        ```prisma
+        enum PostStatus {
+          PUBLISHED
+          DRAFT
+          ARCHIVED
+        }
+        ```
+
+*   `[ ]` **(DB) `DevicePlatform` Enum:**
+    *   **Context:** Based on Laravel's `user_devices.platform` field and validation rule `Rule::in(['ios', 'android', 'web'])` from `app/Modules/UserManagement/Http/Requests/UpdateDeviceTokenRequest.php`.
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `DevicePlatform` with the following values: `IOS`, `ANDROID`, `WEB`."
+    *   **Expected LLM Output (to be added to schema.prisma):**
+        ```prisma
+        enum DevicePlatform {
+          IOS
+          ANDROID
+          WEB
+        }
+        ```
+
+---
+
+**2.B. Update Prisma Model Fields to Use Defined Enums**
+
+*   **_**(User Action)**_** Ensure all enum definitions from step 2.A are present at the top level (outside any model) in your `nest-app/prisma/schema.prisma` file.
+
+*   `[x]` **(DB) `Plan` Model - `interval` field (Already Done & Verified)**
+    *   **Context:** The `Plan` model in `nest-app/prisma/schema.prisma` already correctly uses `PlanInterval`.
+    *   **No LLM action needed if it's exactly:**
+        ```prisma
+        model Plan {
+          // ... other fields
+          interval         PlanInterval @default(MONTH)
+          // ... other fields
+        }
+        ```
+
+*   `[ ]` **(DB) `Subscription` Model - `stripeStatus` field:**
+    *   **Context:** Currently `stripeStatus String`. Needs to use `SubscriptionStatus` enum.
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, modify the `Subscription` model. Change the type of the `stripeStatus` field from `String` to the `SubscriptionStatus` enum. Add a default value if appropriate (e.g., `@default(INCOMPLETE)`)."
+    *   **Expected LLM Change in `Subscription` model:**
+        ```diff
+        model Subscription {
+          // ... other fields
+        -  stripeStatus String
+        +  stripeStatus SubscriptionStatus @default(INCOMPLETE) // Or another appropriate default
+          // ... other fields
+        }
+        ```
+
+*   `[ ]` **(DB) `Routine` Model (if generated/to be generated) - `frequency` field:**
+    *   **Context:** Assuming the `Routine` model will be generated (it's currently missing from `schema.prisma`). If it exists and `frequency` is `String`, it needs update.
+    *   **(LLM Prompt - if Routine model exists):** "In `nest-app/prisma/schema.prisma`, modify the `Routine` model. Change the type of the `frequency` field from `String` to the `RoutineFrequency` enum."
+    *   **(LLM Prompt - if Routine model needs generation, include this):** "When generating the `Routine` model for `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_000000_create_routines_table.php`, ensure the `frequency` field uses the `RoutineFrequency` enum."
+    *   **Expected field definition in `Routine` model:**
+        ```prisma
+        // In Routine model
+        frequency RoutineFrequency
+        ```
+
+*   `[ ]` **(DB) `Post` Model (if generated/to be generated) - `status` field:**
+    *   **Context:** Assuming the `Post` model will be generated.
+    *   **(LLM Prompt - if Post model exists):** "In `nest-app/prisma/schema.prisma`, modify the `Post` model. Change the type of the `status` field from `String` to the `PostStatus` enum. Set its default value to `PUBLISHED` (e.g., `@default(PUBLISHED)`)."
+    *   **(LLM Prompt - if Post model needs generation, include this):** "When generating the `Post` model for `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_100004_create_posts_table.php`, ensure the `status` field uses the `PostStatus` enum with a default of `PUBLISHED`."
+    *   **Expected field definition in `Post` model:**
+        ```prisma
+        // In Post model
+        status PostStatus @default(PUBLISHED)
+        ```
+
+*   `[ ]` **(DB) `UserDevice` Model - `platform` field:**
+    *   **Context:** Currently `platform String?` in Laravel migration. Needs to use `DevicePlatform` enum.
+    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, modify the `UserDevice` model. Change the type of the `platform` field from `String?` to `DevicePlatform?` (still optional)."
+    *   **Expected LLM Change in `UserDevice` model:**
+        ```diff
+        model UserDevice {
+          // ... other fields
+          userId   String
+          user     User     @relation(fields: [userId], references: [id])
+        - platform String?  // Example: If it was previously generated as String
+        + platform DevicePlatform?
+          // ... other fields if any, like device_token
+        + deviceToken String // Assuming this should be here based on Laravel migration
+        }
+        ```
+        *(Self-correction: Noticed `deviceToken` was missing in the prompt context above, adding it here for completeness if the LLM hasn't added it yet for `UserDevice`)*
+
+---
+
+**2.C. Apply Prisma Migrations and Generate Client**
+
+*   `[ ]` **(DB) Review Prisma Schema (User Action):**
+    *   **_**(User Action)**_** Carefully review the *entire* `nest-app/prisma/schema.prisma` file.
+        *   Verify all enums from step 2.A are defined correctly.
+        *   Verify all model fields from step 2.B now use the correct enum types and have appropriate default values if specified.
+        *   Verify all other models (Summary, NoteCategory, NoteTag, Routine, RoutineStep, Post, Comment, etc.) have been generated or refined correctly with all their fields and relations from the earlier general prompts.
+        *   **Pay close attention to optional fields (`?`) and list fields (`[]`) to ensure they match Laravel's nullability and data structures (e.g., `specific_days String[]?` for UserReminder).**
+
+*   `[ ]` **(DB) Create and Apply Prisma Migration (User Action):**
+    *   **_**(User Action)**_** Once the schema looks accurate and complete:
+        ```bash
+        npx prisma migrate dev --schema=./nest-app/prisma/schema.prisma --name "add-enums-and-refine-schema"
+        ```
+        *(You can choose a more descriptive name like "complete-laravel-schema-migration-with-enums" if this step also includes the previously missing models.)*
+    *   **_**(User Action)**_** Prisma will show you the SQL it's about to execute. Review this SQL to ensure it matches your expectations (e.g., `ALTER TABLE ... ALTER COLUMN ... TYPE ... USING ...::enum_name;` for changing types to enums, `CREATE TYPE ... AS ENUM (...)`). If it looks good, confirm the migration.
+
 *   `[ ]` **(DB) Generate Prisma Client (User Action):**
-    *   **_**(User Action)**_**
+    *   **_**(User Action)**_** After the migration is successfully applied:
         ```bash
         npx prisma generate --schema=./nest-app/prisma/schema.prisma
         ```
+        This updates the Prisma Client in `nest-app/src/generated/prisma` to include the new enums and any other schema changes.
+
+---
+
+This detailed breakdown should give your LLM very specific, manageable chunks to work with for the enum part of the schema migration. Remember to integrate the LLM's output carefully into your `schema.prisma` file after each prompt related to enums and model field updates, before running the final `prisma migrate dev` command.
+
 *   `[x]` **(DB) Expand Seed Script (`nest-app/prisma/seed.ts`):**
     *   **(LLM Prompt):** "Translate Laravel's `EpisodeSeeder.php` [paste content] into TypeScript code to be added to `nest-app/prisma/seed.ts` for seeding Episode data using Prisma client."
     *   **(LLM Prompt):** "Translate Laravel's `ProtocolSeeder.php` [paste content]..."

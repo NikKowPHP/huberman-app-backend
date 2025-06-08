@@ -134,7 +134,9 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.UserDeviceScalarFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  userId: 'userId',
+  platform: 'platform',
+  deviceToken: 'deviceToken'
 };
 
 exports.Prisma.SubscriptionScalarFieldEnum = {
@@ -335,9 +337,37 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.DevicePlatform = exports.$Enums.DevicePlatform = {
+  IOS: 'IOS',
+  ANDROID: 'ANDROID',
+  WEB: 'WEB'
+};
+
+exports.SubscriptionStatus = exports.$Enums.SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  TRIALING: 'TRIALING',
+  CANCELED: 'CANCELED',
+  EXPIRED: 'EXPIRED',
+  PAST_DUE: 'PAST_DUE',
+  INCOMPLETE: 'INCOMPLETE'
+};
+
+exports.RoutineFrequency = exports.$Enums.RoutineFrequency = {
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  WEEKDAYS: 'WEEKDAYS',
+  CUSTOM: 'CUSTOM'
+};
+
 exports.PlanInterval = exports.$Enums.PlanInterval = {
   MONTH: 'MONTH',
   YEAR: 'YEAR'
+};
+
+exports.PostStatus = exports.$Enums.PostStatus = {
+  PUBLISHED: 'PUBLISHED',
+  DRAFT: 'DRAFT',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.Prisma.ModelName = {

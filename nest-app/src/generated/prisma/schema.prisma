@@ -30,26 +30,28 @@ model User {
 }
 
 model UserDevice {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  platform    DevicePlatform?
+  deviceToken String
 }
 
 model Subscription {
-  id           String    @id @default(cuid())
+  id           String             @id @default(cuid())
   userId       String
-  user         User      @relation(fields: [userId], references: [id])
+  user         User               @relation(fields: [userId], references: [id])
   planId       String
-  plan         Plan      @relation(fields: [planId], references: [id])
+  plan         Plan               @relation(fields: [planId], references: [id])
   name         String
-  stripeId     String    @unique
-  stripeStatus String
+  stripeId     String             @unique
+  stripeStatus SubscriptionStatus @default(INCOMPLETE)
   stripePrice  String
   quantity     Int
   trialEndsAt  DateTime?
   endsAt       DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
 }
 
 model Note {
@@ -69,19 +71,19 @@ model Note {
 }
 
 model UserReminder {
-  id           String    @id @default(cuid())
+  id           String           @id @default(cuid())
   userId       String
-  user         User      @relation(fields: [userId], references: [id])
+  user         User             @relation(fields: [userId], references: [id])
   protocolId   String
-  protocol     Protocol  @relation(fields: [protocolId], references: [id])
+  protocol     Protocol         @relation(fields: [protocolId], references: [id])
   reminderTime String
-  frequency    String
+  frequency    RoutineFrequency
   specificDays String[]
   message      String
-  isActive     Boolean   @default(true)
+  isActive     Boolean          @default(true)
   lastSentAt   DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 model TrackingLog {
@@ -116,6 +118,22 @@ model Plan {
 enum PlanInterval {
   MONTH
   YEAR
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  CANCELED
+  EXPIRED
+  PAST_DUE
+  INCOMPLETE
+}
+
+enum RoutineFrequency {
+  DAILY
+  WEEKLY
+  WEEKDAYS
+  CUSTOM
 }
 
 model Episode {
@@ -208,17 +226,17 @@ model NoteTagPivot {
 }
 
 model Routine {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User             @relation(fields: [userId], references: [id])
   name        String
   description String?
-  frequency   String
+  frequency   RoutineFrequency
   startTime   DateTime
   endTime     DateTime
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   steps RoutineStep[]
 }
@@ -237,14 +255,14 @@ model RoutineStep {
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
   title     String
   content   String
-  status    String   @default("published")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    PostStatus @default(PUBLISHED)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   comments Comment[]
 }
@@ -258,4 +276,16 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+enum PostStatus {
+  PUBLISHED
+  DRAFT
+  ARCHIVED
 }

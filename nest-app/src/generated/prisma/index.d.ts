@@ -120,11 +120,67 @@ export namespace $Enums {
 
 export type PlanInterval = (typeof PlanInterval)[keyof typeof PlanInterval]
 
+
+export const SubscriptionStatus: {
+  ACTIVE: 'ACTIVE',
+  TRIALING: 'TRIALING',
+  CANCELED: 'CANCELED',
+  EXPIRED: 'EXPIRED',
+  PAST_DUE: 'PAST_DUE',
+  INCOMPLETE: 'INCOMPLETE'
+};
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const RoutineFrequency: {
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  WEEKDAYS: 'WEEKDAYS',
+  CUSTOM: 'CUSTOM'
+};
+
+export type RoutineFrequency = (typeof RoutineFrequency)[keyof typeof RoutineFrequency]
+
+
+export const DevicePlatform: {
+  IOS: 'IOS',
+  ANDROID: 'ANDROID',
+  WEB: 'WEB'
+};
+
+export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
+
+
+export const PostStatus: {
+  PUBLISHED: 'PUBLISHED',
+  DRAFT: 'DRAFT',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type PostStatus = (typeof PostStatus)[keyof typeof PostStatus]
+
 }
 
 export type PlanInterval = $Enums.PlanInterval
 
 export const PlanInterval: typeof $Enums.PlanInterval
+
+export type SubscriptionStatus = $Enums.SubscriptionStatus
+
+export const SubscriptionStatus: typeof $Enums.SubscriptionStatus
+
+export type RoutineFrequency = $Enums.RoutineFrequency
+
+export const RoutineFrequency: typeof $Enums.RoutineFrequency
+
+export type DevicePlatform = $Enums.DevicePlatform
+
+export const DevicePlatform: typeof $Enums.DevicePlatform
+
+export type PostStatus = $Enums.PostStatus
+
+export const PostStatus: typeof $Enums.PostStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -4241,16 +4297,22 @@ export namespace Prisma {
   export type UserDeviceMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    platform: $Enums.DevicePlatform | null
+    deviceToken: string | null
   }
 
   export type UserDeviceMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    platform: $Enums.DevicePlatform | null
+    deviceToken: string | null
   }
 
   export type UserDeviceCountAggregateOutputType = {
     id: number
     userId: number
+    platform: number
+    deviceToken: number
     _all: number
   }
 
@@ -4258,16 +4320,22 @@ export namespace Prisma {
   export type UserDeviceMinAggregateInputType = {
     id?: true
     userId?: true
+    platform?: true
+    deviceToken?: true
   }
 
   export type UserDeviceMaxAggregateInputType = {
     id?: true
     userId?: true
+    platform?: true
+    deviceToken?: true
   }
 
   export type UserDeviceCountAggregateInputType = {
     id?: true
     userId?: true
+    platform?: true
+    deviceToken?: true
     _all?: true
   }
 
@@ -4346,6 +4414,8 @@ export namespace Prisma {
   export type UserDeviceGroupByOutputType = {
     id: string
     userId: string
+    platform: $Enums.DevicePlatform | null
+    deviceToken: string
     _count: UserDeviceCountAggregateOutputType | null
     _min: UserDeviceMinAggregateOutputType | null
     _max: UserDeviceMaxAggregateOutputType | null
@@ -4368,27 +4438,35 @@ export namespace Prisma {
   export type UserDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    platform?: boolean
+    deviceToken?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userDevice"]>
 
   export type UserDeviceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    platform?: boolean
+    deviceToken?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userDevice"]>
 
   export type UserDeviceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    platform?: boolean
+    deviceToken?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userDevice"]>
 
   export type UserDeviceSelectScalar = {
     id?: boolean
     userId?: boolean
+    platform?: boolean
+    deviceToken?: boolean
   }
 
-  export type UserDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId", ExtArgs["result"]["userDevice"]>
+  export type UserDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "platform" | "deviceToken", ExtArgs["result"]["userDevice"]>
   export type UserDeviceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -4407,6 +4485,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      platform: $Enums.DevicePlatform | null
+      deviceToken: string
     }, ExtArgs["result"]["userDevice"]>
     composites: {}
   }
@@ -4833,6 +4913,8 @@ export namespace Prisma {
   interface UserDeviceFieldRefs {
     readonly id: FieldRef<"UserDevice", 'String'>
     readonly userId: FieldRef<"UserDevice", 'String'>
+    readonly platform: FieldRef<"UserDevice", 'DevicePlatform'>
+    readonly deviceToken: FieldRef<"UserDevice", 'String'>
   }
     
 
@@ -5273,7 +5355,7 @@ export namespace Prisma {
     planId: string | null
     name: string | null
     stripeId: string | null
-    stripeStatus: string | null
+    stripeStatus: $Enums.SubscriptionStatus | null
     stripePrice: string | null
     quantity: number | null
     trialEndsAt: Date | null
@@ -5288,7 +5370,7 @@ export namespace Prisma {
     planId: string | null
     name: string | null
     stripeId: string | null
-    stripeStatus: string | null
+    stripeStatus: $Enums.SubscriptionStatus | null
     stripePrice: string | null
     quantity: number | null
     trialEndsAt: Date | null
@@ -5460,7 +5542,7 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt: Date | null
@@ -5580,7 +5662,7 @@ export namespace Prisma {
       planId: string
       name: string
       stripeId: string
-      stripeStatus: string
+      stripeStatus: $Enums.SubscriptionStatus
       stripePrice: string
       quantity: number
       trialEndsAt: Date | null
@@ -6017,7 +6099,7 @@ export namespace Prisma {
     readonly planId: FieldRef<"Subscription", 'String'>
     readonly name: FieldRef<"Subscription", 'String'>
     readonly stripeId: FieldRef<"Subscription", 'String'>
-    readonly stripeStatus: FieldRef<"Subscription", 'String'>
+    readonly stripeStatus: FieldRef<"Subscription", 'SubscriptionStatus'>
     readonly stripePrice: FieldRef<"Subscription", 'String'>
     readonly quantity: FieldRef<"Subscription", 'Int'>
     readonly trialEndsAt: FieldRef<"Subscription", 'DateTime'>
@@ -7635,7 +7717,7 @@ export namespace Prisma {
     userId: string | null
     protocolId: string | null
     reminderTime: string | null
-    frequency: string | null
+    frequency: $Enums.RoutineFrequency | null
     message: string | null
     isActive: boolean | null
     lastSentAt: Date | null
@@ -7648,7 +7730,7 @@ export namespace Prisma {
     userId: string | null
     protocolId: string | null
     reminderTime: string | null
-    frequency: string | null
+    frequency: $Enums.RoutineFrequency | null
     message: string | null
     isActive: boolean | null
     lastSentAt: Date | null
@@ -7790,7 +7872,7 @@ export namespace Prisma {
     userId: string
     protocolId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays: string[]
     message: string
     isActive: boolean
@@ -7903,7 +7985,7 @@ export namespace Prisma {
       userId: string
       protocolId: string
       reminderTime: string
-      frequency: string
+      frequency: $Enums.RoutineFrequency
       specificDays: string[]
       message: string
       isActive: boolean
@@ -8339,7 +8421,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"UserReminder", 'String'>
     readonly protocolId: FieldRef<"UserReminder", 'String'>
     readonly reminderTime: FieldRef<"UserReminder", 'String'>
-    readonly frequency: FieldRef<"UserReminder", 'String'>
+    readonly frequency: FieldRef<"UserReminder", 'RoutineFrequency'>
     readonly specificDays: FieldRef<"UserReminder", 'String[]'>
     readonly message: FieldRef<"UserReminder", 'String'>
     readonly isActive: FieldRef<"UserReminder", 'Boolean'>
@@ -19748,7 +19830,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     description: string | null
-    frequency: string | null
+    frequency: $Enums.RoutineFrequency | null
     startTime: Date | null
     endTime: Date | null
     isActive: boolean | null
@@ -19761,7 +19843,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     description: string | null
-    frequency: string | null
+    frequency: $Enums.RoutineFrequency | null
     startTime: Date | null
     endTime: Date | null
     isActive: boolean | null
@@ -19901,7 +19983,7 @@ export namespace Prisma {
     userId: string
     name: string
     description: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date
     endTime: Date
     isActive: boolean
@@ -20007,7 +20089,7 @@ export namespace Prisma {
       userId: string
       name: string
       description: string | null
-      frequency: string
+      frequency: $Enums.RoutineFrequency
       startTime: Date
       endTime: Date
       isActive: boolean
@@ -20442,7 +20524,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Routine", 'String'>
     readonly name: FieldRef<"Routine", 'String'>
     readonly description: FieldRef<"Routine", 'String'>
-    readonly frequency: FieldRef<"Routine", 'String'>
+    readonly frequency: FieldRef<"Routine", 'RoutineFrequency'>
     readonly startTime: FieldRef<"Routine", 'DateTime'>
     readonly endTime: FieldRef<"Routine", 'DateTime'>
     readonly isActive: FieldRef<"Routine", 'Boolean'>
@@ -22049,7 +22131,7 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     content: string | null
-    status: string | null
+    status: $Enums.PostStatus | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22059,7 +22141,7 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     content: string | null
-    status: string | null
+    status: $Enums.PostStatus | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22184,7 +22266,7 @@ export namespace Prisma {
     userId: string
     title: string
     content: string
-    status: string
+    status: $Enums.PostStatus
     createdAt: Date
     updatedAt: Date
     _count: PostCountAggregateOutputType | null
@@ -22275,7 +22357,7 @@ export namespace Prisma {
       userId: string
       title: string
       content: string
-      status: string
+      status: $Enums.PostStatus
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["post"]>
@@ -22707,7 +22789,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Post", 'String'>
     readonly title: FieldRef<"Post", 'String'>
     readonly content: FieldRef<"Post", 'String'>
-    readonly status: FieldRef<"Post", 'String'>
+    readonly status: FieldRef<"Post", 'PostStatus'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
     readonly updatedAt: FieldRef<"Post", 'DateTime'>
   }
@@ -24258,7 +24340,9 @@ export namespace Prisma {
 
   export const UserDeviceScalarFieldEnum: {
     id: 'id',
-    userId: 'userId'
+    userId: 'userId',
+    platform: 'platform',
+    deviceToken: 'deviceToken'
   };
 
   export type UserDeviceScalarFieldEnum = (typeof UserDeviceScalarFieldEnum)[keyof typeof UserDeviceScalarFieldEnum]
@@ -24563,6 +24647,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DevicePlatform'
+   */
+  export type EnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform'>
+    
+
+
+  /**
+   * Reference to a field of type 'DevicePlatform[]'
+   */
+  export type ListEnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus'
+   */
+  export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus[]'
+   */
+  export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -24580,6 +24692,20 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'RoutineFrequency'
+   */
+  export type EnumRoutineFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoutineFrequency'>
+    
+
+
+  /**
+   * Reference to a field of type 'RoutineFrequency[]'
+   */
+  export type ListEnumRoutineFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoutineFrequency[]'>
     
 
 
@@ -24622,6 +24748,20 @@ export namespace Prisma {
    * Reference to a field of type 'PlanInterval[]'
    */
   export type ListEnumPlanIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanInterval[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostStatus'
+   */
+  export type EnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostStatus[]'
+   */
+  export type ListEnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus[]'>
     
 
 
@@ -24744,12 +24884,16 @@ export namespace Prisma {
     NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
     id?: StringFilter<"UserDevice"> | string
     userId?: StringFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformNullableFilter<"UserDevice"> | $Enums.DevicePlatform | null
+    deviceToken?: StringFilter<"UserDevice"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type UserDeviceOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    platform?: SortOrderInput | SortOrder
+    deviceToken?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -24759,12 +24903,16 @@ export namespace Prisma {
     OR?: UserDeviceWhereInput[]
     NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
     userId?: StringFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformNullableFilter<"UserDevice"> | $Enums.DevicePlatform | null
+    deviceToken?: StringFilter<"UserDevice"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type UserDeviceOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    platform?: SortOrderInput | SortOrder
+    deviceToken?: SortOrder
     _count?: UserDeviceCountOrderByAggregateInput
     _max?: UserDeviceMaxOrderByAggregateInput
     _min?: UserDeviceMinOrderByAggregateInput
@@ -24776,6 +24924,8 @@ export namespace Prisma {
     NOT?: UserDeviceScalarWhereWithAggregatesInput | UserDeviceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserDevice"> | string
     userId?: StringWithAggregatesFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformNullableWithAggregatesFilter<"UserDevice"> | $Enums.DevicePlatform | null
+    deviceToken?: StringWithAggregatesFilter<"UserDevice"> | string
   }
 
   export type SubscriptionWhereInput = {
@@ -24787,7 +24937,7 @@ export namespace Prisma {
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
     stripeId?: StringFilter<"Subscription"> | string
-    stripeStatus?: StringFilter<"Subscription"> | string
+    stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
     trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
@@ -24824,7 +24974,7 @@ export namespace Prisma {
     userId?: StringFilter<"Subscription"> | string
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
-    stripeStatus?: StringFilter<"Subscription"> | string
+    stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
     trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
@@ -24864,7 +25014,7 @@ export namespace Prisma {
     planId?: StringWithAggregatesFilter<"Subscription"> | string
     name?: StringWithAggregatesFilter<"Subscription"> | string
     stripeId?: StringWithAggregatesFilter<"Subscription"> | string
-    stripeStatus?: StringWithAggregatesFilter<"Subscription"> | string
+    stripeStatus?: EnumSubscriptionStatusWithAggregatesFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringWithAggregatesFilter<"Subscription"> | string
     quantity?: IntWithAggregatesFilter<"Subscription"> | number
     trialEndsAt?: DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
@@ -24960,7 +25110,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserReminder"> | string
     protocolId?: StringFilter<"UserReminder"> | string
     reminderTime?: StringFilter<"UserReminder"> | string
-    frequency?: StringFilter<"UserReminder"> | string
+    frequency?: EnumRoutineFrequencyFilter<"UserReminder"> | $Enums.RoutineFrequency
     specificDays?: StringNullableListFilter<"UserReminder">
     message?: StringFilter<"UserReminder"> | string
     isActive?: BoolFilter<"UserReminder"> | boolean
@@ -24995,7 +25145,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserReminder"> | string
     protocolId?: StringFilter<"UserReminder"> | string
     reminderTime?: StringFilter<"UserReminder"> | string
-    frequency?: StringFilter<"UserReminder"> | string
+    frequency?: EnumRoutineFrequencyFilter<"UserReminder"> | $Enums.RoutineFrequency
     specificDays?: StringNullableListFilter<"UserReminder">
     message?: StringFilter<"UserReminder"> | string
     isActive?: BoolFilter<"UserReminder"> | boolean
@@ -25031,7 +25181,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"UserReminder"> | string
     protocolId?: StringWithAggregatesFilter<"UserReminder"> | string
     reminderTime?: StringWithAggregatesFilter<"UserReminder"> | string
-    frequency?: StringWithAggregatesFilter<"UserReminder"> | string
+    frequency?: EnumRoutineFrequencyWithAggregatesFilter<"UserReminder"> | $Enums.RoutineFrequency
     specificDays?: StringNullableListFilter<"UserReminder">
     message?: StringWithAggregatesFilter<"UserReminder"> | string
     isActive?: BoolWithAggregatesFilter<"UserReminder"> | boolean
@@ -25674,7 +25824,7 @@ export namespace Prisma {
     userId?: StringFilter<"Routine"> | string
     name?: StringFilter<"Routine"> | string
     description?: StringNullableFilter<"Routine"> | string | null
-    frequency?: StringFilter<"Routine"> | string
+    frequency?: EnumRoutineFrequencyFilter<"Routine"> | $Enums.RoutineFrequency
     startTime?: DateTimeFilter<"Routine"> | Date | string
     endTime?: DateTimeFilter<"Routine"> | Date | string
     isActive?: BoolFilter<"Routine"> | boolean
@@ -25707,7 +25857,7 @@ export namespace Prisma {
     userId?: StringFilter<"Routine"> | string
     name?: StringFilter<"Routine"> | string
     description?: StringNullableFilter<"Routine"> | string | null
-    frequency?: StringFilter<"Routine"> | string
+    frequency?: EnumRoutineFrequencyFilter<"Routine"> | $Enums.RoutineFrequency
     startTime?: DateTimeFilter<"Routine"> | Date | string
     endTime?: DateTimeFilter<"Routine"> | Date | string
     isActive?: BoolFilter<"Routine"> | boolean
@@ -25741,7 +25891,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Routine"> | string
     name?: StringWithAggregatesFilter<"Routine"> | string
     description?: StringNullableWithAggregatesFilter<"Routine"> | string | null
-    frequency?: StringWithAggregatesFilter<"Routine"> | string
+    frequency?: EnumRoutineFrequencyWithAggregatesFilter<"Routine"> | $Enums.RoutineFrequency
     startTime?: DateTimeWithAggregatesFilter<"Routine"> | Date | string
     endTime?: DateTimeWithAggregatesFilter<"Routine"> | Date | string
     isActive?: BoolWithAggregatesFilter<"Routine"> | boolean
@@ -25834,7 +25984,7 @@ export namespace Prisma {
     userId?: StringFilter<"Post"> | string
     title?: StringFilter<"Post"> | string
     content?: StringFilter<"Post"> | string
-    status?: StringFilter<"Post"> | string
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -25861,7 +26011,7 @@ export namespace Prisma {
     userId?: StringFilter<"Post"> | string
     title?: StringFilter<"Post"> | string
     content?: StringFilter<"Post"> | string
-    status?: StringFilter<"Post"> | string
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -25889,7 +26039,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Post"> | string
     title?: StringWithAggregatesFilter<"Post"> | string
     content?: StringWithAggregatesFilter<"Post"> | string
-    status?: StringWithAggregatesFilter<"Post"> | string
+    status?: EnumPostStatusWithAggregatesFilter<"Post"> | $Enums.PostStatus
     createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
   }
@@ -26075,43 +26225,57 @@ export namespace Prisma {
 
   export type UserDeviceCreateInput = {
     id?: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
     user: UserCreateNestedOneWithoutDevicesInput
   }
 
   export type UserDeviceUncheckedCreateInput = {
     id?: string
     userId: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
   }
 
   export type UserDeviceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutDevicesNestedInput
   }
 
   export type UserDeviceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserDeviceCreateManyInput = {
     id?: string
     userId: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
   }
 
   export type UserDeviceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserDeviceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type SubscriptionCreateInput = {
     id?: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -26128,7 +26292,7 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -26141,7 +26305,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26158,7 +26322,7 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26173,7 +26337,7 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -26186,7 +26350,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26201,7 +26365,7 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26296,7 +26460,7 @@ export namespace Prisma {
   export type UserReminderCreateInput = {
     id?: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -26312,7 +26476,7 @@ export namespace Prisma {
     userId: string
     protocolId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -26324,7 +26488,7 @@ export namespace Prisma {
   export type UserReminderUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -26340,7 +26504,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     protocolId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -26354,7 +26518,7 @@ export namespace Prisma {
     userId: string
     protocolId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -26366,7 +26530,7 @@ export namespace Prisma {
   export type UserReminderUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -26380,7 +26544,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     protocolId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -27046,7 +27210,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -27061,7 +27225,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -27074,7 +27238,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -27089,7 +27253,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -27103,7 +27267,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -27115,7 +27279,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -27128,7 +27292,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -27223,7 +27387,7 @@ export namespace Prisma {
     id?: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPostsInput
@@ -27235,7 +27399,7 @@ export namespace Prisma {
     userId: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
@@ -27245,7 +27409,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -27257,7 +27421,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
@@ -27268,7 +27432,7 @@ export namespace Prisma {
     userId: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -27277,7 +27441,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27287,7 +27451,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27590,6 +27754,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumDevicePlatformNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDevicePlatformNullableFilter<$PrismaModel> | $Enums.DevicePlatform | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -27598,16 +27769,39 @@ export namespace Prisma {
   export type UserDeviceCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    platform?: SortOrder
+    deviceToken?: SortOrder
   }
 
   export type UserDeviceMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    platform?: SortOrder
+    deviceToken?: SortOrder
   }
 
   export type UserDeviceMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    platform?: SortOrder
+    deviceToken?: SortOrder
+  }
+
+  export type EnumDevicePlatformNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDevicePlatformNullableWithAggregatesFilter<$PrismaModel> | $Enums.DevicePlatform | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDevicePlatformNullableFilter<$PrismaModel>
+    _max?: NestedEnumDevicePlatformNullableFilter<$PrismaModel>
+  }
+
+  export type EnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -27677,6 +27871,16 @@ export namespace Prisma {
 
   export type SubscriptionSumOrderByAggregateInput = {
     quantity?: SortOrder
+  }
+
+  export type EnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -27766,6 +27970,13 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type EnumRoutineFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoutineFrequency | EnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoutineFrequencyFilter<$PrismaModel> | $Enums.RoutineFrequency
+  }
+
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -27817,6 +28028,16 @@ export namespace Prisma {
     lastSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumRoutineFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoutineFrequency | EnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoutineFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.RoutineFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoutineFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumRoutineFrequencyFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -28379,6 +28600,13 @@ export namespace Prisma {
     order?: SortOrder
   }
 
+  export type EnumPostStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusFilter<$PrismaModel> | $Enums.PostStatus
+  }
+
   export type PostCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -28407,6 +28635,16 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumPostStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostStatusFilter<$PrismaModel>
   }
 
   export type PostScalarRelationFilter = {
@@ -28799,6 +29037,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type NullableEnumDevicePlatformFieldUpdateOperationsInput = {
+    set?: $Enums.DevicePlatform | null
+  }
+
   export type UserUpdateOneRequiredWithoutDevicesNestedInput = {
     create?: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
     connectOrCreate?: UserCreateOrConnectWithoutDevicesInput
@@ -28817,6 +29059,10 @@ export namespace Prisma {
     create?: XOR<PlanCreateWithoutSubscriptionsInput, PlanUncheckedCreateWithoutSubscriptionsInput>
     connectOrCreate?: PlanCreateOrConnectWithoutSubscriptionsInput
     connect?: PlanWhereUniqueInput
+  }
+
+  export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SubscriptionStatus
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -28975,6 +29221,10 @@ export namespace Prisma {
     create?: XOR<ProtocolCreateWithoutUserRemindersInput, ProtocolUncheckedCreateWithoutUserRemindersInput>
     connectOrCreate?: ProtocolCreateOrConnectWithoutUserRemindersInput
     connect?: ProtocolWhereUniqueInput
+  }
+
+  export type EnumRoutineFrequencyFieldUpdateOperationsInput = {
+    set?: $Enums.RoutineFrequency
   }
 
   export type UserReminderUpdatespecificDaysInput = {
@@ -29612,6 +29862,10 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
+  export type EnumPostStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PostStatus
+  }
+
   export type UserUpdateOneRequiredWithoutPostsNestedInput = {
     create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPostsInput
@@ -29810,6 +30064,40 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumDevicePlatformNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDevicePlatformNullableFilter<$PrismaModel> | $Enums.DevicePlatform | null
+  }
+
+  export type NestedEnumDevicePlatformNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDevicePlatformNullableWithAggregatesFilter<$PrismaModel> | $Enums.DevicePlatform | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDevicePlatformNullableFilter<$PrismaModel>
+    _max?: NestedEnumDevicePlatformNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -29848,6 +30136,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoutineFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoutineFrequency | EnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoutineFrequencyFilter<$PrismaModel> | $Enums.RoutineFrequency
+  }
+
+  export type NestedEnumRoutineFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RoutineFrequency | EnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RoutineFrequency[] | ListEnumRoutineFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoutineFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.RoutineFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoutineFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumRoutineFrequencyFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -29944,12 +30249,33 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumPostStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusFilter<$PrismaModel> | $Enums.PostStatus
+  }
+
+  export type NestedEnumPostStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostStatusFilter<$PrismaModel>
+  }
+
   export type UserDeviceCreateWithoutUserInput = {
     id?: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
   }
 
   export type UserDeviceUncheckedCreateWithoutUserInput = {
     id?: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
   }
 
   export type UserDeviceCreateOrConnectWithoutUserInput = {
@@ -29966,7 +30292,7 @@ export namespace Prisma {
     id?: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -29981,7 +30307,7 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -30037,7 +30363,7 @@ export namespace Prisma {
   export type UserReminderCreateWithoutUserInput = {
     id?: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -30051,7 +30377,7 @@ export namespace Prisma {
     id?: string
     protocolId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -30104,7 +30430,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -30117,7 +30443,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -30140,7 +30466,7 @@ export namespace Prisma {
     id?: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     comments?: CommentCreateNestedManyWithoutPostInput
@@ -30150,7 +30476,7 @@ export namespace Prisma {
     id?: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
@@ -30214,6 +30540,8 @@ export namespace Prisma {
     NOT?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
     id?: StringFilter<"UserDevice"> | string
     userId?: StringFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformNullableFilter<"UserDevice"> | $Enums.DevicePlatform | null
+    deviceToken?: StringFilter<"UserDevice"> | string
   }
 
   export type SubscriptionUpsertWithWhereUniqueWithoutUserInput = {
@@ -30241,7 +30569,7 @@ export namespace Prisma {
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
     stripeId?: StringFilter<"Subscription"> | string
-    stripeStatus?: StringFilter<"Subscription"> | string
+    stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
     trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
@@ -30304,7 +30632,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserReminder"> | string
     protocolId?: StringFilter<"UserReminder"> | string
     reminderTime?: StringFilter<"UserReminder"> | string
-    frequency?: StringFilter<"UserReminder"> | string
+    frequency?: EnumRoutineFrequencyFilter<"UserReminder"> | $Enums.RoutineFrequency
     specificDays?: StringNullableListFilter<"UserReminder">
     message?: StringFilter<"UserReminder"> | string
     isActive?: BoolFilter<"UserReminder"> | boolean
@@ -30367,7 +30695,7 @@ export namespace Prisma {
     userId?: StringFilter<"Routine"> | string
     name?: StringFilter<"Routine"> | string
     description?: StringNullableFilter<"Routine"> | string | null
-    frequency?: StringFilter<"Routine"> | string
+    frequency?: EnumRoutineFrequencyFilter<"Routine"> | $Enums.RoutineFrequency
     startTime?: DateTimeFilter<"Routine"> | Date | string
     endTime?: DateTimeFilter<"Routine"> | Date | string
     isActive?: BoolFilter<"Routine"> | boolean
@@ -30399,7 +30727,7 @@ export namespace Prisma {
     userId?: StringFilter<"Post"> | string
     title?: StringFilter<"Post"> | string
     content?: StringFilter<"Post"> | string
-    status?: StringFilter<"Post"> | string
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
   }
@@ -31268,7 +31596,7 @@ export namespace Prisma {
     id?: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -31283,7 +31611,7 @@ export namespace Prisma {
     userId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -31482,7 +31810,7 @@ export namespace Prisma {
   export type UserReminderCreateWithoutProtocolInput = {
     id?: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -31496,7 +31824,7 @@ export namespace Prisma {
     id?: string
     userId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -32264,7 +32592,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -32278,7 +32606,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -32306,7 +32634,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32320,7 +32648,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32509,7 +32837,7 @@ export namespace Prisma {
     id?: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPostsInput
@@ -32520,7 +32848,7 @@ export namespace Prisma {
     userId: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -32594,7 +32922,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -32605,13 +32933,15 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserDeviceCreateManyUserInput = {
     id?: string
+    platform?: $Enums.DevicePlatform | null
+    deviceToken: string
   }
 
   export type SubscriptionCreateManyUserInput = {
@@ -32619,7 +32949,7 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -32642,7 +32972,7 @@ export namespace Prisma {
     id?: string
     protocolId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -32665,7 +32995,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     startTime: Date | string
     endTime: Date | string
     isActive?: boolean
@@ -32677,7 +33007,7 @@ export namespace Prisma {
     id?: string
     title: string
     content: string
-    status?: string
+    status?: $Enums.PostStatus
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -32692,21 +33022,27 @@ export namespace Prisma {
 
   export type UserDeviceUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserDeviceUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserDeviceUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: NullableEnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform | null
+    deviceToken?: StringFieldUpdateOperationsInput | string
   }
 
   export type SubscriptionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32721,7 +33057,7 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32735,7 +33071,7 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32781,7 +33117,7 @@ export namespace Prisma {
   export type UserReminderUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32795,7 +33131,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     protocolId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32808,7 +33144,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     protocolId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32851,7 +33187,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32864,7 +33200,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32877,7 +33213,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -32889,7 +33225,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comments?: CommentUpdateManyWithoutPostNestedInput
@@ -32899,7 +33235,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
@@ -32909,7 +33245,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32975,7 +33311,7 @@ export namespace Prisma {
     userId: string
     name: string
     stripeId: string
-    stripeStatus: string
+    stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
     trialEndsAt?: Date | string | null
@@ -32988,7 +33324,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33003,7 +33339,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33017,7 +33353,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
-    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33122,7 +33458,7 @@ export namespace Prisma {
     id?: string
     userId: string
     reminderTime: string
-    frequency: string
+    frequency: $Enums.RoutineFrequency
     specificDays?: UserReminderCreatespecificDaysInput | string[]
     message: string
     isActive?: boolean
@@ -33156,7 +33492,7 @@ export namespace Prisma {
   export type UserReminderUpdateWithoutProtocolInput = {
     id?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -33170,7 +33506,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -33183,7 +33519,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     reminderTime?: StringFieldUpdateOperationsInput | string
-    frequency?: StringFieldUpdateOperationsInput | string
+    frequency?: EnumRoutineFrequencyFieldUpdateOperationsInput | $Enums.RoutineFrequency
     specificDays?: UserReminderUpdatespecificDaysInput | string[]
     message?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
