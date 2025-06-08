@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  password          String
+  profilePictureUrl String?
+  emailVerifiedAt   DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  devices       UserDevice[]
+  subscriptions Subscription[]
+  notes         Note[]
+  reminders     UserReminder[]
+  trackingLogs  TrackingLog[]
+}
+
+model UserDevice {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+}
+
+model Note {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model UserReminder {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model TrackingLog {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Plan {
+  id              String       @id @default(cuid())
+  name            String       @unique
+  slug            String       @unique
+  description     String?
+  price           Decimal
+  interval        PlanInterval @default(MONTH)
+  intervalCount   Int          @default(1)
+  trialPeriodDays Int?
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  subscriptions Subscription[]
+}
+
+enum PlanInterval {
+  MONTH
+  YEAR
+}

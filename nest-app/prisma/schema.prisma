@@ -15,176 +15,72 @@ datasource db {
 }
 
 model User {
-  id                  String    @id @default(uuid()) // Match Supabase Auth UUID
-  email               String    @unique
-  name                String?
-  profilePictureUrl   String?   @map("profile_picture_url")
-  stripeId            String?   @unique @map("stripe_id")
-  appstoreTransactionId String? @unique @map("appstore_transaction_id")
-  createdAt           DateTime  @default(now()) @map("created_at")
-  updatedAt           DateTime  @updatedAt @map("updated_at")
-  deletedAt           DateTime? @map("deleted_at")
-
-  // Relationships will be added here
-
-  @@map("users") // Maps to the 'users' table in the 'public' schema
-
-  profile            Profile?  // One-to-one relation to Profile
-  clients            Client[]  // One-to-many relation: A trainer has many clients
-
-}
-
-model Profile {
-  id                 String    @id @default(cuid())
-  userId             String    @unique // Foreign key to User model
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  certifications     String?
-  location           String?
-  phone              String?
-  aboutMe            String?   @db.Text // For longer text
-  philosophy         String?   @db.Text
-  methodology        String?   @db.Text
-  bannerImagePath    String?
-  profilePhotoPath   String?
-
-  services           Service[]
-  testimonials       Testimonial[]
-  transformationPhotos TransformationPhoto[]
-  externalLinks      ExternalLink[]
-  benefits           Benefit[]
-
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-}
-
-model Service {
-  id          String   @id @default(cuid())
-  profileId   String   // Foreign key to Profile model
-  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  title       String
-  description String   @db.Text
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Testimonial {
-  id               String   @id @default(cuid())
-  profileId        String   // Foreign key to Profile model
-  profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  clientName       String
-  testimonialText  String   @db.Text
-
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
-model TransformationPhoto {
-  id          String   @id @default(cuid())
-  profileId   String   // Foreign key to Profile model
-  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  imagePath   String   // Path to the image file (e.g., in Supabase Storage)
-  caption     String?
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model ExternalLink {
-  id        String   @id @default(cuid())
-  profileId String   // Foreign key to Profile model
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  linkUrl   String
-  label     String
-
+  id       String   @id @default(cuid())
+  name     String
+  email    String   @unique
+  password String
+  profilePictureUrl String?
+  emailVerifiedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  devices       UserDevice[]
+  subscriptions Subscription[]
+  notes         Note[]
+  reminders     UserReminder[]
+  trackingLogs  TrackingLog[]
 }
 
-model Benefit {
-  id             String   @id @default(cuid())
-  profileId      String   // Foreign key to Profile model
-  profile        Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  iconName       String?  // Name of the icon (e.g., from an icon library)
-  iconStyle      String?  @default("outline") // e.g., 'outline', 'solid'
-  title          String
-  description    String?  @db.Text
-  orderColumn    Int      @default(0) // For ordering benefits
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model UserDevice {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
-model Client {
-  id                      String    @id @default(cuid())
-  trainerId               String    // Foreign key to User model (trainer)
-  trainer                 User      @relation(fields: [trainerId], references: [id], onDelete: Cascade) // 'trainer' is the User
-
-  name                    String
-  email                   String?   // Email of the client, can be unique per trainer
-  phone                   String?
-  status                  String    @default("active") // e.g., "active", "inactive", "lead"
-  dateOfBirth             DateTime? @db.Date
-  goals                   String?   @db.Text
-  healthNotes             String?   @db.Text
-  emergencyContactName    String?
-  emergencyContactPhone   String?
-
-  measurements            ClientMeasurement[]
-  progressPhotos          ClientProgressPhoto[]
-  sessionLogs             ClientSessionLog[]
-
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
-
-  @@unique([trainerId, email]) // Client email should be unique per trainer
+model Subscription {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  planId   String
+  plan     Plan     @relation(fields: [planId], references: [id])
 }
 
-model ClientMeasurement {
-  id                 String    @id @default(cuid())
-  clientId           String
-  client             Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-
-  measurementDate    DateTime  @db.Date
-  weightKg           Float?
-  bodyFatPercentage  Float?
-  notes              String?   @db.Text
-  customMetrics      Json?     // To store array of {name: string, value: string}
-
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+model Note {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
-model ClientProgressPhoto {
-  id         String   @id @default(cuid())
-  clientId   String
-  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-
-  photoDate  DateTime @db.Date
-  imagePath  String   // Path to the image file
-  caption    String?
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model UserReminder {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
 }
 
-model ClientSessionLog {
-  id                  String    @id @default(cuid())
-  clientId            String
-  client              Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+model TrackingLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+}
 
-  sessionDate         DateTime
-  durationMinutes     Int?
-  activitySummary     String?
-  sessionNotes        String?   @db.Text
-  clientMoodFeedback  String?   // e.g., "energized", "tired"
+model Plan {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  slug             String   @unique
+  description      String?
+  price            Decimal
+  interval         PlanInterval @default(MONTH)
+  intervalCount    Int      @default(1)
+  trialPeriodDays  Int?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  subscriptions    Subscription[]
+}
+
+enum PlanInterval {
+  MONTH
+  YEAR
 }
