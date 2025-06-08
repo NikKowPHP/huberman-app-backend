@@ -318,7 +318,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
 ## Phase 4: API Endpoints, DTOs, and Controllers Migration
 
 *   For *each* Laravel Controller and its associated Form Requests:
-    *   `[ ]` **(API) Generate DTOs:**
+    *   `[x]` **(API) Generate DTOs:**
         *   **(LLM Prompt):** "Here is the Laravel Form Request `app/Http/Requests/StoreXyzRequest.php`: [paste content]. Generate an equivalent NestJS DTO class named `store-xyz.dto.ts` in the appropriate `nest-app/src/module-name/dto/` directory. Use `class-validator` decorators for validation rules derived from the Laravel request."
     *   `[ ]` **(API) Migrate Controller Logic:**
         *   **(LLM Prompt):** "Here is the Laravel Controller `app/Modules/Xyz/Http/Controllers/XyzController.php`: [paste content]. Migrate its methods to the NestJS Controller `nest-app/src/xyz/xyz.controller.ts` [paste existing stub if any].
