@@ -8,7 +8,8 @@ export class RoutineService {
   async getAllRoutines(userId: string) {
     return this.prisma.routine.findMany({
       where: { userId },
-      include: { steps: true }
+      include: { steps: true },
+      orderBy: { createdAt: 'desc' }
     });
   }
 
@@ -34,9 +35,27 @@ export class RoutineService {
     });
   }
 
+  async executeRoutine(routineId: string) {
+    await this.prisma.routineStep.updateMany({
+      where: { 
+        routineId,
+        isCompleted: false 
+      },
+      data: { isCompleted: true }
+    });
+  }
+
+  async scheduleRoutine(userId: string, routineId: string, schedule: string) {
+    return this.prisma.routine.update({
+      where: { id: routineId, userId },
+      data: { schedule }
+    });
+  }
+
   async getRoutineSteps(routineId: string) {
     return this.prisma.routineStep.findMany({
-      where: { routineId }
+      where: { routineId },
+      orderBy: { order: 'asc' }
     });
   }
 }
