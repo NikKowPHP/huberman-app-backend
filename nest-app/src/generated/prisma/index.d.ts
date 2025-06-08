@@ -48,6 +48,21 @@ export type TrackingLog = $Result.DefaultSelection<Prisma.$TrackingLogPayload>
  * 
  */
 export type Plan = $Result.DefaultSelection<Prisma.$PlanPayload>
+/**
+ * Model Episode
+ * 
+ */
+export type Episode = $Result.DefaultSelection<Prisma.$EpisodePayload>
+/**
+ * Model Protocol
+ * 
+ */
+export type Protocol = $Result.DefaultSelection<Prisma.$ProtocolPayload>
+/**
+ * Model EpisodeProtocol
+ * 
+ */
+export type EpisodeProtocol = $Result.DefaultSelection<Prisma.$EpisodeProtocolPayload>
 
 /**
  * Enums
@@ -260,6 +275,36 @@ export class PrismaClient<
     * ```
     */
   get plan(): Prisma.PlanDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.episode`: Exposes CRUD operations for the **Episode** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Episodes
+    * const episodes = await prisma.episode.findMany()
+    * ```
+    */
+  get episode(): Prisma.EpisodeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.protocol`: Exposes CRUD operations for the **Protocol** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Protocols
+    * const protocols = await prisma.protocol.findMany()
+    * ```
+    */
+  get protocol(): Prisma.ProtocolDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.episodeProtocol`: Exposes CRUD operations for the **EpisodeProtocol** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EpisodeProtocols
+    * const episodeProtocols = await prisma.episodeProtocol.findMany()
+    * ```
+    */
+  get episodeProtocol(): Prisma.EpisodeProtocolDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -706,7 +751,10 @@ export namespace Prisma {
     Note: 'Note',
     UserReminder: 'UserReminder',
     TrackingLog: 'TrackingLog',
-    Plan: 'Plan'
+    Plan: 'Plan',
+    Episode: 'Episode',
+    Protocol: 'Protocol',
+    EpisodeProtocol: 'EpisodeProtocol'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -725,7 +773,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userDevice" | "subscription" | "note" | "userReminder" | "trackingLog" | "plan"
+      modelProps: "user" | "userDevice" | "subscription" | "note" | "userReminder" | "trackingLog" | "plan" | "episode" | "protocol" | "episodeProtocol"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1247,6 +1295,228 @@ export namespace Prisma {
           }
         }
       }
+      Episode: {
+        payload: Prisma.$EpisodePayload<ExtArgs>
+        fields: Prisma.EpisodeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EpisodeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EpisodeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          findFirst: {
+            args: Prisma.EpisodeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EpisodeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          findMany: {
+            args: Prisma.EpisodeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>[]
+          }
+          create: {
+            args: Prisma.EpisodeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          createMany: {
+            args: Prisma.EpisodeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EpisodeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>[]
+          }
+          delete: {
+            args: Prisma.EpisodeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          update: {
+            args: Prisma.EpisodeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          deleteMany: {
+            args: Prisma.EpisodeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EpisodeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EpisodeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>[]
+          }
+          upsert: {
+            args: Prisma.EpisodeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodePayload>
+          }
+          aggregate: {
+            args: Prisma.EpisodeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEpisode>
+          }
+          groupBy: {
+            args: Prisma.EpisodeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EpisodeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EpisodeCountArgs<ExtArgs>
+            result: $Utils.Optional<EpisodeCountAggregateOutputType> | number
+          }
+        }
+      }
+      Protocol: {
+        payload: Prisma.$ProtocolPayload<ExtArgs>
+        fields: Prisma.ProtocolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProtocolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProtocolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          findFirst: {
+            args: Prisma.ProtocolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProtocolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          findMany: {
+            args: Prisma.ProtocolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>[]
+          }
+          create: {
+            args: Prisma.ProtocolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          createMany: {
+            args: Prisma.ProtocolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProtocolCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>[]
+          }
+          delete: {
+            args: Prisma.ProtocolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          update: {
+            args: Prisma.ProtocolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProtocolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProtocolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProtocolUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProtocolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProtocolPayload>
+          }
+          aggregate: {
+            args: Prisma.ProtocolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProtocol>
+          }
+          groupBy: {
+            args: Prisma.ProtocolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProtocolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProtocolCountArgs<ExtArgs>
+            result: $Utils.Optional<ProtocolCountAggregateOutputType> | number
+          }
+        }
+      }
+      EpisodeProtocol: {
+        payload: Prisma.$EpisodeProtocolPayload<ExtArgs>
+        fields: Prisma.EpisodeProtocolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EpisodeProtocolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EpisodeProtocolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          findFirst: {
+            args: Prisma.EpisodeProtocolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EpisodeProtocolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          findMany: {
+            args: Prisma.EpisodeProtocolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>[]
+          }
+          create: {
+            args: Prisma.EpisodeProtocolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          createMany: {
+            args: Prisma.EpisodeProtocolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EpisodeProtocolCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>[]
+          }
+          delete: {
+            args: Prisma.EpisodeProtocolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          update: {
+            args: Prisma.EpisodeProtocolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          deleteMany: {
+            args: Prisma.EpisodeProtocolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EpisodeProtocolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EpisodeProtocolUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>[]
+          }
+          upsert: {
+            args: Prisma.EpisodeProtocolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EpisodeProtocolPayload>
+          }
+          aggregate: {
+            args: Prisma.EpisodeProtocolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEpisodeProtocol>
+          }
+          groupBy: {
+            args: Prisma.EpisodeProtocolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EpisodeProtocolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EpisodeProtocolCountArgs<ExtArgs>
+            result: $Utils.Optional<EpisodeProtocolCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1338,6 +1608,9 @@ export namespace Prisma {
     userReminder?: UserReminderOmit
     trackingLog?: TrackingLogOmit
     plan?: PlanOmit
+    episode?: EpisodeOmit
+    protocol?: ProtocolOmit
+    episodeProtocol?: EpisodeProtocolOmit
   }
 
   /* Types for Logging */
@@ -1522,6 +1795,68 @@ export namespace Prisma {
    */
   export type PlanCountOutputTypeCountSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SubscriptionWhereInput
+  }
+
+
+  /**
+   * Count Type EpisodeCountOutputType
+   */
+
+  export type EpisodeCountOutputType = {
+    EpisodeProtocol: number
+  }
+
+  export type EpisodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    EpisodeProtocol?: boolean | EpisodeCountOutputTypeCountEpisodeProtocolArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * EpisodeCountOutputType without action
+   */
+  export type EpisodeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeCountOutputType
+     */
+    select?: EpisodeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * EpisodeCountOutputType without action
+   */
+  export type EpisodeCountOutputTypeCountEpisodeProtocolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EpisodeProtocolWhereInput
+  }
+
+
+  /**
+   * Count Type ProtocolCountOutputType
+   */
+
+  export type ProtocolCountOutputType = {
+    EpisodeProtocol: number
+  }
+
+  export type ProtocolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    EpisodeProtocol?: boolean | ProtocolCountOutputTypeCountEpisodeProtocolArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProtocolCountOutputType without action
+   */
+  export type ProtocolCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProtocolCountOutputType
+     */
+    select?: ProtocolCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProtocolCountOutputType without action
+   */
+  export type ProtocolCountOutputTypeCountEpisodeProtocolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EpisodeProtocolWhereInput
   }
 
 
@@ -3788,46 +4123,118 @@ export namespace Prisma {
 
   export type AggregateSubscription = {
     _count: SubscriptionCountAggregateOutputType | null
+    _avg: SubscriptionAvgAggregateOutputType | null
+    _sum: SubscriptionSumAggregateOutputType | null
     _min: SubscriptionMinAggregateOutputType | null
     _max: SubscriptionMaxAggregateOutputType | null
+  }
+
+  export type SubscriptionAvgAggregateOutputType = {
+    quantity: number | null
+  }
+
+  export type SubscriptionSumAggregateOutputType = {
+    quantity: number | null
   }
 
   export type SubscriptionMinAggregateOutputType = {
     id: string | null
     userId: string | null
     planId: string | null
+    name: string | null
+    stripeId: string | null
+    stripeStatus: string | null
+    stripePrice: string | null
+    quantity: number | null
+    trialEndsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type SubscriptionMaxAggregateOutputType = {
     id: string | null
     userId: string | null
     planId: string | null
+    name: string | null
+    stripeId: string | null
+    stripeStatus: string | null
+    stripePrice: string | null
+    quantity: number | null
+    trialEndsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type SubscriptionCountAggregateOutputType = {
     id: number
     userId: number
     planId: number
+    name: number
+    stripeId: number
+    stripeStatus: number
+    stripePrice: number
+    quantity: number
+    trialEndsAt: number
+    endsAt: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
+
+  export type SubscriptionAvgAggregateInputType = {
+    quantity?: true
+  }
+
+  export type SubscriptionSumAggregateInputType = {
+    quantity?: true
+  }
 
   export type SubscriptionMinAggregateInputType = {
     id?: true
     userId?: true
     planId?: true
+    name?: true
+    stripeId?: true
+    stripeStatus?: true
+    stripePrice?: true
+    quantity?: true
+    trialEndsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type SubscriptionMaxAggregateInputType = {
     id?: true
     userId?: true
     planId?: true
+    name?: true
+    stripeId?: true
+    stripeStatus?: true
+    stripePrice?: true
+    quantity?: true
+    trialEndsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type SubscriptionCountAggregateInputType = {
     id?: true
     userId?: true
     planId?: true
+    name?: true
+    stripeId?: true
+    stripeStatus?: true
+    stripePrice?: true
+    quantity?: true
+    trialEndsAt?: true
+    endsAt?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3869,6 +4276,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SubscriptionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SubscriptionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SubscriptionMinAggregateInputType
@@ -3899,6 +4318,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SubscriptionCountAggregateInputType | true
+    _avg?: SubscriptionAvgAggregateInputType
+    _sum?: SubscriptionSumAggregateInputType
     _min?: SubscriptionMinAggregateInputType
     _max?: SubscriptionMaxAggregateInputType
   }
@@ -3907,7 +4328,18 @@ export namespace Prisma {
     id: string
     userId: string
     planId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt: Date | null
+    endsAt: Date | null
+    createdAt: Date
+    updatedAt: Date
     _count: SubscriptionCountAggregateOutputType | null
+    _avg: SubscriptionAvgAggregateOutputType | null
+    _sum: SubscriptionSumAggregateOutputType | null
     _min: SubscriptionMinAggregateOutputType | null
     _max: SubscriptionMaxAggregateOutputType | null
   }
@@ -3930,6 +4362,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     planId?: boolean
+    name?: boolean
+    stripeId?: boolean
+    stripeStatus?: boolean
+    stripePrice?: boolean
+    quantity?: boolean
+    trialEndsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     plan?: boolean | PlanDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subscription"]>
@@ -3938,6 +4379,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     planId?: boolean
+    name?: boolean
+    stripeId?: boolean
+    stripeStatus?: boolean
+    stripePrice?: boolean
+    quantity?: boolean
+    trialEndsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     plan?: boolean | PlanDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subscription"]>
@@ -3946,6 +4396,15 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     planId?: boolean
+    name?: boolean
+    stripeId?: boolean
+    stripeStatus?: boolean
+    stripePrice?: boolean
+    quantity?: boolean
+    trialEndsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     plan?: boolean | PlanDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subscription"]>
@@ -3954,9 +4413,18 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     planId?: boolean
+    name?: boolean
+    stripeId?: boolean
+    stripeStatus?: boolean
+    stripePrice?: boolean
+    quantity?: boolean
+    trialEndsAt?: boolean
+    endsAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type SubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "planId", ExtArgs["result"]["subscription"]>
+  export type SubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "planId" | "name" | "stripeId" | "stripeStatus" | "stripePrice" | "quantity" | "trialEndsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
   export type SubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     plan?: boolean | PlanDefaultArgs<ExtArgs>
@@ -3980,6 +4448,15 @@ export namespace Prisma {
       id: string
       userId: string
       planId: string
+      name: string
+      stripeId: string
+      stripeStatus: string
+      stripePrice: string
+      quantity: number
+      trialEndsAt: Date | null
+      endsAt: Date | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["subscription"]>
     composites: {}
   }
@@ -4408,6 +4885,15 @@ export namespace Prisma {
     readonly id: FieldRef<"Subscription", 'String'>
     readonly userId: FieldRef<"Subscription", 'String'>
     readonly planId: FieldRef<"Subscription", 'String'>
+    readonly name: FieldRef<"Subscription", 'String'>
+    readonly stripeId: FieldRef<"Subscription", 'String'>
+    readonly stripeStatus: FieldRef<"Subscription", 'String'>
+    readonly stripePrice: FieldRef<"Subscription", 'String'>
+    readonly quantity: FieldRef<"Subscription", 'Int'>
+    readonly trialEndsAt: FieldRef<"Subscription", 'DateTime'>
+    readonly endsAt: FieldRef<"Subscription", 'DateTime'>
+    readonly createdAt: FieldRef<"Subscription", 'DateTime'>
+    readonly updatedAt: FieldRef<"Subscription", 'DateTime'>
   }
     
 
@@ -9070,6 +9556,3207 @@ export namespace Prisma {
 
 
   /**
+   * Model Episode
+   */
+
+  export type AggregateEpisode = {
+    _count: EpisodeCountAggregateOutputType | null
+    _avg: EpisodeAvgAggregateOutputType | null
+    _sum: EpisodeSumAggregateOutputType | null
+    _min: EpisodeMinAggregateOutputType | null
+    _max: EpisodeMaxAggregateOutputType | null
+  }
+
+  export type EpisodeAvgAggregateOutputType = {
+    duration: number | null
+  }
+
+  export type EpisodeSumAggregateOutputType = {
+    duration: number | null
+  }
+
+  export type EpisodeMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    slug: string | null
+    description: string | null
+    content: string | null
+    duration: number | null
+    publishedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EpisodeMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    slug: string | null
+    description: string | null
+    content: string | null
+    duration: number | null
+    publishedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EpisodeCountAggregateOutputType = {
+    id: number
+    title: number
+    slug: number
+    description: number
+    content: number
+    duration: number
+    publishedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EpisodeAvgAggregateInputType = {
+    duration?: true
+  }
+
+  export type EpisodeSumAggregateInputType = {
+    duration?: true
+  }
+
+  export type EpisodeMinAggregateInputType = {
+    id?: true
+    title?: true
+    slug?: true
+    description?: true
+    content?: true
+    duration?: true
+    publishedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EpisodeMaxAggregateInputType = {
+    id?: true
+    title?: true
+    slug?: true
+    description?: true
+    content?: true
+    duration?: true
+    publishedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EpisodeCountAggregateInputType = {
+    id?: true
+    title?: true
+    slug?: true
+    description?: true
+    content?: true
+    duration?: true
+    publishedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EpisodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Episode to aggregate.
+     */
+    where?: EpisodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Episodes to fetch.
+     */
+    orderBy?: EpisodeOrderByWithRelationInput | EpisodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EpisodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Episodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Episodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Episodes
+    **/
+    _count?: true | EpisodeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EpisodeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EpisodeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EpisodeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EpisodeMaxAggregateInputType
+  }
+
+  export type GetEpisodeAggregateType<T extends EpisodeAggregateArgs> = {
+        [P in keyof T & keyof AggregateEpisode]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEpisode[P]>
+      : GetScalarType<T[P], AggregateEpisode[P]>
+  }
+
+
+
+
+  export type EpisodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EpisodeWhereInput
+    orderBy?: EpisodeOrderByWithAggregationInput | EpisodeOrderByWithAggregationInput[]
+    by: EpisodeScalarFieldEnum[] | EpisodeScalarFieldEnum
+    having?: EpisodeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EpisodeCountAggregateInputType | true
+    _avg?: EpisodeAvgAggregateInputType
+    _sum?: EpisodeSumAggregateInputType
+    _min?: EpisodeMinAggregateInputType
+    _max?: EpisodeMaxAggregateInputType
+  }
+
+  export type EpisodeGroupByOutputType = {
+    id: string
+    title: string
+    slug: string
+    description: string | null
+    content: string | null
+    duration: number | null
+    publishedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EpisodeCountAggregateOutputType | null
+    _avg: EpisodeAvgAggregateOutputType | null
+    _sum: EpisodeSumAggregateOutputType | null
+    _min: EpisodeMinAggregateOutputType | null
+    _max: EpisodeMaxAggregateOutputType | null
+  }
+
+  type GetEpisodeGroupByPayload<T extends EpisodeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EpisodeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EpisodeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EpisodeGroupByOutputType[P]>
+            : GetScalarType<T[P], EpisodeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EpisodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    slug?: boolean
+    description?: boolean
+    content?: boolean
+    duration?: boolean
+    publishedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    EpisodeProtocol?: boolean | Episode$EpisodeProtocolArgs<ExtArgs>
+    _count?: boolean | EpisodeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["episode"]>
+
+  export type EpisodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    slug?: boolean
+    description?: boolean
+    content?: boolean
+    duration?: boolean
+    publishedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["episode"]>
+
+  export type EpisodeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    slug?: boolean
+    description?: boolean
+    content?: boolean
+    duration?: boolean
+    publishedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["episode"]>
+
+  export type EpisodeSelectScalar = {
+    id?: boolean
+    title?: boolean
+    slug?: boolean
+    description?: boolean
+    content?: boolean
+    duration?: boolean
+    publishedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EpisodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "description" | "content" | "duration" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["episode"]>
+  export type EpisodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    EpisodeProtocol?: boolean | Episode$EpisodeProtocolArgs<ExtArgs>
+    _count?: boolean | EpisodeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type EpisodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type EpisodeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $EpisodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Episode"
+    objects: {
+      EpisodeProtocol: Prisma.$EpisodeProtocolPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      slug: string
+      description: string | null
+      content: string | null
+      duration: number | null
+      publishedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["episode"]>
+    composites: {}
+  }
+
+  type EpisodeGetPayload<S extends boolean | null | undefined | EpisodeDefaultArgs> = $Result.GetResult<Prisma.$EpisodePayload, S>
+
+  type EpisodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EpisodeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EpisodeCountAggregateInputType | true
+    }
+
+  export interface EpisodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Episode'], meta: { name: 'Episode' } }
+    /**
+     * Find zero or one Episode that matches the filter.
+     * @param {EpisodeFindUniqueArgs} args - Arguments to find a Episode
+     * @example
+     * // Get one Episode
+     * const episode = await prisma.episode.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EpisodeFindUniqueArgs>(args: SelectSubset<T, EpisodeFindUniqueArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Episode that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EpisodeFindUniqueOrThrowArgs} args - Arguments to find a Episode
+     * @example
+     * // Get one Episode
+     * const episode = await prisma.episode.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EpisodeFindUniqueOrThrowArgs>(args: SelectSubset<T, EpisodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Episode that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeFindFirstArgs} args - Arguments to find a Episode
+     * @example
+     * // Get one Episode
+     * const episode = await prisma.episode.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EpisodeFindFirstArgs>(args?: SelectSubset<T, EpisodeFindFirstArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Episode that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeFindFirstOrThrowArgs} args - Arguments to find a Episode
+     * @example
+     * // Get one Episode
+     * const episode = await prisma.episode.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EpisodeFindFirstOrThrowArgs>(args?: SelectSubset<T, EpisodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Episodes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Episodes
+     * const episodes = await prisma.episode.findMany()
+     * 
+     * // Get first 10 Episodes
+     * const episodes = await prisma.episode.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const episodeWithIdOnly = await prisma.episode.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EpisodeFindManyArgs>(args?: SelectSubset<T, EpisodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Episode.
+     * @param {EpisodeCreateArgs} args - Arguments to create a Episode.
+     * @example
+     * // Create one Episode
+     * const Episode = await prisma.episode.create({
+     *   data: {
+     *     // ... data to create a Episode
+     *   }
+     * })
+     * 
+     */
+    create<T extends EpisodeCreateArgs>(args: SelectSubset<T, EpisodeCreateArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Episodes.
+     * @param {EpisodeCreateManyArgs} args - Arguments to create many Episodes.
+     * @example
+     * // Create many Episodes
+     * const episode = await prisma.episode.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EpisodeCreateManyArgs>(args?: SelectSubset<T, EpisodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Episodes and returns the data saved in the database.
+     * @param {EpisodeCreateManyAndReturnArgs} args - Arguments to create many Episodes.
+     * @example
+     * // Create many Episodes
+     * const episode = await prisma.episode.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Episodes and only return the `id`
+     * const episodeWithIdOnly = await prisma.episode.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EpisodeCreateManyAndReturnArgs>(args?: SelectSubset<T, EpisodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Episode.
+     * @param {EpisodeDeleteArgs} args - Arguments to delete one Episode.
+     * @example
+     * // Delete one Episode
+     * const Episode = await prisma.episode.delete({
+     *   where: {
+     *     // ... filter to delete one Episode
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EpisodeDeleteArgs>(args: SelectSubset<T, EpisodeDeleteArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Episode.
+     * @param {EpisodeUpdateArgs} args - Arguments to update one Episode.
+     * @example
+     * // Update one Episode
+     * const episode = await prisma.episode.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EpisodeUpdateArgs>(args: SelectSubset<T, EpisodeUpdateArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Episodes.
+     * @param {EpisodeDeleteManyArgs} args - Arguments to filter Episodes to delete.
+     * @example
+     * // Delete a few Episodes
+     * const { count } = await prisma.episode.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EpisodeDeleteManyArgs>(args?: SelectSubset<T, EpisodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Episodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Episodes
+     * const episode = await prisma.episode.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EpisodeUpdateManyArgs>(args: SelectSubset<T, EpisodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Episodes and returns the data updated in the database.
+     * @param {EpisodeUpdateManyAndReturnArgs} args - Arguments to update many Episodes.
+     * @example
+     * // Update many Episodes
+     * const episode = await prisma.episode.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Episodes and only return the `id`
+     * const episodeWithIdOnly = await prisma.episode.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EpisodeUpdateManyAndReturnArgs>(args: SelectSubset<T, EpisodeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Episode.
+     * @param {EpisodeUpsertArgs} args - Arguments to update or create a Episode.
+     * @example
+     * // Update or create a Episode
+     * const episode = await prisma.episode.upsert({
+     *   create: {
+     *     // ... data to create a Episode
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Episode we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EpisodeUpsertArgs>(args: SelectSubset<T, EpisodeUpsertArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Episodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeCountArgs} args - Arguments to filter Episodes to count.
+     * @example
+     * // Count the number of Episodes
+     * const count = await prisma.episode.count({
+     *   where: {
+     *     // ... the filter for the Episodes we want to count
+     *   }
+     * })
+    **/
+    count<T extends EpisodeCountArgs>(
+      args?: Subset<T, EpisodeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EpisodeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Episode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EpisodeAggregateArgs>(args: Subset<T, EpisodeAggregateArgs>): Prisma.PrismaPromise<GetEpisodeAggregateType<T>>
+
+    /**
+     * Group by Episode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EpisodeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EpisodeGroupByArgs['orderBy'] }
+        : { orderBy?: EpisodeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EpisodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEpisodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Episode model
+   */
+  readonly fields: EpisodeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Episode.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EpisodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    EpisodeProtocol<T extends Episode$EpisodeProtocolArgs<ExtArgs> = {}>(args?: Subset<T, Episode$EpisodeProtocolArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Episode model
+   */
+  interface EpisodeFieldRefs {
+    readonly id: FieldRef<"Episode", 'String'>
+    readonly title: FieldRef<"Episode", 'String'>
+    readonly slug: FieldRef<"Episode", 'String'>
+    readonly description: FieldRef<"Episode", 'String'>
+    readonly content: FieldRef<"Episode", 'String'>
+    readonly duration: FieldRef<"Episode", 'Int'>
+    readonly publishedAt: FieldRef<"Episode", 'DateTime'>
+    readonly createdAt: FieldRef<"Episode", 'DateTime'>
+    readonly updatedAt: FieldRef<"Episode", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Episode findUnique
+   */
+  export type EpisodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter, which Episode to fetch.
+     */
+    where: EpisodeWhereUniqueInput
+  }
+
+  /**
+   * Episode findUniqueOrThrow
+   */
+  export type EpisodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter, which Episode to fetch.
+     */
+    where: EpisodeWhereUniqueInput
+  }
+
+  /**
+   * Episode findFirst
+   */
+  export type EpisodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter, which Episode to fetch.
+     */
+    where?: EpisodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Episodes to fetch.
+     */
+    orderBy?: EpisodeOrderByWithRelationInput | EpisodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Episodes.
+     */
+    cursor?: EpisodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Episodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Episodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Episodes.
+     */
+    distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
+  }
+
+  /**
+   * Episode findFirstOrThrow
+   */
+  export type EpisodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter, which Episode to fetch.
+     */
+    where?: EpisodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Episodes to fetch.
+     */
+    orderBy?: EpisodeOrderByWithRelationInput | EpisodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Episodes.
+     */
+    cursor?: EpisodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Episodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Episodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Episodes.
+     */
+    distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
+  }
+
+  /**
+   * Episode findMany
+   */
+  export type EpisodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter, which Episodes to fetch.
+     */
+    where?: EpisodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Episodes to fetch.
+     */
+    orderBy?: EpisodeOrderByWithRelationInput | EpisodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Episodes.
+     */
+    cursor?: EpisodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Episodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Episodes.
+     */
+    skip?: number
+    distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
+  }
+
+  /**
+   * Episode create
+   */
+  export type EpisodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Episode.
+     */
+    data: XOR<EpisodeCreateInput, EpisodeUncheckedCreateInput>
+  }
+
+  /**
+   * Episode createMany
+   */
+  export type EpisodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Episodes.
+     */
+    data: EpisodeCreateManyInput | EpisodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Episode createManyAndReturn
+   */
+  export type EpisodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Episodes.
+     */
+    data: EpisodeCreateManyInput | EpisodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Episode update
+   */
+  export type EpisodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Episode.
+     */
+    data: XOR<EpisodeUpdateInput, EpisodeUncheckedUpdateInput>
+    /**
+     * Choose, which Episode to update.
+     */
+    where: EpisodeWhereUniqueInput
+  }
+
+  /**
+   * Episode updateMany
+   */
+  export type EpisodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Episodes.
+     */
+    data: XOR<EpisodeUpdateManyMutationInput, EpisodeUncheckedUpdateManyInput>
+    /**
+     * Filter which Episodes to update
+     */
+    where?: EpisodeWhereInput
+    /**
+     * Limit how many Episodes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Episode updateManyAndReturn
+   */
+  export type EpisodeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * The data used to update Episodes.
+     */
+    data: XOR<EpisodeUpdateManyMutationInput, EpisodeUncheckedUpdateManyInput>
+    /**
+     * Filter which Episodes to update
+     */
+    where?: EpisodeWhereInput
+    /**
+     * Limit how many Episodes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Episode upsert
+   */
+  export type EpisodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Episode to update in case it exists.
+     */
+    where: EpisodeWhereUniqueInput
+    /**
+     * In case the Episode found by the `where` argument doesn't exist, create a new Episode with this data.
+     */
+    create: XOR<EpisodeCreateInput, EpisodeUncheckedCreateInput>
+    /**
+     * In case the Episode was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EpisodeUpdateInput, EpisodeUncheckedUpdateInput>
+  }
+
+  /**
+   * Episode delete
+   */
+  export type EpisodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+    /**
+     * Filter which Episode to delete.
+     */
+    where: EpisodeWhereUniqueInput
+  }
+
+  /**
+   * Episode deleteMany
+   */
+  export type EpisodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Episodes to delete
+     */
+    where?: EpisodeWhereInput
+    /**
+     * Limit how many Episodes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Episode.EpisodeProtocol
+   */
+  export type Episode$EpisodeProtocolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    where?: EpisodeProtocolWhereInput
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    cursor?: EpisodeProtocolWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EpisodeProtocolScalarFieldEnum | EpisodeProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * Episode without action
+   */
+  export type EpisodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Episode
+     */
+    select?: EpisodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Episode
+     */
+    omit?: EpisodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Protocol
+   */
+
+  export type AggregateProtocol = {
+    _count: ProtocolCountAggregateOutputType | null
+    _min: ProtocolMinAggregateOutputType | null
+    _max: ProtocolMaxAggregateOutputType | null
+  }
+
+  export type ProtocolMinAggregateOutputType = {
+    id: string | null
+  }
+
+  export type ProtocolMaxAggregateOutputType = {
+    id: string | null
+  }
+
+  export type ProtocolCountAggregateOutputType = {
+    id: number
+    _all: number
+  }
+
+
+  export type ProtocolMinAggregateInputType = {
+    id?: true
+  }
+
+  export type ProtocolMaxAggregateInputType = {
+    id?: true
+  }
+
+  export type ProtocolCountAggregateInputType = {
+    id?: true
+    _all?: true
+  }
+
+  export type ProtocolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Protocol to aggregate.
+     */
+    where?: ProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Protocols to fetch.
+     */
+    orderBy?: ProtocolOrderByWithRelationInput | ProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Protocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Protocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Protocols
+    **/
+    _count?: true | ProtocolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProtocolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProtocolMaxAggregateInputType
+  }
+
+  export type GetProtocolAggregateType<T extends ProtocolAggregateArgs> = {
+        [P in keyof T & keyof AggregateProtocol]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProtocol[P]>
+      : GetScalarType<T[P], AggregateProtocol[P]>
+  }
+
+
+
+
+  export type ProtocolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProtocolWhereInput
+    orderBy?: ProtocolOrderByWithAggregationInput | ProtocolOrderByWithAggregationInput[]
+    by: ProtocolScalarFieldEnum[] | ProtocolScalarFieldEnum
+    having?: ProtocolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProtocolCountAggregateInputType | true
+    _min?: ProtocolMinAggregateInputType
+    _max?: ProtocolMaxAggregateInputType
+  }
+
+  export type ProtocolGroupByOutputType = {
+    id: string
+    _count: ProtocolCountAggregateOutputType | null
+    _min: ProtocolMinAggregateOutputType | null
+    _max: ProtocolMaxAggregateOutputType | null
+  }
+
+  type GetProtocolGroupByPayload<T extends ProtocolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProtocolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProtocolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProtocolGroupByOutputType[P]>
+            : GetScalarType<T[P], ProtocolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProtocolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    EpisodeProtocol?: boolean | Protocol$EpisodeProtocolArgs<ExtArgs>
+    _count?: boolean | ProtocolCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["protocol"]>
+
+  export type ProtocolSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+  }, ExtArgs["result"]["protocol"]>
+
+  export type ProtocolSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+  }, ExtArgs["result"]["protocol"]>
+
+  export type ProtocolSelectScalar = {
+    id?: boolean
+  }
+
+  export type ProtocolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id", ExtArgs["result"]["protocol"]>
+  export type ProtocolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    EpisodeProtocol?: boolean | Protocol$EpisodeProtocolArgs<ExtArgs>
+    _count?: boolean | ProtocolCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ProtocolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ProtocolIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ProtocolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Protocol"
+    objects: {
+      EpisodeProtocol: Prisma.$EpisodeProtocolPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+    }, ExtArgs["result"]["protocol"]>
+    composites: {}
+  }
+
+  type ProtocolGetPayload<S extends boolean | null | undefined | ProtocolDefaultArgs> = $Result.GetResult<Prisma.$ProtocolPayload, S>
+
+  type ProtocolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProtocolFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProtocolCountAggregateInputType | true
+    }
+
+  export interface ProtocolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Protocol'], meta: { name: 'Protocol' } }
+    /**
+     * Find zero or one Protocol that matches the filter.
+     * @param {ProtocolFindUniqueArgs} args - Arguments to find a Protocol
+     * @example
+     * // Get one Protocol
+     * const protocol = await prisma.protocol.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProtocolFindUniqueArgs>(args: SelectSubset<T, ProtocolFindUniqueArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Protocol that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProtocolFindUniqueOrThrowArgs} args - Arguments to find a Protocol
+     * @example
+     * // Get one Protocol
+     * const protocol = await prisma.protocol.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProtocolFindUniqueOrThrowArgs>(args: SelectSubset<T, ProtocolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Protocol that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolFindFirstArgs} args - Arguments to find a Protocol
+     * @example
+     * // Get one Protocol
+     * const protocol = await prisma.protocol.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProtocolFindFirstArgs>(args?: SelectSubset<T, ProtocolFindFirstArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Protocol that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolFindFirstOrThrowArgs} args - Arguments to find a Protocol
+     * @example
+     * // Get one Protocol
+     * const protocol = await prisma.protocol.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProtocolFindFirstOrThrowArgs>(args?: SelectSubset<T, ProtocolFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Protocols that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Protocols
+     * const protocols = await prisma.protocol.findMany()
+     * 
+     * // Get first 10 Protocols
+     * const protocols = await prisma.protocol.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const protocolWithIdOnly = await prisma.protocol.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProtocolFindManyArgs>(args?: SelectSubset<T, ProtocolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Protocol.
+     * @param {ProtocolCreateArgs} args - Arguments to create a Protocol.
+     * @example
+     * // Create one Protocol
+     * const Protocol = await prisma.protocol.create({
+     *   data: {
+     *     // ... data to create a Protocol
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProtocolCreateArgs>(args: SelectSubset<T, ProtocolCreateArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Protocols.
+     * @param {ProtocolCreateManyArgs} args - Arguments to create many Protocols.
+     * @example
+     * // Create many Protocols
+     * const protocol = await prisma.protocol.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProtocolCreateManyArgs>(args?: SelectSubset<T, ProtocolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Protocols and returns the data saved in the database.
+     * @param {ProtocolCreateManyAndReturnArgs} args - Arguments to create many Protocols.
+     * @example
+     * // Create many Protocols
+     * const protocol = await prisma.protocol.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Protocols and only return the `id`
+     * const protocolWithIdOnly = await prisma.protocol.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProtocolCreateManyAndReturnArgs>(args?: SelectSubset<T, ProtocolCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Protocol.
+     * @param {ProtocolDeleteArgs} args - Arguments to delete one Protocol.
+     * @example
+     * // Delete one Protocol
+     * const Protocol = await prisma.protocol.delete({
+     *   where: {
+     *     // ... filter to delete one Protocol
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProtocolDeleteArgs>(args: SelectSubset<T, ProtocolDeleteArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Protocol.
+     * @param {ProtocolUpdateArgs} args - Arguments to update one Protocol.
+     * @example
+     * // Update one Protocol
+     * const protocol = await prisma.protocol.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProtocolUpdateArgs>(args: SelectSubset<T, ProtocolUpdateArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Protocols.
+     * @param {ProtocolDeleteManyArgs} args - Arguments to filter Protocols to delete.
+     * @example
+     * // Delete a few Protocols
+     * const { count } = await prisma.protocol.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProtocolDeleteManyArgs>(args?: SelectSubset<T, ProtocolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Protocols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Protocols
+     * const protocol = await prisma.protocol.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProtocolUpdateManyArgs>(args: SelectSubset<T, ProtocolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Protocols and returns the data updated in the database.
+     * @param {ProtocolUpdateManyAndReturnArgs} args - Arguments to update many Protocols.
+     * @example
+     * // Update many Protocols
+     * const protocol = await prisma.protocol.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Protocols and only return the `id`
+     * const protocolWithIdOnly = await prisma.protocol.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProtocolUpdateManyAndReturnArgs>(args: SelectSubset<T, ProtocolUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Protocol.
+     * @param {ProtocolUpsertArgs} args - Arguments to update or create a Protocol.
+     * @example
+     * // Update or create a Protocol
+     * const protocol = await prisma.protocol.upsert({
+     *   create: {
+     *     // ... data to create a Protocol
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Protocol we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProtocolUpsertArgs>(args: SelectSubset<T, ProtocolUpsertArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Protocols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolCountArgs} args - Arguments to filter Protocols to count.
+     * @example
+     * // Count the number of Protocols
+     * const count = await prisma.protocol.count({
+     *   where: {
+     *     // ... the filter for the Protocols we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProtocolCountArgs>(
+      args?: Subset<T, ProtocolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProtocolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Protocol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProtocolAggregateArgs>(args: Subset<T, ProtocolAggregateArgs>): Prisma.PrismaPromise<GetProtocolAggregateType<T>>
+
+    /**
+     * Group by Protocol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProtocolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProtocolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProtocolGroupByArgs['orderBy'] }
+        : { orderBy?: ProtocolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProtocolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProtocolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Protocol model
+   */
+  readonly fields: ProtocolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Protocol.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProtocolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    EpisodeProtocol<T extends Protocol$EpisodeProtocolArgs<ExtArgs> = {}>(args?: Subset<T, Protocol$EpisodeProtocolArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Protocol model
+   */
+  interface ProtocolFieldRefs {
+    readonly id: FieldRef<"Protocol", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Protocol findUnique
+   */
+  export type ProtocolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which Protocol to fetch.
+     */
+    where: ProtocolWhereUniqueInput
+  }
+
+  /**
+   * Protocol findUniqueOrThrow
+   */
+  export type ProtocolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which Protocol to fetch.
+     */
+    where: ProtocolWhereUniqueInput
+  }
+
+  /**
+   * Protocol findFirst
+   */
+  export type ProtocolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which Protocol to fetch.
+     */
+    where?: ProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Protocols to fetch.
+     */
+    orderBy?: ProtocolOrderByWithRelationInput | ProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Protocols.
+     */
+    cursor?: ProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Protocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Protocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Protocols.
+     */
+    distinct?: ProtocolScalarFieldEnum | ProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * Protocol findFirstOrThrow
+   */
+  export type ProtocolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which Protocol to fetch.
+     */
+    where?: ProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Protocols to fetch.
+     */
+    orderBy?: ProtocolOrderByWithRelationInput | ProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Protocols.
+     */
+    cursor?: ProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Protocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Protocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Protocols.
+     */
+    distinct?: ProtocolScalarFieldEnum | ProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * Protocol findMany
+   */
+  export type ProtocolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which Protocols to fetch.
+     */
+    where?: ProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Protocols to fetch.
+     */
+    orderBy?: ProtocolOrderByWithRelationInput | ProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Protocols.
+     */
+    cursor?: ProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Protocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Protocols.
+     */
+    skip?: number
+    distinct?: ProtocolScalarFieldEnum | ProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * Protocol create
+   */
+  export type ProtocolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Protocol.
+     */
+    data?: XOR<ProtocolCreateInput, ProtocolUncheckedCreateInput>
+  }
+
+  /**
+   * Protocol createMany
+   */
+  export type ProtocolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Protocols.
+     */
+    data: ProtocolCreateManyInput | ProtocolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Protocol createManyAndReturn
+   */
+  export type ProtocolCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * The data used to create many Protocols.
+     */
+    data: ProtocolCreateManyInput | ProtocolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Protocol update
+   */
+  export type ProtocolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Protocol.
+     */
+    data: XOR<ProtocolUpdateInput, ProtocolUncheckedUpdateInput>
+    /**
+     * Choose, which Protocol to update.
+     */
+    where: ProtocolWhereUniqueInput
+  }
+
+  /**
+   * Protocol updateMany
+   */
+  export type ProtocolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Protocols.
+     */
+    data: XOR<ProtocolUpdateManyMutationInput, ProtocolUncheckedUpdateManyInput>
+    /**
+     * Filter which Protocols to update
+     */
+    where?: ProtocolWhereInput
+    /**
+     * Limit how many Protocols to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Protocol updateManyAndReturn
+   */
+  export type ProtocolUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * The data used to update Protocols.
+     */
+    data: XOR<ProtocolUpdateManyMutationInput, ProtocolUncheckedUpdateManyInput>
+    /**
+     * Filter which Protocols to update
+     */
+    where?: ProtocolWhereInput
+    /**
+     * Limit how many Protocols to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Protocol upsert
+   */
+  export type ProtocolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Protocol to update in case it exists.
+     */
+    where: ProtocolWhereUniqueInput
+    /**
+     * In case the Protocol found by the `where` argument doesn't exist, create a new Protocol with this data.
+     */
+    create: XOR<ProtocolCreateInput, ProtocolUncheckedCreateInput>
+    /**
+     * In case the Protocol was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProtocolUpdateInput, ProtocolUncheckedUpdateInput>
+  }
+
+  /**
+   * Protocol delete
+   */
+  export type ProtocolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+    /**
+     * Filter which Protocol to delete.
+     */
+    where: ProtocolWhereUniqueInput
+  }
+
+  /**
+   * Protocol deleteMany
+   */
+  export type ProtocolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Protocols to delete
+     */
+    where?: ProtocolWhereInput
+    /**
+     * Limit how many Protocols to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Protocol.EpisodeProtocol
+   */
+  export type Protocol$EpisodeProtocolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    where?: EpisodeProtocolWhereInput
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    cursor?: EpisodeProtocolWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EpisodeProtocolScalarFieldEnum | EpisodeProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * Protocol without action
+   */
+  export type ProtocolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Protocol
+     */
+    select?: ProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Protocol
+     */
+    omit?: ProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProtocolInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EpisodeProtocol
+   */
+
+  export type AggregateEpisodeProtocol = {
+    _count: EpisodeProtocolCountAggregateOutputType | null
+    _min: EpisodeProtocolMinAggregateOutputType | null
+    _max: EpisodeProtocolMaxAggregateOutputType | null
+  }
+
+  export type EpisodeProtocolMinAggregateOutputType = {
+    episodeId: string | null
+    protocolId: string | null
+  }
+
+  export type EpisodeProtocolMaxAggregateOutputType = {
+    episodeId: string | null
+    protocolId: string | null
+  }
+
+  export type EpisodeProtocolCountAggregateOutputType = {
+    episodeId: number
+    protocolId: number
+    _all: number
+  }
+
+
+  export type EpisodeProtocolMinAggregateInputType = {
+    episodeId?: true
+    protocolId?: true
+  }
+
+  export type EpisodeProtocolMaxAggregateInputType = {
+    episodeId?: true
+    protocolId?: true
+  }
+
+  export type EpisodeProtocolCountAggregateInputType = {
+    episodeId?: true
+    protocolId?: true
+    _all?: true
+  }
+
+  export type EpisodeProtocolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EpisodeProtocol to aggregate.
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EpisodeProtocols to fetch.
+     */
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EpisodeProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EpisodeProtocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EpisodeProtocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EpisodeProtocols
+    **/
+    _count?: true | EpisodeProtocolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EpisodeProtocolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EpisodeProtocolMaxAggregateInputType
+  }
+
+  export type GetEpisodeProtocolAggregateType<T extends EpisodeProtocolAggregateArgs> = {
+        [P in keyof T & keyof AggregateEpisodeProtocol]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEpisodeProtocol[P]>
+      : GetScalarType<T[P], AggregateEpisodeProtocol[P]>
+  }
+
+
+
+
+  export type EpisodeProtocolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EpisodeProtocolWhereInput
+    orderBy?: EpisodeProtocolOrderByWithAggregationInput | EpisodeProtocolOrderByWithAggregationInput[]
+    by: EpisodeProtocolScalarFieldEnum[] | EpisodeProtocolScalarFieldEnum
+    having?: EpisodeProtocolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EpisodeProtocolCountAggregateInputType | true
+    _min?: EpisodeProtocolMinAggregateInputType
+    _max?: EpisodeProtocolMaxAggregateInputType
+  }
+
+  export type EpisodeProtocolGroupByOutputType = {
+    episodeId: string
+    protocolId: string
+    _count: EpisodeProtocolCountAggregateOutputType | null
+    _min: EpisodeProtocolMinAggregateOutputType | null
+    _max: EpisodeProtocolMaxAggregateOutputType | null
+  }
+
+  type GetEpisodeProtocolGroupByPayload<T extends EpisodeProtocolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EpisodeProtocolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EpisodeProtocolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EpisodeProtocolGroupByOutputType[P]>
+            : GetScalarType<T[P], EpisodeProtocolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EpisodeProtocolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    episodeId?: boolean
+    protocolId?: boolean
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["episodeProtocol"]>
+
+  export type EpisodeProtocolSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    episodeId?: boolean
+    protocolId?: boolean
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["episodeProtocol"]>
+
+  export type EpisodeProtocolSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    episodeId?: boolean
+    protocolId?: boolean
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["episodeProtocol"]>
+
+  export type EpisodeProtocolSelectScalar = {
+    episodeId?: boolean
+    protocolId?: boolean
+  }
+
+  export type EpisodeProtocolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"episodeId" | "protocolId", ExtArgs["result"]["episodeProtocol"]>
+  export type EpisodeProtocolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }
+  export type EpisodeProtocolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }
+  export type EpisodeProtocolIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    episode?: boolean | EpisodeDefaultArgs<ExtArgs>
+    protocol?: boolean | ProtocolDefaultArgs<ExtArgs>
+  }
+
+  export type $EpisodeProtocolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EpisodeProtocol"
+    objects: {
+      episode: Prisma.$EpisodePayload<ExtArgs>
+      protocol: Prisma.$ProtocolPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      episodeId: string
+      protocolId: string
+    }, ExtArgs["result"]["episodeProtocol"]>
+    composites: {}
+  }
+
+  type EpisodeProtocolGetPayload<S extends boolean | null | undefined | EpisodeProtocolDefaultArgs> = $Result.GetResult<Prisma.$EpisodeProtocolPayload, S>
+
+  type EpisodeProtocolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EpisodeProtocolFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EpisodeProtocolCountAggregateInputType | true
+    }
+
+  export interface EpisodeProtocolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EpisodeProtocol'], meta: { name: 'EpisodeProtocol' } }
+    /**
+     * Find zero or one EpisodeProtocol that matches the filter.
+     * @param {EpisodeProtocolFindUniqueArgs} args - Arguments to find a EpisodeProtocol
+     * @example
+     * // Get one EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EpisodeProtocolFindUniqueArgs>(args: SelectSubset<T, EpisodeProtocolFindUniqueArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EpisodeProtocol that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EpisodeProtocolFindUniqueOrThrowArgs} args - Arguments to find a EpisodeProtocol
+     * @example
+     * // Get one EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EpisodeProtocolFindUniqueOrThrowArgs>(args: SelectSubset<T, EpisodeProtocolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EpisodeProtocol that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolFindFirstArgs} args - Arguments to find a EpisodeProtocol
+     * @example
+     * // Get one EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EpisodeProtocolFindFirstArgs>(args?: SelectSubset<T, EpisodeProtocolFindFirstArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EpisodeProtocol that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolFindFirstOrThrowArgs} args - Arguments to find a EpisodeProtocol
+     * @example
+     * // Get one EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EpisodeProtocolFindFirstOrThrowArgs>(args?: SelectSubset<T, EpisodeProtocolFindFirstOrThrowArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EpisodeProtocols that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EpisodeProtocols
+     * const episodeProtocols = await prisma.episodeProtocol.findMany()
+     * 
+     * // Get first 10 EpisodeProtocols
+     * const episodeProtocols = await prisma.episodeProtocol.findMany({ take: 10 })
+     * 
+     * // Only select the `episodeId`
+     * const episodeProtocolWithEpisodeIdOnly = await prisma.episodeProtocol.findMany({ select: { episodeId: true } })
+     * 
+     */
+    findMany<T extends EpisodeProtocolFindManyArgs>(args?: SelectSubset<T, EpisodeProtocolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EpisodeProtocol.
+     * @param {EpisodeProtocolCreateArgs} args - Arguments to create a EpisodeProtocol.
+     * @example
+     * // Create one EpisodeProtocol
+     * const EpisodeProtocol = await prisma.episodeProtocol.create({
+     *   data: {
+     *     // ... data to create a EpisodeProtocol
+     *   }
+     * })
+     * 
+     */
+    create<T extends EpisodeProtocolCreateArgs>(args: SelectSubset<T, EpisodeProtocolCreateArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EpisodeProtocols.
+     * @param {EpisodeProtocolCreateManyArgs} args - Arguments to create many EpisodeProtocols.
+     * @example
+     * // Create many EpisodeProtocols
+     * const episodeProtocol = await prisma.episodeProtocol.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EpisodeProtocolCreateManyArgs>(args?: SelectSubset<T, EpisodeProtocolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EpisodeProtocols and returns the data saved in the database.
+     * @param {EpisodeProtocolCreateManyAndReturnArgs} args - Arguments to create many EpisodeProtocols.
+     * @example
+     * // Create many EpisodeProtocols
+     * const episodeProtocol = await prisma.episodeProtocol.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EpisodeProtocols and only return the `episodeId`
+     * const episodeProtocolWithEpisodeIdOnly = await prisma.episodeProtocol.createManyAndReturn({
+     *   select: { episodeId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EpisodeProtocolCreateManyAndReturnArgs>(args?: SelectSubset<T, EpisodeProtocolCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EpisodeProtocol.
+     * @param {EpisodeProtocolDeleteArgs} args - Arguments to delete one EpisodeProtocol.
+     * @example
+     * // Delete one EpisodeProtocol
+     * const EpisodeProtocol = await prisma.episodeProtocol.delete({
+     *   where: {
+     *     // ... filter to delete one EpisodeProtocol
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EpisodeProtocolDeleteArgs>(args: SelectSubset<T, EpisodeProtocolDeleteArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EpisodeProtocol.
+     * @param {EpisodeProtocolUpdateArgs} args - Arguments to update one EpisodeProtocol.
+     * @example
+     * // Update one EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EpisodeProtocolUpdateArgs>(args: SelectSubset<T, EpisodeProtocolUpdateArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EpisodeProtocols.
+     * @param {EpisodeProtocolDeleteManyArgs} args - Arguments to filter EpisodeProtocols to delete.
+     * @example
+     * // Delete a few EpisodeProtocols
+     * const { count } = await prisma.episodeProtocol.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EpisodeProtocolDeleteManyArgs>(args?: SelectSubset<T, EpisodeProtocolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EpisodeProtocols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EpisodeProtocols
+     * const episodeProtocol = await prisma.episodeProtocol.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EpisodeProtocolUpdateManyArgs>(args: SelectSubset<T, EpisodeProtocolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EpisodeProtocols and returns the data updated in the database.
+     * @param {EpisodeProtocolUpdateManyAndReturnArgs} args - Arguments to update many EpisodeProtocols.
+     * @example
+     * // Update many EpisodeProtocols
+     * const episodeProtocol = await prisma.episodeProtocol.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EpisodeProtocols and only return the `episodeId`
+     * const episodeProtocolWithEpisodeIdOnly = await prisma.episodeProtocol.updateManyAndReturn({
+     *   select: { episodeId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EpisodeProtocolUpdateManyAndReturnArgs>(args: SelectSubset<T, EpisodeProtocolUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EpisodeProtocol.
+     * @param {EpisodeProtocolUpsertArgs} args - Arguments to update or create a EpisodeProtocol.
+     * @example
+     * // Update or create a EpisodeProtocol
+     * const episodeProtocol = await prisma.episodeProtocol.upsert({
+     *   create: {
+     *     // ... data to create a EpisodeProtocol
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EpisodeProtocol we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EpisodeProtocolUpsertArgs>(args: SelectSubset<T, EpisodeProtocolUpsertArgs<ExtArgs>>): Prisma__EpisodeProtocolClient<$Result.GetResult<Prisma.$EpisodeProtocolPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EpisodeProtocols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolCountArgs} args - Arguments to filter EpisodeProtocols to count.
+     * @example
+     * // Count the number of EpisodeProtocols
+     * const count = await prisma.episodeProtocol.count({
+     *   where: {
+     *     // ... the filter for the EpisodeProtocols we want to count
+     *   }
+     * })
+    **/
+    count<T extends EpisodeProtocolCountArgs>(
+      args?: Subset<T, EpisodeProtocolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EpisodeProtocolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EpisodeProtocol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EpisodeProtocolAggregateArgs>(args: Subset<T, EpisodeProtocolAggregateArgs>): Prisma.PrismaPromise<GetEpisodeProtocolAggregateType<T>>
+
+    /**
+     * Group by EpisodeProtocol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EpisodeProtocolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EpisodeProtocolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EpisodeProtocolGroupByArgs['orderBy'] }
+        : { orderBy?: EpisodeProtocolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EpisodeProtocolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEpisodeProtocolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EpisodeProtocol model
+   */
+  readonly fields: EpisodeProtocolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EpisodeProtocol.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EpisodeProtocolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    episode<T extends EpisodeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EpisodeDefaultArgs<ExtArgs>>): Prisma__EpisodeClient<$Result.GetResult<Prisma.$EpisodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    protocol<T extends ProtocolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProtocolDefaultArgs<ExtArgs>>): Prisma__ProtocolClient<$Result.GetResult<Prisma.$ProtocolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EpisodeProtocol model
+   */
+  interface EpisodeProtocolFieldRefs {
+    readonly episodeId: FieldRef<"EpisodeProtocol", 'String'>
+    readonly protocolId: FieldRef<"EpisodeProtocol", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EpisodeProtocol findUnique
+   */
+  export type EpisodeProtocolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which EpisodeProtocol to fetch.
+     */
+    where: EpisodeProtocolWhereUniqueInput
+  }
+
+  /**
+   * EpisodeProtocol findUniqueOrThrow
+   */
+  export type EpisodeProtocolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which EpisodeProtocol to fetch.
+     */
+    where: EpisodeProtocolWhereUniqueInput
+  }
+
+  /**
+   * EpisodeProtocol findFirst
+   */
+  export type EpisodeProtocolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which EpisodeProtocol to fetch.
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EpisodeProtocols to fetch.
+     */
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EpisodeProtocols.
+     */
+    cursor?: EpisodeProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EpisodeProtocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EpisodeProtocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EpisodeProtocols.
+     */
+    distinct?: EpisodeProtocolScalarFieldEnum | EpisodeProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * EpisodeProtocol findFirstOrThrow
+   */
+  export type EpisodeProtocolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which EpisodeProtocol to fetch.
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EpisodeProtocols to fetch.
+     */
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EpisodeProtocols.
+     */
+    cursor?: EpisodeProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EpisodeProtocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EpisodeProtocols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EpisodeProtocols.
+     */
+    distinct?: EpisodeProtocolScalarFieldEnum | EpisodeProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * EpisodeProtocol findMany
+   */
+  export type EpisodeProtocolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter, which EpisodeProtocols to fetch.
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EpisodeProtocols to fetch.
+     */
+    orderBy?: EpisodeProtocolOrderByWithRelationInput | EpisodeProtocolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EpisodeProtocols.
+     */
+    cursor?: EpisodeProtocolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EpisodeProtocols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EpisodeProtocols.
+     */
+    skip?: number
+    distinct?: EpisodeProtocolScalarFieldEnum | EpisodeProtocolScalarFieldEnum[]
+  }
+
+  /**
+   * EpisodeProtocol create
+   */
+  export type EpisodeProtocolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EpisodeProtocol.
+     */
+    data: XOR<EpisodeProtocolCreateInput, EpisodeProtocolUncheckedCreateInput>
+  }
+
+  /**
+   * EpisodeProtocol createMany
+   */
+  export type EpisodeProtocolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EpisodeProtocols.
+     */
+    data: EpisodeProtocolCreateManyInput | EpisodeProtocolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EpisodeProtocol createManyAndReturn
+   */
+  export type EpisodeProtocolCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * The data used to create many EpisodeProtocols.
+     */
+    data: EpisodeProtocolCreateManyInput | EpisodeProtocolCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EpisodeProtocol update
+   */
+  export type EpisodeProtocolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EpisodeProtocol.
+     */
+    data: XOR<EpisodeProtocolUpdateInput, EpisodeProtocolUncheckedUpdateInput>
+    /**
+     * Choose, which EpisodeProtocol to update.
+     */
+    where: EpisodeProtocolWhereUniqueInput
+  }
+
+  /**
+   * EpisodeProtocol updateMany
+   */
+  export type EpisodeProtocolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EpisodeProtocols.
+     */
+    data: XOR<EpisodeProtocolUpdateManyMutationInput, EpisodeProtocolUncheckedUpdateManyInput>
+    /**
+     * Filter which EpisodeProtocols to update
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * Limit how many EpisodeProtocols to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EpisodeProtocol updateManyAndReturn
+   */
+  export type EpisodeProtocolUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * The data used to update EpisodeProtocols.
+     */
+    data: XOR<EpisodeProtocolUpdateManyMutationInput, EpisodeProtocolUncheckedUpdateManyInput>
+    /**
+     * Filter which EpisodeProtocols to update
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * Limit how many EpisodeProtocols to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EpisodeProtocol upsert
+   */
+  export type EpisodeProtocolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EpisodeProtocol to update in case it exists.
+     */
+    where: EpisodeProtocolWhereUniqueInput
+    /**
+     * In case the EpisodeProtocol found by the `where` argument doesn't exist, create a new EpisodeProtocol with this data.
+     */
+    create: XOR<EpisodeProtocolCreateInput, EpisodeProtocolUncheckedCreateInput>
+    /**
+     * In case the EpisodeProtocol was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EpisodeProtocolUpdateInput, EpisodeProtocolUncheckedUpdateInput>
+  }
+
+  /**
+   * EpisodeProtocol delete
+   */
+  export type EpisodeProtocolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+    /**
+     * Filter which EpisodeProtocol to delete.
+     */
+    where: EpisodeProtocolWhereUniqueInput
+  }
+
+  /**
+   * EpisodeProtocol deleteMany
+   */
+  export type EpisodeProtocolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EpisodeProtocols to delete
+     */
+    where?: EpisodeProtocolWhereInput
+    /**
+     * Limit how many EpisodeProtocols to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EpisodeProtocol without action
+   */
+  export type EpisodeProtocolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EpisodeProtocol
+     */
+    select?: EpisodeProtocolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EpisodeProtocol
+     */
+    omit?: EpisodeProtocolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EpisodeProtocolInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9109,7 +12796,16 @@ export namespace Prisma {
   export const SubscriptionScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    planId: 'planId'
+    planId: 'planId',
+    name: 'name',
+    stripeId: 'stripeId',
+    stripeStatus: 'stripeStatus',
+    stripePrice: 'stripePrice',
+    quantity: 'quantity',
+    trialEndsAt: 'trialEndsAt',
+    endsAt: 'endsAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
@@ -9154,6 +12850,36 @@ export namespace Prisma {
   };
 
   export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
+  export const EpisodeScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    slug: 'slug',
+    description: 'description',
+    content: 'content',
+    duration: 'duration',
+    publishedAt: 'publishedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EpisodeScalarFieldEnum = (typeof EpisodeScalarFieldEnum)[keyof typeof EpisodeScalarFieldEnum]
+
+
+  export const ProtocolScalarFieldEnum: {
+    id: 'id'
+  };
+
+  export type ProtocolScalarFieldEnum = (typeof ProtocolScalarFieldEnum)[keyof typeof ProtocolScalarFieldEnum]
+
+
+  export const EpisodeProtocolScalarFieldEnum: {
+    episodeId: 'episodeId',
+    protocolId: 'protocolId'
+  };
+
+  export type EpisodeProtocolScalarFieldEnum = (typeof EpisodeProtocolScalarFieldEnum)[keyof typeof EpisodeProtocolScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9214,6 +12940,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -9238,20 +12978,6 @@ export namespace Prisma {
    * Reference to a field of type 'PlanInterval[]'
    */
   export type ListEnumPlanIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanInterval[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -9413,6 +13139,15 @@ export namespace Prisma {
     id?: StringFilter<"Subscription"> | string
     userId?: StringFilter<"Subscription"> | string
     planId?: StringFilter<"Subscription"> | string
+    name?: StringFilter<"Subscription"> | string
+    stripeId?: StringFilter<"Subscription"> | string
+    stripeStatus?: StringFilter<"Subscription"> | string
+    stripePrice?: StringFilter<"Subscription"> | string
+    quantity?: IntFilter<"Subscription"> | number
+    trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeFilter<"Subscription"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     plan?: XOR<PlanScalarRelationFilter, PlanWhereInput>
   }
@@ -9421,28 +13156,57 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     planId?: SortOrder
+    name?: SortOrder
+    stripeId?: SortOrder
+    stripeStatus?: SortOrder
+    stripePrice?: SortOrder
+    quantity?: SortOrder
+    trialEndsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     plan?: PlanOrderByWithRelationInput
   }
 
   export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    stripeId?: string
     AND?: SubscriptionWhereInput | SubscriptionWhereInput[]
     OR?: SubscriptionWhereInput[]
     NOT?: SubscriptionWhereInput | SubscriptionWhereInput[]
     userId?: StringFilter<"Subscription"> | string
     planId?: StringFilter<"Subscription"> | string
+    name?: StringFilter<"Subscription"> | string
+    stripeStatus?: StringFilter<"Subscription"> | string
+    stripePrice?: StringFilter<"Subscription"> | string
+    quantity?: IntFilter<"Subscription"> | number
+    trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeFilter<"Subscription"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     plan?: XOR<PlanScalarRelationFilter, PlanWhereInput>
-  }, "id">
+  }, "id" | "stripeId">
 
   export type SubscriptionOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
     planId?: SortOrder
+    name?: SortOrder
+    stripeId?: SortOrder
+    stripeStatus?: SortOrder
+    stripePrice?: SortOrder
+    quantity?: SortOrder
+    trialEndsAt?: SortOrderInput | SortOrder
+    endsAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: SubscriptionCountOrderByAggregateInput
+    _avg?: SubscriptionAvgOrderByAggregateInput
     _max?: SubscriptionMaxOrderByAggregateInput
     _min?: SubscriptionMinOrderByAggregateInput
+    _sum?: SubscriptionSumOrderByAggregateInput
   }
 
   export type SubscriptionScalarWhereWithAggregatesInput = {
@@ -9452,6 +13216,15 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Subscription"> | string
     userId?: StringWithAggregatesFilter<"Subscription"> | string
     planId?: StringWithAggregatesFilter<"Subscription"> | string
+    name?: StringWithAggregatesFilter<"Subscription"> | string
+    stripeId?: StringWithAggregatesFilter<"Subscription"> | string
+    stripeStatus?: StringWithAggregatesFilter<"Subscription"> | string
+    stripePrice?: StringWithAggregatesFilter<"Subscription"> | string
+    quantity?: IntWithAggregatesFilter<"Subscription"> | number
+    trialEndsAt?: DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+    endsAt?: DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
   }
 
   export type NoteWhereInput = {
@@ -9661,6 +13434,162 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Plan"> | Date | string
   }
 
+  export type EpisodeWhereInput = {
+    AND?: EpisodeWhereInput | EpisodeWhereInput[]
+    OR?: EpisodeWhereInput[]
+    NOT?: EpisodeWhereInput | EpisodeWhereInput[]
+    id?: StringFilter<"Episode"> | string
+    title?: StringFilter<"Episode"> | string
+    slug?: StringFilter<"Episode"> | string
+    description?: StringNullableFilter<"Episode"> | string | null
+    content?: StringNullableFilter<"Episode"> | string | null
+    duration?: IntNullableFilter<"Episode"> | number | null
+    publishedAt?: DateTimeNullableFilter<"Episode"> | Date | string | null
+    createdAt?: DateTimeFilter<"Episode"> | Date | string
+    updatedAt?: DateTimeFilter<"Episode"> | Date | string
+    EpisodeProtocol?: EpisodeProtocolListRelationFilter
+  }
+
+  export type EpisodeOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    slug?: SortOrder
+    description?: SortOrderInput | SortOrder
+    content?: SortOrderInput | SortOrder
+    duration?: SortOrderInput | SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    EpisodeProtocol?: EpisodeProtocolOrderByRelationAggregateInput
+  }
+
+  export type EpisodeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: EpisodeWhereInput | EpisodeWhereInput[]
+    OR?: EpisodeWhereInput[]
+    NOT?: EpisodeWhereInput | EpisodeWhereInput[]
+    title?: StringFilter<"Episode"> | string
+    description?: StringNullableFilter<"Episode"> | string | null
+    content?: StringNullableFilter<"Episode"> | string | null
+    duration?: IntNullableFilter<"Episode"> | number | null
+    publishedAt?: DateTimeNullableFilter<"Episode"> | Date | string | null
+    createdAt?: DateTimeFilter<"Episode"> | Date | string
+    updatedAt?: DateTimeFilter<"Episode"> | Date | string
+    EpisodeProtocol?: EpisodeProtocolListRelationFilter
+  }, "id" | "slug">
+
+  export type EpisodeOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    slug?: SortOrder
+    description?: SortOrderInput | SortOrder
+    content?: SortOrderInput | SortOrder
+    duration?: SortOrderInput | SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EpisodeCountOrderByAggregateInput
+    _avg?: EpisodeAvgOrderByAggregateInput
+    _max?: EpisodeMaxOrderByAggregateInput
+    _min?: EpisodeMinOrderByAggregateInput
+    _sum?: EpisodeSumOrderByAggregateInput
+  }
+
+  export type EpisodeScalarWhereWithAggregatesInput = {
+    AND?: EpisodeScalarWhereWithAggregatesInput | EpisodeScalarWhereWithAggregatesInput[]
+    OR?: EpisodeScalarWhereWithAggregatesInput[]
+    NOT?: EpisodeScalarWhereWithAggregatesInput | EpisodeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Episode"> | string
+    title?: StringWithAggregatesFilter<"Episode"> | string
+    slug?: StringWithAggregatesFilter<"Episode"> | string
+    description?: StringNullableWithAggregatesFilter<"Episode"> | string | null
+    content?: StringNullableWithAggregatesFilter<"Episode"> | string | null
+    duration?: IntNullableWithAggregatesFilter<"Episode"> | number | null
+    publishedAt?: DateTimeNullableWithAggregatesFilter<"Episode"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Episode"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Episode"> | Date | string
+  }
+
+  export type ProtocolWhereInput = {
+    AND?: ProtocolWhereInput | ProtocolWhereInput[]
+    OR?: ProtocolWhereInput[]
+    NOT?: ProtocolWhereInput | ProtocolWhereInput[]
+    id?: StringFilter<"Protocol"> | string
+    EpisodeProtocol?: EpisodeProtocolListRelationFilter
+  }
+
+  export type ProtocolOrderByWithRelationInput = {
+    id?: SortOrder
+    EpisodeProtocol?: EpisodeProtocolOrderByRelationAggregateInput
+  }
+
+  export type ProtocolWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProtocolWhereInput | ProtocolWhereInput[]
+    OR?: ProtocolWhereInput[]
+    NOT?: ProtocolWhereInput | ProtocolWhereInput[]
+    EpisodeProtocol?: EpisodeProtocolListRelationFilter
+  }, "id">
+
+  export type ProtocolOrderByWithAggregationInput = {
+    id?: SortOrder
+    _count?: ProtocolCountOrderByAggregateInput
+    _max?: ProtocolMaxOrderByAggregateInput
+    _min?: ProtocolMinOrderByAggregateInput
+  }
+
+  export type ProtocolScalarWhereWithAggregatesInput = {
+    AND?: ProtocolScalarWhereWithAggregatesInput | ProtocolScalarWhereWithAggregatesInput[]
+    OR?: ProtocolScalarWhereWithAggregatesInput[]
+    NOT?: ProtocolScalarWhereWithAggregatesInput | ProtocolScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Protocol"> | string
+  }
+
+  export type EpisodeProtocolWhereInput = {
+    AND?: EpisodeProtocolWhereInput | EpisodeProtocolWhereInput[]
+    OR?: EpisodeProtocolWhereInput[]
+    NOT?: EpisodeProtocolWhereInput | EpisodeProtocolWhereInput[]
+    episodeId?: StringFilter<"EpisodeProtocol"> | string
+    protocolId?: StringFilter<"EpisodeProtocol"> | string
+    episode?: XOR<EpisodeScalarRelationFilter, EpisodeWhereInput>
+    protocol?: XOR<ProtocolScalarRelationFilter, ProtocolWhereInput>
+  }
+
+  export type EpisodeProtocolOrderByWithRelationInput = {
+    episodeId?: SortOrder
+    protocolId?: SortOrder
+    episode?: EpisodeOrderByWithRelationInput
+    protocol?: ProtocolOrderByWithRelationInput
+  }
+
+  export type EpisodeProtocolWhereUniqueInput = Prisma.AtLeast<{
+    episodeId_protocolId?: EpisodeProtocolEpisodeIdProtocolIdCompoundUniqueInput
+    AND?: EpisodeProtocolWhereInput | EpisodeProtocolWhereInput[]
+    OR?: EpisodeProtocolWhereInput[]
+    NOT?: EpisodeProtocolWhereInput | EpisodeProtocolWhereInput[]
+    episodeId?: StringFilter<"EpisodeProtocol"> | string
+    protocolId?: StringFilter<"EpisodeProtocol"> | string
+    episode?: XOR<EpisodeScalarRelationFilter, EpisodeWhereInput>
+    protocol?: XOR<ProtocolScalarRelationFilter, ProtocolWhereInput>
+  }, "episodeId_protocolId">
+
+  export type EpisodeProtocolOrderByWithAggregationInput = {
+    episodeId?: SortOrder
+    protocolId?: SortOrder
+    _count?: EpisodeProtocolCountOrderByAggregateInput
+    _max?: EpisodeProtocolMaxOrderByAggregateInput
+    _min?: EpisodeProtocolMinOrderByAggregateInput
+  }
+
+  export type EpisodeProtocolScalarWhereWithAggregatesInput = {
+    AND?: EpisodeProtocolScalarWhereWithAggregatesInput | EpisodeProtocolScalarWhereWithAggregatesInput[]
+    OR?: EpisodeProtocolScalarWhereWithAggregatesInput[]
+    NOT?: EpisodeProtocolScalarWhereWithAggregatesInput | EpisodeProtocolScalarWhereWithAggregatesInput[]
+    episodeId?: StringWithAggregatesFilter<"EpisodeProtocol"> | string
+    protocolId?: StringWithAggregatesFilter<"EpisodeProtocol"> | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -9801,6 +13730,15 @@ export namespace Prisma {
 
   export type SubscriptionCreateInput = {
     id?: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutSubscriptionsInput
     plan: PlanCreateNestedOneWithoutSubscriptionsInput
   }
@@ -9809,10 +13747,28 @@ export namespace Prisma {
     id?: string
     userId: string
     planId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SubscriptionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutSubscriptionsNestedInput
     plan?: PlanUpdateOneRequiredWithoutSubscriptionsNestedInput
   }
@@ -9821,22 +13777,58 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     planId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SubscriptionCreateManyInput = {
     id?: string
     userId: string
     planId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SubscriptionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SubscriptionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     planId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NoteCreateInput = {
@@ -10041,6 +14033,160 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EpisodeCreateInput = {
+    id?: string
+    title: string
+    slug: string
+    description?: string | null
+    content?: string | null
+    duration?: number | null
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    EpisodeProtocol?: EpisodeProtocolCreateNestedManyWithoutEpisodeInput
+  }
+
+  export type EpisodeUncheckedCreateInput = {
+    id?: string
+    title: string
+    slug: string
+    description?: string | null
+    content?: string | null
+    duration?: number | null
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    EpisodeProtocol?: EpisodeProtocolUncheckedCreateNestedManyWithoutEpisodeInput
+  }
+
+  export type EpisodeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    EpisodeProtocol?: EpisodeProtocolUpdateManyWithoutEpisodeNestedInput
+  }
+
+  export type EpisodeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    EpisodeProtocol?: EpisodeProtocolUncheckedUpdateManyWithoutEpisodeNestedInput
+  }
+
+  export type EpisodeCreateManyInput = {
+    id?: string
+    title: string
+    slug: string
+    description?: string | null
+    content?: string | null
+    duration?: number | null
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EpisodeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EpisodeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProtocolCreateInput = {
+    id?: string
+    EpisodeProtocol?: EpisodeProtocolCreateNestedManyWithoutProtocolInput
+  }
+
+  export type ProtocolUncheckedCreateInput = {
+    id?: string
+    EpisodeProtocol?: EpisodeProtocolUncheckedCreateNestedManyWithoutProtocolInput
+  }
+
+  export type ProtocolUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    EpisodeProtocol?: EpisodeProtocolUpdateManyWithoutProtocolNestedInput
+  }
+
+  export type ProtocolUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    EpisodeProtocol?: EpisodeProtocolUncheckedUpdateManyWithoutProtocolNestedInput
+  }
+
+  export type ProtocolCreateManyInput = {
+    id?: string
+  }
+
+  export type ProtocolUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProtocolUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EpisodeProtocolCreateInput = {
+    episode: EpisodeCreateNestedOneWithoutEpisodeProtocolInput
+    protocol: ProtocolCreateNestedOneWithoutEpisodeProtocolInput
+  }
+
+  export type EpisodeProtocolUncheckedCreateInput = {
+    episodeId: string
+    protocolId: string
+  }
+
+  export type EpisodeProtocolUpdateInput = {
+    episode?: EpisodeUpdateOneRequiredWithoutEpisodeProtocolNestedInput
+    protocol?: ProtocolUpdateOneRequiredWithoutEpisodeProtocolNestedInput
+  }
+
+  export type EpisodeProtocolUncheckedUpdateInput = {
+    episodeId?: StringFieldUpdateOperationsInput | string
+    protocolId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EpisodeProtocolCreateManyInput = {
+    episodeId: string
+    protocolId: string
+  }
+
+  export type EpisodeProtocolUpdateManyMutationInput = {
+
+  }
+
+  export type EpisodeProtocolUncheckedUpdateManyInput = {
+    episodeId?: StringFieldUpdateOperationsInput | string
+    protocolId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -10270,6 +14416,17 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type PlanScalarRelationFilter = {
     is?: PlanWhereInput
     isNot?: PlanWhereInput
@@ -10279,18 +14436,69 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     planId?: SortOrder
+    name?: SortOrder
+    stripeId?: SortOrder
+    stripeStatus?: SortOrder
+    stripePrice?: SortOrder
+    quantity?: SortOrder
+    trialEndsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionAvgOrderByAggregateInput = {
+    quantity?: SortOrder
   }
 
   export type SubscriptionMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     planId?: SortOrder
+    name?: SortOrder
+    stripeId?: SortOrder
+    stripeStatus?: SortOrder
+    stripePrice?: SortOrder
+    quantity?: SortOrder
+    trialEndsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type SubscriptionMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     planId?: SortOrder
+    name?: SortOrder
+    stripeId?: SortOrder
+    stripeStatus?: SortOrder
+    stripePrice?: SortOrder
+    quantity?: SortOrder
+    trialEndsAt?: SortOrder
+    endsAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionSumOrderByAggregateInput = {
+    quantity?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NoteCountOrderByAggregateInput = {
@@ -10354,17 +14562,6 @@ export namespace Prisma {
     in?: $Enums.PlanInterval[] | ListEnumPlanIntervalFieldRefInput<$PrismaModel>
     notIn?: $Enums.PlanInterval[] | ListEnumPlanIntervalFieldRefInput<$PrismaModel>
     not?: NestedEnumPlanIntervalFilter<$PrismaModel> | $Enums.PlanInterval
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -10463,22 +14660,6 @@ export namespace Prisma {
     _max?: NestedEnumPlanIntervalFilter<$PrismaModel>
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -10501,6 +14682,102 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EpisodeProtocolListRelationFilter = {
+    every?: EpisodeProtocolWhereInput
+    some?: EpisodeProtocolWhereInput
+    none?: EpisodeProtocolWhereInput
+  }
+
+  export type EpisodeProtocolOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EpisodeCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    slug?: SortOrder
+    description?: SortOrder
+    content?: SortOrder
+    duration?: SortOrder
+    publishedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EpisodeAvgOrderByAggregateInput = {
+    duration?: SortOrder
+  }
+
+  export type EpisodeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    slug?: SortOrder
+    description?: SortOrder
+    content?: SortOrder
+    duration?: SortOrder
+    publishedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EpisodeMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    slug?: SortOrder
+    description?: SortOrder
+    content?: SortOrder
+    duration?: SortOrder
+    publishedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EpisodeSumOrderByAggregateInput = {
+    duration?: SortOrder
+  }
+
+  export type ProtocolCountOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ProtocolMaxOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ProtocolMinOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EpisodeScalarRelationFilter = {
+    is?: EpisodeWhereInput
+    isNot?: EpisodeWhereInput
+  }
+
+  export type ProtocolScalarRelationFilter = {
+    is?: ProtocolWhereInput
+    isNot?: ProtocolWhereInput
+  }
+
+  export type EpisodeProtocolEpisodeIdProtocolIdCompoundUniqueInput = {
+    episodeId: string
+    protocolId: string
+  }
+
+  export type EpisodeProtocolCountOrderByAggregateInput = {
+    episodeId?: SortOrder
+    protocolId?: SortOrder
+  }
+
+  export type EpisodeProtocolMaxOrderByAggregateInput = {
+    episodeId?: SortOrder
+    protocolId?: SortOrder
+  }
+
+  export type EpisodeProtocolMinOrderByAggregateInput = {
+    episodeId?: SortOrder
+    protocolId?: SortOrder
   }
 
   export type UserDeviceCreateNestedManyWithoutUserInput = {
@@ -10755,6 +15032,14 @@ export namespace Prisma {
     connect?: PlanWhereUniqueInput
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutSubscriptionsNestedInput = {
     create?: XOR<UserCreateWithoutSubscriptionsInput, UserUncheckedCreateWithoutSubscriptionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSubscriptionsInput
@@ -10839,14 +15124,6 @@ export namespace Prisma {
     set?: $Enums.PlanInterval
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -10885,6 +15162,118 @@ export namespace Prisma {
     update?: SubscriptionUpdateWithWhereUniqueWithoutPlanInput | SubscriptionUpdateWithWhereUniqueWithoutPlanInput[]
     updateMany?: SubscriptionUpdateManyWithWhereWithoutPlanInput | SubscriptionUpdateManyWithWhereWithoutPlanInput[]
     deleteMany?: SubscriptionScalarWhereInput | SubscriptionScalarWhereInput[]
+  }
+
+  export type EpisodeProtocolCreateNestedManyWithoutEpisodeInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput> | EpisodeProtocolCreateWithoutEpisodeInput[] | EpisodeProtocolUncheckedCreateWithoutEpisodeInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutEpisodeInput | EpisodeProtocolCreateOrConnectWithoutEpisodeInput[]
+    createMany?: EpisodeProtocolCreateManyEpisodeInputEnvelope
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+  }
+
+  export type EpisodeProtocolUncheckedCreateNestedManyWithoutEpisodeInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput> | EpisodeProtocolCreateWithoutEpisodeInput[] | EpisodeProtocolUncheckedCreateWithoutEpisodeInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutEpisodeInput | EpisodeProtocolCreateOrConnectWithoutEpisodeInput[]
+    createMany?: EpisodeProtocolCreateManyEpisodeInputEnvelope
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+  }
+
+  export type EpisodeProtocolUpdateManyWithoutEpisodeNestedInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput> | EpisodeProtocolCreateWithoutEpisodeInput[] | EpisodeProtocolUncheckedCreateWithoutEpisodeInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutEpisodeInput | EpisodeProtocolCreateOrConnectWithoutEpisodeInput[]
+    upsert?: EpisodeProtocolUpsertWithWhereUniqueWithoutEpisodeInput | EpisodeProtocolUpsertWithWhereUniqueWithoutEpisodeInput[]
+    createMany?: EpisodeProtocolCreateManyEpisodeInputEnvelope
+    set?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    disconnect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    delete?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    update?: EpisodeProtocolUpdateWithWhereUniqueWithoutEpisodeInput | EpisodeProtocolUpdateWithWhereUniqueWithoutEpisodeInput[]
+    updateMany?: EpisodeProtocolUpdateManyWithWhereWithoutEpisodeInput | EpisodeProtocolUpdateManyWithWhereWithoutEpisodeInput[]
+    deleteMany?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+  }
+
+  export type EpisodeProtocolUncheckedUpdateManyWithoutEpisodeNestedInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput> | EpisodeProtocolCreateWithoutEpisodeInput[] | EpisodeProtocolUncheckedCreateWithoutEpisodeInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutEpisodeInput | EpisodeProtocolCreateOrConnectWithoutEpisodeInput[]
+    upsert?: EpisodeProtocolUpsertWithWhereUniqueWithoutEpisodeInput | EpisodeProtocolUpsertWithWhereUniqueWithoutEpisodeInput[]
+    createMany?: EpisodeProtocolCreateManyEpisodeInputEnvelope
+    set?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    disconnect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    delete?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    update?: EpisodeProtocolUpdateWithWhereUniqueWithoutEpisodeInput | EpisodeProtocolUpdateWithWhereUniqueWithoutEpisodeInput[]
+    updateMany?: EpisodeProtocolUpdateManyWithWhereWithoutEpisodeInput | EpisodeProtocolUpdateManyWithWhereWithoutEpisodeInput[]
+    deleteMany?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+  }
+
+  export type EpisodeProtocolCreateNestedManyWithoutProtocolInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput> | EpisodeProtocolCreateWithoutProtocolInput[] | EpisodeProtocolUncheckedCreateWithoutProtocolInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutProtocolInput | EpisodeProtocolCreateOrConnectWithoutProtocolInput[]
+    createMany?: EpisodeProtocolCreateManyProtocolInputEnvelope
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+  }
+
+  export type EpisodeProtocolUncheckedCreateNestedManyWithoutProtocolInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput> | EpisodeProtocolCreateWithoutProtocolInput[] | EpisodeProtocolUncheckedCreateWithoutProtocolInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutProtocolInput | EpisodeProtocolCreateOrConnectWithoutProtocolInput[]
+    createMany?: EpisodeProtocolCreateManyProtocolInputEnvelope
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+  }
+
+  export type EpisodeProtocolUpdateManyWithoutProtocolNestedInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput> | EpisodeProtocolCreateWithoutProtocolInput[] | EpisodeProtocolUncheckedCreateWithoutProtocolInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutProtocolInput | EpisodeProtocolCreateOrConnectWithoutProtocolInput[]
+    upsert?: EpisodeProtocolUpsertWithWhereUniqueWithoutProtocolInput | EpisodeProtocolUpsertWithWhereUniqueWithoutProtocolInput[]
+    createMany?: EpisodeProtocolCreateManyProtocolInputEnvelope
+    set?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    disconnect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    delete?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    update?: EpisodeProtocolUpdateWithWhereUniqueWithoutProtocolInput | EpisodeProtocolUpdateWithWhereUniqueWithoutProtocolInput[]
+    updateMany?: EpisodeProtocolUpdateManyWithWhereWithoutProtocolInput | EpisodeProtocolUpdateManyWithWhereWithoutProtocolInput[]
+    deleteMany?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+  }
+
+  export type EpisodeProtocolUncheckedUpdateManyWithoutProtocolNestedInput = {
+    create?: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput> | EpisodeProtocolCreateWithoutProtocolInput[] | EpisodeProtocolUncheckedCreateWithoutProtocolInput[]
+    connectOrCreate?: EpisodeProtocolCreateOrConnectWithoutProtocolInput | EpisodeProtocolCreateOrConnectWithoutProtocolInput[]
+    upsert?: EpisodeProtocolUpsertWithWhereUniqueWithoutProtocolInput | EpisodeProtocolUpsertWithWhereUniqueWithoutProtocolInput[]
+    createMany?: EpisodeProtocolCreateManyProtocolInputEnvelope
+    set?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    disconnect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    delete?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    connect?: EpisodeProtocolWhereUniqueInput | EpisodeProtocolWhereUniqueInput[]
+    update?: EpisodeProtocolUpdateWithWhereUniqueWithoutProtocolInput | EpisodeProtocolUpdateWithWhereUniqueWithoutProtocolInput[]
+    updateMany?: EpisodeProtocolUpdateManyWithWhereWithoutProtocolInput | EpisodeProtocolUpdateManyWithWhereWithoutProtocolInput[]
+    deleteMany?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+  }
+
+  export type EpisodeCreateNestedOneWithoutEpisodeProtocolInput = {
+    create?: XOR<EpisodeCreateWithoutEpisodeProtocolInput, EpisodeUncheckedCreateWithoutEpisodeProtocolInput>
+    connectOrCreate?: EpisodeCreateOrConnectWithoutEpisodeProtocolInput
+    connect?: EpisodeWhereUniqueInput
+  }
+
+  export type ProtocolCreateNestedOneWithoutEpisodeProtocolInput = {
+    create?: XOR<ProtocolCreateWithoutEpisodeProtocolInput, ProtocolUncheckedCreateWithoutEpisodeProtocolInput>
+    connectOrCreate?: ProtocolCreateOrConnectWithoutEpisodeProtocolInput
+    connect?: ProtocolWhereUniqueInput
+  }
+
+  export type EpisodeUpdateOneRequiredWithoutEpisodeProtocolNestedInput = {
+    create?: XOR<EpisodeCreateWithoutEpisodeProtocolInput, EpisodeUncheckedCreateWithoutEpisodeProtocolInput>
+    connectOrCreate?: EpisodeCreateOrConnectWithoutEpisodeProtocolInput
+    upsert?: EpisodeUpsertWithoutEpisodeProtocolInput
+    connect?: EpisodeWhereUniqueInput
+    update?: XOR<XOR<EpisodeUpdateToOneWithWhereWithoutEpisodeProtocolInput, EpisodeUpdateWithoutEpisodeProtocolInput>, EpisodeUncheckedUpdateWithoutEpisodeProtocolInput>
+  }
+
+  export type ProtocolUpdateOneRequiredWithoutEpisodeProtocolNestedInput = {
+    create?: XOR<ProtocolCreateWithoutEpisodeProtocolInput, ProtocolUncheckedCreateWithoutEpisodeProtocolInput>
+    connectOrCreate?: ProtocolCreateOrConnectWithoutEpisodeProtocolInput
+    upsert?: ProtocolUpsertWithoutEpisodeProtocolInput
+    connect?: ProtocolWhereUniqueInput
+    update?: XOR<XOR<ProtocolUpdateToOneWithWhereWithoutEpisodeProtocolInput, ProtocolUpdateWithoutEpisodeProtocolInput>, ProtocolUncheckedUpdateWithoutEpisodeProtocolInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -11021,6 +15410,33 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedDecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -11068,33 +15484,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlanIntervalFilter<$PrismaModel>
     _max?: NestedEnumPlanIntervalFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11152,12 +15541,30 @@ export namespace Prisma {
 
   export type SubscriptionCreateWithoutUserInput = {
     id?: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     plan: PlanCreateNestedOneWithoutSubscriptionsInput
   }
 
   export type SubscriptionUncheckedCreateWithoutUserInput = {
     id?: string
     planId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SubscriptionCreateOrConnectWithoutUserInput = {
@@ -11271,6 +15678,15 @@ export namespace Prisma {
     id?: StringFilter<"Subscription"> | string
     userId?: StringFilter<"Subscription"> | string
     planId?: StringFilter<"Subscription"> | string
+    name?: StringFilter<"Subscription"> | string
+    stripeId?: StringFilter<"Subscription"> | string
+    stripeStatus?: StringFilter<"Subscription"> | string
+    stripePrice?: StringFilter<"Subscription"> | string
+    quantity?: IntFilter<"Subscription"> | number
+    trialEndsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    endsAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeFilter<"Subscription"> | Date | string
   }
 
   export type NoteUpsertWithWhereUniqueWithoutUserInput = {
@@ -11819,12 +16235,30 @@ export namespace Prisma {
 
   export type SubscriptionCreateWithoutPlanInput = {
     id?: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutSubscriptionsInput
   }
 
   export type SubscriptionUncheckedCreateWithoutPlanInput = {
     id?: string
     userId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SubscriptionCreateOrConnectWithoutPlanInput = {
@@ -11853,6 +16287,178 @@ export namespace Prisma {
     data: XOR<SubscriptionUpdateManyMutationInput, SubscriptionUncheckedUpdateManyWithoutPlanInput>
   }
 
+  export type EpisodeProtocolCreateWithoutEpisodeInput = {
+    protocol: ProtocolCreateNestedOneWithoutEpisodeProtocolInput
+  }
+
+  export type EpisodeProtocolUncheckedCreateWithoutEpisodeInput = {
+    protocolId: string
+  }
+
+  export type EpisodeProtocolCreateOrConnectWithoutEpisodeInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    create: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput>
+  }
+
+  export type EpisodeProtocolCreateManyEpisodeInputEnvelope = {
+    data: EpisodeProtocolCreateManyEpisodeInput | EpisodeProtocolCreateManyEpisodeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EpisodeProtocolUpsertWithWhereUniqueWithoutEpisodeInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    update: XOR<EpisodeProtocolUpdateWithoutEpisodeInput, EpisodeProtocolUncheckedUpdateWithoutEpisodeInput>
+    create: XOR<EpisodeProtocolCreateWithoutEpisodeInput, EpisodeProtocolUncheckedCreateWithoutEpisodeInput>
+  }
+
+  export type EpisodeProtocolUpdateWithWhereUniqueWithoutEpisodeInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    data: XOR<EpisodeProtocolUpdateWithoutEpisodeInput, EpisodeProtocolUncheckedUpdateWithoutEpisodeInput>
+  }
+
+  export type EpisodeProtocolUpdateManyWithWhereWithoutEpisodeInput = {
+    where: EpisodeProtocolScalarWhereInput
+    data: XOR<EpisodeProtocolUpdateManyMutationInput, EpisodeProtocolUncheckedUpdateManyWithoutEpisodeInput>
+  }
+
+  export type EpisodeProtocolScalarWhereInput = {
+    AND?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+    OR?: EpisodeProtocolScalarWhereInput[]
+    NOT?: EpisodeProtocolScalarWhereInput | EpisodeProtocolScalarWhereInput[]
+    episodeId?: StringFilter<"EpisodeProtocol"> | string
+    protocolId?: StringFilter<"EpisodeProtocol"> | string
+  }
+
+  export type EpisodeProtocolCreateWithoutProtocolInput = {
+    episode: EpisodeCreateNestedOneWithoutEpisodeProtocolInput
+  }
+
+  export type EpisodeProtocolUncheckedCreateWithoutProtocolInput = {
+    episodeId: string
+  }
+
+  export type EpisodeProtocolCreateOrConnectWithoutProtocolInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    create: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput>
+  }
+
+  export type EpisodeProtocolCreateManyProtocolInputEnvelope = {
+    data: EpisodeProtocolCreateManyProtocolInput | EpisodeProtocolCreateManyProtocolInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EpisodeProtocolUpsertWithWhereUniqueWithoutProtocolInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    update: XOR<EpisodeProtocolUpdateWithoutProtocolInput, EpisodeProtocolUncheckedUpdateWithoutProtocolInput>
+    create: XOR<EpisodeProtocolCreateWithoutProtocolInput, EpisodeProtocolUncheckedCreateWithoutProtocolInput>
+  }
+
+  export type EpisodeProtocolUpdateWithWhereUniqueWithoutProtocolInput = {
+    where: EpisodeProtocolWhereUniqueInput
+    data: XOR<EpisodeProtocolUpdateWithoutProtocolInput, EpisodeProtocolUncheckedUpdateWithoutProtocolInput>
+  }
+
+  export type EpisodeProtocolUpdateManyWithWhereWithoutProtocolInput = {
+    where: EpisodeProtocolScalarWhereInput
+    data: XOR<EpisodeProtocolUpdateManyMutationInput, EpisodeProtocolUncheckedUpdateManyWithoutProtocolInput>
+  }
+
+  export type EpisodeCreateWithoutEpisodeProtocolInput = {
+    id?: string
+    title: string
+    slug: string
+    description?: string | null
+    content?: string | null
+    duration?: number | null
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EpisodeUncheckedCreateWithoutEpisodeProtocolInput = {
+    id?: string
+    title: string
+    slug: string
+    description?: string | null
+    content?: string | null
+    duration?: number | null
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EpisodeCreateOrConnectWithoutEpisodeProtocolInput = {
+    where: EpisodeWhereUniqueInput
+    create: XOR<EpisodeCreateWithoutEpisodeProtocolInput, EpisodeUncheckedCreateWithoutEpisodeProtocolInput>
+  }
+
+  export type ProtocolCreateWithoutEpisodeProtocolInput = {
+    id?: string
+  }
+
+  export type ProtocolUncheckedCreateWithoutEpisodeProtocolInput = {
+    id?: string
+  }
+
+  export type ProtocolCreateOrConnectWithoutEpisodeProtocolInput = {
+    where: ProtocolWhereUniqueInput
+    create: XOR<ProtocolCreateWithoutEpisodeProtocolInput, ProtocolUncheckedCreateWithoutEpisodeProtocolInput>
+  }
+
+  export type EpisodeUpsertWithoutEpisodeProtocolInput = {
+    update: XOR<EpisodeUpdateWithoutEpisodeProtocolInput, EpisodeUncheckedUpdateWithoutEpisodeProtocolInput>
+    create: XOR<EpisodeCreateWithoutEpisodeProtocolInput, EpisodeUncheckedCreateWithoutEpisodeProtocolInput>
+    where?: EpisodeWhereInput
+  }
+
+  export type EpisodeUpdateToOneWithWhereWithoutEpisodeProtocolInput = {
+    where?: EpisodeWhereInput
+    data: XOR<EpisodeUpdateWithoutEpisodeProtocolInput, EpisodeUncheckedUpdateWithoutEpisodeProtocolInput>
+  }
+
+  export type EpisodeUpdateWithoutEpisodeProtocolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EpisodeUncheckedUpdateWithoutEpisodeProtocolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProtocolUpsertWithoutEpisodeProtocolInput = {
+    update: XOR<ProtocolUpdateWithoutEpisodeProtocolInput, ProtocolUncheckedUpdateWithoutEpisodeProtocolInput>
+    create: XOR<ProtocolCreateWithoutEpisodeProtocolInput, ProtocolUncheckedCreateWithoutEpisodeProtocolInput>
+    where?: ProtocolWhereInput
+  }
+
+  export type ProtocolUpdateToOneWithWhereWithoutEpisodeProtocolInput = {
+    where?: ProtocolWhereInput
+    data: XOR<ProtocolUpdateWithoutEpisodeProtocolInput, ProtocolUncheckedUpdateWithoutEpisodeProtocolInput>
+  }
+
+  export type ProtocolUpdateWithoutEpisodeProtocolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProtocolUncheckedUpdateWithoutEpisodeProtocolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
   export type UserDeviceCreateManyUserInput = {
     id?: string
   }
@@ -11860,6 +16466,15 @@ export namespace Prisma {
   export type SubscriptionCreateManyUserInput = {
     id?: string
     planId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type NoteCreateManyUserInput = {
@@ -11888,17 +16503,44 @@ export namespace Prisma {
 
   export type SubscriptionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plan?: PlanUpdateOneRequiredWithoutSubscriptionsNestedInput
   }
 
   export type SubscriptionUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     planId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SubscriptionUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     planId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NoteUpdateWithoutUserInput = {
@@ -11940,21 +16582,89 @@ export namespace Prisma {
   export type SubscriptionCreateManyPlanInput = {
     id?: string
     userId: string
+    name: string
+    stripeId: string
+    stripeStatus: string
+    stripePrice: string
+    quantity: number
+    trialEndsAt?: Date | string | null
+    endsAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SubscriptionUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutSubscriptionsNestedInput
   }
 
   export type SubscriptionUncheckedUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SubscriptionUncheckedUpdateManyWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripeId?: StringFieldUpdateOperationsInput | string
+    stripeStatus?: StringFieldUpdateOperationsInput | string
+    stripePrice?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EpisodeProtocolCreateManyEpisodeInput = {
+    protocolId: string
+  }
+
+  export type EpisodeProtocolUpdateWithoutEpisodeInput = {
+    protocol?: ProtocolUpdateOneRequiredWithoutEpisodeProtocolNestedInput
+  }
+
+  export type EpisodeProtocolUncheckedUpdateWithoutEpisodeInput = {
+    protocolId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EpisodeProtocolUncheckedUpdateManyWithoutEpisodeInput = {
+    protocolId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EpisodeProtocolCreateManyProtocolInput = {
+    episodeId: string
+  }
+
+  export type EpisodeProtocolUpdateWithoutProtocolInput = {
+    episode?: EpisodeUpdateOneRequiredWithoutEpisodeProtocolNestedInput
+  }
+
+  export type EpisodeProtocolUncheckedUpdateWithoutProtocolInput = {
+    episodeId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EpisodeProtocolUncheckedUpdateManyWithoutProtocolInput = {
+    episodeId?: StringFieldUpdateOperationsInput | string
   }
 
 

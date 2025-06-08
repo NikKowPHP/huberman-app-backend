@@ -39,11 +39,20 @@ model UserDevice {
 }
 
 model Subscription {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  planId String
-  plan   Plan   @relation(fields: [planId], references: [id])
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  planId       String
+  plan         Plan      @relation(fields: [planId], references: [id])
+  name         String
+  stripeId     String    @unique
+  stripeStatus String
+  stripePrice  String
+  quantity     Int
+  trialEndsAt  DateTime?
+  endsAt       DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Note {
@@ -83,4 +92,32 @@ model Plan {
 enum PlanInterval {
   MONTH
   YEAR
+}
+
+model Episode {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String?
+  content     String?
+  duration    Int?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  EpisodeProtocol EpisodeProtocol[]
+}
+
+model Protocol {
+  id              String            @id @default(cuid())
+  EpisodeProtocol EpisodeProtocol[]
+}
+
+model EpisodeProtocol {
+  episodeId  String
+  episode    Episode  @relation(fields: [episodeId], references: [id])
+  protocolId String
+  protocol   Protocol @relation(fields: [protocolId], references: [id])
+
+  @@id([episodeId, protocolId])
 }

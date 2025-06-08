@@ -140,7 +140,16 @@ exports.Prisma.UserDeviceScalarFieldEnum = {
 exports.Prisma.SubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  planId: 'planId'
+  planId: 'planId',
+  name: 'name',
+  stripeId: 'stripeId',
+  stripeStatus: 'stripeStatus',
+  stripePrice: 'stripePrice',
+  quantity: 'quantity',
+  trialEndsAt: 'trialEndsAt',
+  endsAt: 'endsAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.NoteScalarFieldEnum = {
@@ -172,6 +181,27 @@ exports.Prisma.PlanScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EpisodeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  content: 'content',
+  duration: 'duration',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProtocolScalarFieldEnum = {
+  id: 'id'
+};
+
+exports.Prisma.EpisodeProtocolScalarFieldEnum = {
+  episodeId: 'episodeId',
+  protocolId: 'protocolId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -198,7 +228,10 @@ exports.Prisma.ModelName = {
   Note: 'Note',
   UserReminder: 'UserReminder',
   TrackingLog: 'TrackingLog',
-  Plan: 'Plan'
+  Plan: 'Plan',
+  Episode: 'Episode',
+  Protocol: 'Protocol',
+  EpisodeProtocol: 'EpisodeProtocol'
 };
 
 /**
