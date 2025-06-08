@@ -46,13 +46,13 @@
 6.  **Update `nest-app/documentation/migration_nestjs_todo.md`:**
     *   **Upon successful implementation and self-check of the current target sub-task:**
         *   Locate the exact line in `nest-app/documentation/migration_nestjs_todo.md` for `TASK_ID`.
-        *   Change `[ ]` to `[x]` for that item.
+        *   Change `[ ]` to `[x]` for that item using the `apply_diff` tool.
         *   Example: `*   [x] **P0.1: Create Project Root Directory**`
     *   **Save the `nest-app/documentation/migration_nestjs_todo.md` file immediately.**
 
 7.  **Commit Changes to Git (NEW STEP):**
     *   **If step 6 was successful (TODO item marked `[x]`):**
-        *   **Action:** Perform the following Git operations (or output the commands for the human supervisor to execute if Roo cannot directly execute shell commands):
+        *   **Action:** Perform the following Git operations using the `execute_command` tool:
             1.  `git add .`
                 *   (Alternatively, be more specific: `git add nest-app/documentation/migration_nestjs_todo.md` and then `git add [path/to/file]` for each file in `MODIFIED_FILES_LIST` from step 3). *Specific adds are preferred for clarity.*
             2.  `git commit -m "feat(docs): Complete TODO P0.X - [Short summary of TASK_DESCRIPTION]"`
