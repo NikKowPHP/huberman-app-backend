@@ -394,7 +394,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
             *   **(LLM Prompt):** "In the NestJS service that originally dispatched the Laravel job (e.g., `ReminderService` in `protocol-engine.service.ts` after creating a reminder, or the `reminders:send-due` command equivalent), inject the BullMQ Queue (`@InjectQueue('queueName')`) and add a job to it (e.g., `await this.reminderQueue.add('jobName', { reminderId: ... });`)."
 *   **Notifications:**
     *   For each Laravel Notification class (e.g., `ProtocolReminder`, `ResetPasswordNotification`):
-        *   `[ ]` **(NOTIF) Implement Notification Sending Logic:**
+        *   `[x]` **(NOTIF) Implement Notification Sending Logic:**
             *   **(LLM Prompt):** "Translate the Laravel Notification `app/Notifications/ProtocolReminder.php` [paste `via()` and `toFcm()`/`toApns()`/`toMail()` methods] into methods within a NestJS service (e.g., `NotificationService.ts` or directly in the service that needs to send it, like `ReminderProcessor` or `AuthenticationService`).
                 *   For push notifications, this method should use a library like `firebase-admin` (for FCM) or an HTTP client to send requests to APNS/FCM gateways. Assume device tokens are available on the Prisma `User` or `UserDevice` model.
                 *   For email notifications (like password reset), use a mailer library (e.g., `@nestjs-modules/mailer` with Nodemailer, or a transactional email service SDK like SendGrid/Postmark)."
