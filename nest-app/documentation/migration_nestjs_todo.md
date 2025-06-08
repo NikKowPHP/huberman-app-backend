@@ -70,7 +70,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`. Define `StoreTrackingLogDto` class with validation decorators (`class-validator`) based on Laravel's `StoreTrackingLogRequest.php` (protocol_id: number, tracked_at: string (date YYYY-MM-DD), notes: string?, metadata: object?)."
     *   **(Verification):** DTO file created with correct properties and validation decorators.
 
-*   `[ ]` **FIX.MM.TS.4: Create `tracking-service.module.ts`**
+*   `[x]` **FIX.MM.TS.4: Create `tracking-service.module.ts`**
     *   **(File):** `nest-app/src/tracking-service/tracking-service.module.ts`
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking-service.module.ts`. Define `TrackingServiceModule` importing necessary common modules (like `PrismaModule` if you have one, or provide `PrismaService` directly). Declare `TrackingController` and `TrackingService`."
     *   **(Verification):** Module file created, controller and service declared.
