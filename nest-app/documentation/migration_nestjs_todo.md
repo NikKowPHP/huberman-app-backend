@@ -378,7 +378,8 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
         *   `[x]` **(EVENT) Define NestJS Event Class/Interface:**
             *   **(LLM Prompt):** "Define a simple class or interface for a NestJS event equivalent to Laravel's `SubscriptionRenewed` event [paste Laravel event class if it has properties]."
         *   `[ ]` **(EVENT) Implement NestJS Listener:**
-            *   **(LLM Prompt):** "Translate the Laravel listener `app/Listeners/ClearUserEntitlementCache.php` [paste content] into a NestJS listener class using `@OnEvent('event.name')` from `@nestjs/event-emitter`. It should handle the NestJS event defined above. Implement cache clearing logic appropriate for NestJS (e.g., using NestJS Caching module if adopted, or a custom cache service)."
+            *   `[x]` **(EVENT) Implement NestJS Listener:**
+                *   **(LLM Prompt):** "Translate the Laravel listener `app/Listeners/ClearUserEntitlementCache.php` [paste content] into a NestJS listener class using `@OnEvent('event.name')` from `@nestjs/event-emitter`. It should handle the NestJS event defined above. Implement cache clearing logic appropriate for NestJS (e.g., using NestJS Caching module if adopted, or a custom cache service)."
         *   `[ ]` **(SVC) Dispatch NestJS Events:**
             *   **(LLM Prompt):** "In the NestJS services where the original Laravel code dispatched an event (e.g., `SubscriptionBillingService` after a renewal), inject `EventEmitter2` and replace `Event::dispatch(...)` with `this.eventEmitter.emit('event.name', new EventPayload(...));`."
 *   **Queued Jobs:**
