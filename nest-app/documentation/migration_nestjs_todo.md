@@ -65,7 +65,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.controller.ts`. Add a `TrackingController` class decorated with `@Controller('tracking')` and `@UseGuards(SupabaseAuthGuard)`. Inject `TrackingService`. Add placeholder methods for `store(@Req() req, @Body() storeTrackingLogDto: StoreTrackingLogDto)` and `getSummary(@Req() req, @Param('protocolId') protocolId: string)`. These methods should call the respective service methods."
     *   **(Verification):** File created with the controller class, service injection, guards, and stubbed endpoint handlers.
 
-*   `[ ]` **FIX.MM.TS.3: Create `store-tracking-log.dto.ts`**
+*   `[x]` **FIX.MM.TS.3: Create `store-tracking-log.dto.ts`**
     *   **(File):** `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`. Define `StoreTrackingLogDto` class with validation decorators (`class-validator`) based on Laravel's `StoreTrackingLogRequest.php` (protocol_id: number, tracked_at: string (date YYYY-MM-DD), notes: string?, metadata: object?)."
     *   **(Verification):** DTO file created with correct properties and validation decorators.
