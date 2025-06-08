@@ -382,7 +382,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
                 *   `[x]` **(EVENT) Implement NestJS Listener:**
                     *   `[x]` **(EVENT) Implement NestJS Listener:**
                         *   **(LLM Prompt):** "Translate the Laravel listener `app/Listeners/ClearUserEntitlementCache.php` [paste content] into a NestJS listener class using `@OnEvent('event.name')` from `@nestjs/event-emitter`. It should handle the NestJS event defined above. Implement cache clearing logic appropriate for NestJS (e.g., using NestJS Caching module if adopted, or a custom cache service)."
-        *   `[ ]` **(SVC) Dispatch NestJS Events:**
+        *   `[x]` **(SVC) Dispatch NestJS Events:**
             *   **(LLM Prompt):** "In the NestJS services where the original Laravel code dispatched an event (e.g., `SubscriptionBillingService` after a renewal), inject `EventEmitter2` and replace `Event::dispatch(...)` with `this.eventEmitter.emit('event.name', new EventPayload(...));`."
 *   **Queued Jobs:**
     *   **_**(User Action)**_** Install BullMQ and its NestJS integration: `cd nest-app && npm install @nestjs/bullmq bullmq && cd ..`
