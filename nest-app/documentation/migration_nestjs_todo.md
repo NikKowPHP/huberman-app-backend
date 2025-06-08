@@ -162,7 +162,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   `[x]` **FIX.DTO.PS.1 & FIX.CTRL.PS.1:** `PostController` & DTOs (`create-post.dto.ts`, `store-comment.dto.ts`)
     *   `[ ]` **FIX.DTO.RS.1 & FIX.CTRL.RS.1:** `RoutineController` & DTOs (`store-routine.dto.ts`, `update-routine.dto.ts`)
 
-*   `[ ]` **FIX.CTRL.REVIEW.1: Review Existing Controllers for Full Logic Porting**
+*   `[x]` **FIX.CTRL.REVIEW.1: Review ProtocolController** (other controllers still need review)
     *   **(Files):** `protocol.controller.ts`, `note.controller.ts`, `reminder.controller.ts`, `subscription-billing.controller.ts`, `authentication.controller.ts`.
     *   **(LLM Prompt):** "For each of the following controllers, review its methods against its Laravel counterpart and ensure all route parameters, query parameters, request body handling (using DTOs), service calls, and response structures are accurately ported:
         1.  `nest-app/src/content-management/protocol.controller.ts` (compare with `app/Modules/ContentManagement/Http/Controllers/ProtocolController.php`)
