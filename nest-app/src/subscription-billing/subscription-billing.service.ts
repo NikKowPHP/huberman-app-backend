@@ -1,9 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class SubscriptionBillingService {
-  constructor(private readonly prisma: PrismaService) {}
+  private stripe: Stripe;
+
+  constructor(private readonly prisma: PrismaService) {
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-05-28.basil',
+    });
+  }
+
+  verifyStripeWebhook(rawBody: Buffer, signature: string) {
+    return this.stripe.webhooks.constructEvent(
+      rawBody,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  }
 
   async userHasActivePremiumSubscription(userId: string): Promise<boolean> {
     const activeSubscription = await this.prisma.subscription.findFirst({

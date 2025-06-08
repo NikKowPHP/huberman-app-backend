@@ -351,7 +351,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
     *   For each Stripe event type handled in Laravel's `WebhookController` (e.g., `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.updated`, `invoice.payment_failed`, `customer.subscription.deleted`):
         *   `[x]` **(SVC) Migrate Stripe Event Handler:**
             *   **(LLM Prompt):** "Migrate the Stripe webhook handling logic for the `{EVENT_TYPE}` event from Laravel's `app/Modules/SubscriptionBilling/Http/Controllers/WebhookController.php` [paste relevant Laravel method(s) and any helper methods it uses] to a new method within `nest-app/src/subscription-billing/subscription-billing.service.ts`. This method should accept the Stripe event payload. Use Prisma Client for database operations (e.g., finding users by Stripe customer ID, creating/updating subscriptions). If Laravel dispatched events, prepare to dispatch equivalent NestJS events (to be implemented in Phase 7)."
-    *   `[ ]` **(API) Stripe Webhook Controller Endpoint:**
+    *   `[x]` **(API) Stripe Webhook Controller Endpoint:**
         *   **(LLM Prompt):** "Implement the `handleStripeWebhook` method in `nest-app/src/subscription-billing/subscription-billing.controller.ts`. It should:
             1.  Verify the Stripe webhook signature (you might need a utility or to adapt Laravel's middleware logic).
             2.  Call the appropriate method in `SubscriptionBillingService` based on `event.type`.
