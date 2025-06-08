@@ -145,7 +145,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 **For each new/stubbed Controller (Tracking, OfflineData, Post, Routine) and existing ones needing review:**
 
-*   `[ ]` **FIX.DTO.TS.1: `StoreTrackingLogDto` - Review/Complete**
+*   `[x]` **FIX.DTO.TS.1: `StoreTrackingLogDto` - Review/Complete**
     *   **(File):** `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`
     *   **(LLM Prompt):** "Ensure `StoreTrackingLogDto` in `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts` matches the validation rules from Laravel's `app/Modules/TrackingService/Http/Requests/StoreTrackingLogRequest.php`: `protocol_id` (required, integer, exists:protocols,id), `tracked_at` (required, date_format:Y-m-d), `notes` (nullable, string, max:10000), `metadata` (nullable, array), `metadata.*` (nullable, string, max:255). Use `class-validator` decorators. Add `@ApiProperty()` for Swagger."
     *   **(Verification):** DTO has correct properties, validation, and Swagger decorators.
