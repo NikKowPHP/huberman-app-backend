@@ -19,7 +19,7 @@ Okay, here is a very detailed and simple `fixes_todo.md` plan designed for a 4B 
 
 ## Phase FIX.0: Setup & Prerequisites
 
-*   `[ ]` **FIX.SETUP.1: Configure BullModule**
+*   `[x]` **FIX.SETUP.1: Configure BullModule**
     *   **(File):** `nest-app/src/app.module.ts`
     *   **(LLM Prompt):** "In `nest-app/src/app.module.ts`, import `BullModule` from `@nestjs/bullmq` and `ConfigModule`, `ConfigService` from `@nestjs/config` (if not already imported). Add `ConfigModule.forRoot({ isGlobal: true })` to the `imports` array. Then, add `BullModule.forRootAsync({ imports: [ConfigModule], useFactory: async (configService: ConfigService) => ({ connection: { host: configService.get<string>('REDIS_HOST', 'localhost'), port: configService.get<number>('REDIS_PORT', 6379), }, }), inject: [ConfigService], })` to the `imports` array of `AppModule`. Ensure `REDIS_HOST` and `REDIS_PORT` are defined in your `.env` file (e.g., `REDIS_HOST=localhost`, `REDIS_PORT=6379`)."
     *   **(Verification):** `app.module.ts` now correctly imports and configures `BullModule` using environment variables for Redis connection.
