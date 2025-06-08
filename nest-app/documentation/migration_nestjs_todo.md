@@ -1,436 +1,308 @@
-Okay, this is an excellent request. Based on my previous observations, here's a refined and more detailed TODO list (`refinement_todo.md`) to guide the full migration from Laravel to the NestJS stack. This plan aims to be comprehensive, addressing the gaps and complexities previously identified.
+Okay, here is a very detailed and simple `fixes_todo.md` plan designed for a 4B LLM to follow and implement the remaining tasks. Each step aims to be atomic and actionable.
 
 **Legend:**
 *   `[ ]` - To Do
-*   `(DB)` - Database-related task
-*   `(AUTH)` - Authentication-related task
-*   `(API)` - API Endpoint/Controller task
-*   `(SVC)` - Service/Business Logic task
-*   `(GUARD)` - Guard/Policy/Authorization task
-*   `(EVENT)` - Event/Listener task
-*   `(JOB)` - Job/Queue task
-*   `(NOTIF)` - Notification task
-*   `(SETUP)` - Project configuration or setup task
-*   `(DOC)` - API Documentation task
-*   **_**(User Action)**_** - Task to be performed manually by the user (e.g., running CLI commands).
-*   **(LLM Prompt):** - Instruction/prompt for the AI to generate code/content.
+*   `[x]` - Done (This will be empty initially for the LLM to fill)
+*   **(File):** `path/to/file.ts` - The primary file to modify or create.
+*   **(LLM Prompt):** "Specific instruction for the LLM."
+*   **(Verification):** "How to check if the step was successful (often by inspecting the file or output)."
 
 ---
 
-**`refinement_todo.md`**
+**`fixes_todo.md`**
 
-# Refined Migration Plan: Laravel to Nest.js, Prisma, Supabase
+# Huberman App - NestJS Migration - Fixes & Completion Plan
 
-**Project Goal:** To generate the complete source code and configuration for migrating the existing Laravel backend to a Nest.js backend within the `./nest-app` directory, achieving feature parity.
-
-**Workflow:**
-1.  **User (You):** Execute any command-line actions or manual setup marked as **_**(User Action)**_**.
-2.  **LLM (AI Model):** Generate only the code or file content for each step when prompted via **(LLM Prompt):**.
+**Goal:** Complete the migration of the Huberman App backend from Laravel to NestJS, addressing all pending items from the verification phase. This includes implementing missing modules, refining business logic, completing webhook and event handling, adding full API documentation, and setting up basic testing structures.
 
 ---
 
-## Phase 0: Project Foundation & Environment Setup (Verification & Completion)
+## Phase FIX.0: Setup & Prerequisites
 
-*   `[x]` **(SETUP)** **Initialize Nest.js Project in `nest-app` Directory (User Action)**
-*   `[x]` **(SETUP)** **Supabase Project Setup & Credentials (User Action)**
-*   `[x]` **(SETUP)** **Environment Configuration (`nest-app/.env`) (LLM Prompt & User Action)**
-*   `[x]` **(SETUP)** **Prisma Integration (Installation & Init) (User Action)**
-*   `[x]` **(SETUP)** **Prisma Schema Datasource & Generator Config (LLM Prompt)**
-*   `[x]` **(SETUP)** **Core NestJS Modules, Services, Controllers (User Action: CLI Generation)**
-    *   Ensure all required modules from `nest-app/documentation/migration_nestjs_todo.md` (Phase 0) are generated: `common`, `authentication`, `user-management`, `subscription-billing`, `content-management`, `notes-service`, `protocol-engine`, `tracking-service`.
-*   `[x]` **(SETUP)** **Implement `PrismaService` (`nest-app/src/common/prisma/prisma.service.ts`) (LLM Prompt)**
+*   `[ ]` **FIX.SETUP.1: Configure BullModule**
+    *   **(File):** `nest-app/src/app.module.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/app.module.ts`, import `BullModule` from `@nestjs/bullmq` and `ConfigModule`, `ConfigService` from `@nestjs/config` (if not already imported). Add `ConfigModule.forRoot({ isGlobal: true })` to the `imports` array. Then, add `BullModule.forRootAsync({ imports: [ConfigModule], useFactory: async (configService: ConfigService) => ({ connection: { host: configService.get<string>('REDIS_HOST', 'localhost'), port: configService.get<number>('REDIS_PORT', 6379), }, }), inject: [ConfigService], })` to the `imports` array of `AppModule`. Ensure `REDIS_HOST` and `REDIS_PORT` are defined in your `.env` file (e.g., `REDIS_HOST=localhost`, `REDIS_PORT=6379`)."
+    *   **(Verification):** `app.module.ts` now correctly imports and configures `BullModule` using environment variables for Redis connection.
 
----
+*   `[ ]` **FIX.SETUP.2: Register `ReminderProcessor` in `ProtocolEngineModule`**
+    *   **(File):** `nest-app/src/protocol-engine/protocol-engine.module.ts` (Create if it doesn't exist, or update if it's just `@Module({})`)
+    *   **(LLM Prompt):** "Ensure `nest-app/src/protocol-engine/protocol-engine.module.ts` exists. Import `Module` from `@nestjs/common`, `BullModule` from `@nestjs/bullmq`, `ReminderProcessor` from `./reminder.processor`, `ReminderService` from `./reminder.service`, `NotificationService` from `./notification.service`, and `PrismaService` from `../common/prisma/prisma.service`. Configure the module as follows:
+        ```typescript
+        import { Module } from '@nestjs/common';
+        import { BullModule } from '@nestjs/bullmq';
+        import { ReminderProcessor } from './reminder.processor';
+        import { ReminderService } from './reminder.service';
+        import { NotificationService } from './notification.service';
+        import { PrismaService } from '../common/prisma/prisma.service';
+        import { ReminderController } from './reminder.controller'; // Assuming controller exists
 
-## Phase 1: User Authentication with Supabase (Verification & Completion)
-
-*   `[x]` **(AUTH)** **Install Supabase Client Library (User Action)**
-*   `[x]` **(AUTH)** **Implement `SupabaseService` (`nest-app/src/common/supabase/supabase.service.ts`) (LLM Prompt)**
-*   `[x]` **(DB)** **SQL User Sync Trigger (`supabase/init.sql`) (LLM Prompt & User Action in Supabase Studio)**
-*   `[x]` **(API)** **Implement `AuthenticationController` & `AuthenticationService` (LLM Prompt)**
-*   `[x]` **(GUARD)`Implement `SupabaseAuthGuard` (`nest-app/src/authentication/guards/supabase-auth.guard.ts`) (LLM Prompt)**
-
----
-
-
-
-
-
-
-## Phase 2: Comprehensive Database Schema Migration to Prisma
-
-*   **Goal:** Ensure `nest-app/prisma/schema.prisma` fully reflects the entire Laravel database structure.
-*   For *each* Laravel migration and corresponding Eloquent model:
-    *   `[x]` **(DB) User Model:**
-        *   **(LLM Prompt):** "Refine the existing `User` model in `nest-app/prisma/schema.prisma`. Ensure it includes all fields from the Laravel `User` model (app/Modules/UserManagement/Models/User.php) and its migration (`2025_04_24_061659_create_users_table.php`), including `profile_picture_url` and `deleted_at` for soft deletes. Define relationships for `devices`, `subscriptions`, `notes`, `reminders`, and `trackingLogs`."
-    *   `[x]` **(DB) Plan Model:**
-        *   **(LLM Prompt):** "Refine the existing `Plan` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_205454_create_plans_table.php` and model `app/Modules/SubscriptionBilling/Models/Plan.php`. Ensure all fields like `slug`, `price`, `interval`, `intervalCount`, `trialPeriodDays`, `isActive` are present. Define the `PlanInterval` enum. Add the `subscriptions` relation."
-    *   `[x]` **(DB) Subscription Model:**
-        *   **(LLM Prompt):** "Refine the existing `Subscription` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_205510_create_subscriptions_table.php` and model `app/Modules/SubscriptionBilling/Models/Subscription.php`. Include all fields: `userId`, `planId`, `name`, `stripeId`, `stripeStatus`, `stripePrice`, `quantity`, `trialEndsAt`, `endsAt`. Define relations to `User` and `Plan`."
-    *   `[x]` **(DB) Episode Model:**
-        *   **(LLM Prompt):** "Refine the existing `Episode` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_211846_create_episodes_table.php` and model `app/Modules/ContentManagement/Models/Episode.php`. Include `title`, `slug`, `description`, `content`, `duration`, `publishedAt`. Add relation for `EpisodeProtocol`."
-    *   `[x]` **(DB) Protocol Model:**
-        *   **(LLM Prompt):** "Refine the existing `Protocol` model in `nest-app/prisma/schema.prisma` based on Laravel migrations `2025_04_24_211928_create_protocols_table.php`, `2025_04_24_195725_add_is_free_to_protocols_table.php` and model `app/Modules/ContentManagement/Models/Protocol.php`. Include `title`, `slug`, `description`, `implementation_guide`, `category`, and `is_free`. Add relation for `EpisodeProtocol` and `UserReminder` and `TrackingLog`."
-    *   `[x]` **(DB) EpisodeProtocol (Pivot) Model:**
-        *   **(LLM Prompt):** "Ensure the `EpisodeProtocol` model in `nest-app/prisma/schema.prisma` correctly defines the many-to-many relationship between `Episode` and `Protocol` with a composite ID, based on Laravel migration `2025_04_24_212153_create_episode_protocol_table.php`."
-    *   `[x]` **(DB) Summary Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for the `Summary` table and add it to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_04_24_212127_create_summaries_table.php` and model `app/Modules/ContentManagement/Models/Summary.php`. Include `episode_id`, `content`, and relation to `Episode`."
-    *   `[x]` **(DB) Note Model:**
-        *   **(LLM Prompt):** "Refine the existing `Note` model in `nest-app/prisma/schema.prisma` based on Laravel migrations `2025_04_30_074905_create_notes_table.php`, `2025_04_30_110629_add_is_public_to_notes_table.php` and model `app/Modules/NotesService/Models/Note.php`. Include `userId`, `title`, `content`, `isPublic`. Add relations to `User` and potentially `Episode`, `NoteCategory`, `NoteTag`."
-    *   `[x]` **(DB) NoteCategory Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `NoteCategory` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100000_create_note_categories_table.php` and model `app/Modules/NotesService/Models/NoteCategory.php`. Include `name`, `description`, `color`. Add relation for pivot table to `Note`."
-    *   `[x]` **(DB) NoteTag Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `NoteTag` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100001_create_note_tags_table.php` and model `app/Models/NoteTag.php` (or `app/Modules/NotesService/Models/NoteTag.php`). Include `name`, `color`. Add relation for pivot table to `Note`."
-    *   `[x]` **(DB) NoteCategoryPivot Model (Explicit or Implicit):**
-        *   **(LLM Prompt):** "Define the many-to-many relationship between `Note` and `NoteCategory` in `nest-app/prisma/schema.prisma` using an explicit pivot table model named `NoteCategoryPivot` (or let Prisma handle it implicitly), based on Laravel migration `2025_05_01_100002_create_note_category_pivot_table.php`."
-    *   `[x]` **(DB) NoteTagPivot Model (Explicit or Implicit):**
-        *   **(LLM Prompt):** "Define the many-to-many relationship between `Note` and `NoteTag` in `nest-app/prisma/schema.prisma` using an explicit pivot table model named `NoteTagPivot` (or let Prisma handle it implicitly), based on Laravel migration `2025_05_01_100003_create_note_tag_pivot_table.php`."
-    *   `[x]` **(DB) UserReminder Model:**
-        *   **(LLM Prompt):** "Refine the existing `UserReminder` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_071413_create_user_reminders_table.php` and model `app/Modules/ProtocolEngine/Models/UserReminder.php`. Include `userId`, `protocolId`, `reminder_time` (String, as in DTOs), `frequency` (String or Enum), `specific_days` (String[] or Json), `message`, `is_active`, `last_sent_at`. Define relations to `User` and `Protocol`."
-    *   `[x]` **(DB) Routine Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `Routine` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_000000_create_routines_table.php` and model `app/Models/Routine.php`. Include `user_id`, `name`, `description`, `frequency`, `start_time`, `end_time`, `is_active`. Define relations."
-    *   `[x]` **(DB) RoutineStep Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `RoutineStep` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_000001_create_routine_steps_table.php` and model `app/Models/RoutineStep.php`. Include `routine_id`, `name`, `description`, `duration`, `order`, `is_optional`. Define relations."
-    *   `[x]` **(DB) TrackingLog Model (`user_protocol_tracking`):**
-        *   **(LLM Prompt):** "Refine the existing `TrackingLog` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_100004_create_user_protocol_tracking_table.php` and model `app/Modules/TrackingService/Models/TrackingLog.php`. Include `user_id`, `protocol_id`, `tracked_at` (DateTime), `notes` (String?), `metadata` (Json?). Define relations."
-    *   `[x]` **(DB) Post Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `Post` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100004_create_posts_table.php` and model `app/Models/Post.php`. Include `user_id`, `title`, `content`, `status`. Define relations."
-    *   `[x]` **(DB) Comment Model:**
-        *   **(LLM Prompt):** "Generate the Prisma model for `Comment` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100005_create_comments_table.php` and model `app/Models/Comment.php`. Include `user_id`, `post_id`, `content`. Define relations."
-    *   `[x]` **(DB) UserDevice Model:** (Already covered and seems fine)
-        *   **(LLM Prompt):** "Refine the existing `UserDevice` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_104700_create_user_devices_table.php` and model `app/Modules/UserManagement/Models/UserDevice.php`. Ensure it includes `userId`, `device_token`, `platform`.
-
-
-
-
-Okay, you're right. "Review all" is too broad for an LLM that generates code based on specific instructions. Let's break down the **"(DB) Prisma Enums"** and the subsequent **"(DB) Apply Prisma Migrations"** steps into a much more granular, actionable list for your LLM.
-
-We will go field by field for potential enums identified from the Laravel codebase.
+        @Module({
+          imports: [
+            BullModule.registerQueue({
+              name: 'reminders', // Same name as used in @Processor and @InjectQueue
+            }),
+          ],
+          controllers: [ReminderController], // Add controller if it's part of this module
+          providers: [ReminderService, ReminderProcessor, NotificationService, PrismaService],
+        })
+        export class ProtocolEngineModule {}
+        ```"
+    *   **(Verification):** `protocol-engine.module.ts` is created/updated, registers the 'reminders' queue, and lists `ReminderProcessor`, `ReminderService`, `NotificationService`, `PrismaService` as providers. `ReminderController` is listed in controllers.
 
 ---
 
-## Phase 2 (Continued): Comprehensive Database Schema Migration to Prisma - Detailed Enum Implementation
+## Phase FIX.1: Implement Missing Modules (Stubs & Basic Structure)
 
-**Previous Step Context:** You have already prompted the LLM to generate the basic Prisma models for most tables. Now we refine them with enums.
+**Module: TrackingService**
 
-**Action Item:** Update the `nest-app/prisma/schema.prisma` file by adding the following Enum definitions first, and then prompting the LLM to modify existing model fields to use these enums.
+*   `[ ]` **FIX.MM.TS.1: Create `tracking.service.ts`**
+    *   **(File):** `nest-app/src/tracking-service/tracking.service.ts`
+    *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.service.ts`. Add a basic `TrackingService` class decorated with `@Injectable()`. Inject `PrismaService`. Include placeholder methods based on Laravel's `TrackingServiceInterface`: `logAdherence(user, protocolId, date, notes, metadata)`, `getUserTrackingData(user, protocolId, dateRange)`, `calculateStreak(user, protocolId)`, `getTrackingLogById(user, logId)`, `updateTrackingLog(user, logId, data)`, `deleteTrackingLog(user, logId)`. These methods can initially just log a message or throw `NotImplementedException`."
+    *   **(Verification):** File created with the service class, PrismaService injection, and stubbed methods.
 
----
+*   `[ ]` **FIX.MM.TS.2: Create `tracking.controller.ts`**
+    *   **(File):** `nest-app/src/tracking-service/tracking.controller.ts`
+    *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.controller.ts`. Add a `TrackingController` class decorated with `@Controller('tracking')` and `@UseGuards(SupabaseAuthGuard)`. Inject `TrackingService`. Add placeholder methods for `store(@Req() req, @Body() storeTrackingLogDto: StoreTrackingLogDto)` and `getSummary(@Req() req, @Param('protocolId') protocolId: string)`. These methods should call the respective service methods."
+    *   **(Verification):** File created with the controller class, service injection, guards, and stubbed endpoint handlers.
 
-**2.A. Define All Necessary Enums in `nest-app/prisma/schema.prisma`**
+*   `[ ]` **FIX.MM.TS.3: Create `store-tracking-log.dto.ts`**
+    *   **(File):** `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`
+    *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`. Define `StoreTrackingLogDto` class with validation decorators (`class-validator`) based on Laravel's `StoreTrackingLogRequest.php` (protocol_id: number, tracked_at: string (date YYYY-MM-DD), notes: string?, metadata: object?)."
+    *   **(Verification):** DTO file created with correct properties and validation decorators.
 
-*   `[x]` **(DB) `PlanInterval` Enum (Already Done & Verified)**
-    *   **Context:** This enum is already present in your `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_205454_create_plans_table.php`.
-    *   **No LLM action needed if it's exactly:**
-        ```prisma
-        enum PlanInterval {
-          MONTH
-          YEAR
-        }
-        ```
+*   `[ ]` **FIX.MM.TS.4: Create `tracking-service.module.ts`**
+    *   **(File):** `nest-app/src/tracking-service/tracking-service.module.ts`
+    *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking-service.module.ts`. Define `TrackingServiceModule` importing necessary common modules (like `PrismaModule` if you have one, or provide `PrismaService` directly). Declare `TrackingController` and `TrackingService`."
+    *   **(Verification):** Module file created, controller and service declared.
 
-*   `[x]` **(DB) `SubscriptionStatus` Enum:**
-    *   **Context:** Based on Laravel's `subscriptions.stripe_status` field and common subscription states seen in models like `app/Modules/SubscriptionBilling/Models/Subscription.php` (e.g., 'active', 'trialing', 'canceled', 'expired', 'past_due').
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `SubscriptionStatus` with the following values: `ACTIVE`, `TRIALING`, `CANCELED`, `EXPIRED`, `PAST_DUE`, `INCOMPLETE`."
-    *   **Expected LLM Output (to be added to schema.prisma):**
-        ```prisma
-        enum SubscriptionStatus {
-          ACTIVE
-          TRIALING
-          CANCELED
-          EXPIRED
-          PAST_DUE
-          INCOMPLETE // Added for completeness, often an initial state
-        }
-        ```
+*   `[ ]` **FIX.MM.TS.5: Register `TrackingServiceModule` in `app.module.ts`**
+    *   **(File):** `nest-app/src/app.module.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/app.module.ts`, import and add `TrackingServiceModule` to the `imports` array."
+    *   **(Verification):** `TrackingServiceModule` is imported and added.
 
-*   `[x]` **(DB) `RoutineFrequency` Enum:**
-    *   **Context:** Based on Laravel's `routines.frequency` field and values like 'daily', 'weekly', 'weekdays', 'custom' from `app/Http/Requests/StoreRoutineRequest.php`.
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `RoutineFrequency` with the following values: `DAILY`, `WEEKLY`, `WEEKDAYS`, `CUSTOM`."
-    *   **Expected LLM Output (to be added to schema.prisma):**
-        ```prisma
-        enum RoutineFrequency {
-          DAILY
-          WEEKLY
-          WEEKDAYS
-          CUSTOM
-        }
-        ```
+**Module: OfflineDataService** (Repeat MM.TS.1-5 pattern)
 
-*   `[x]` **(DB) `PostStatus` Enum:**
-    *   **Context:** Based on Laravel's `posts.status` field, which defaults to 'published'. Common statuses might include 'DRAFT', 'ARCHIVED'.
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `PostStatus` with the following values: `PUBLISHED`, `DRAFT`, `ARCHIVED`."
-    *   **Expected LLM Output (to be added to schema.prisma):**
-        ```prisma
-        enum PostStatus {
-          PUBLISHED
-          DRAFT
-          ARCHIVED
-        }
-        ```
+*   `[ ]` **FIX.MM.ODS.1: Create `offline-data.service.ts`** (Methods: `getDataForUser(user)`, `syncDataForUser(user, data)`)
+*   `[ ]` **FIX.MM.ODS.2: Create `offline-data.controller.ts`** (Endpoints: `GET /offline-data`, `POST /offline-data/sync`)
+*   `[ ]` **FIX.MM.ODS.3: Create DTOs:** `sync-offline-data.dto.ts` (based on `SyncOfflineDataRequest.php`)
+*   `[ ]` **FIX.MM.ODS.4: Create `offline-data.module.ts`**
+*   `[ ]` **FIX.MM.ODS.5: Register `OfflineDataModule` in `app.module.ts`**
 
-*   `[x]` **(DB) `DevicePlatform` Enum:**
-    *   **Context:** Based on Laravel's `user_devices.platform` field and validation rule `Rule::in(['ios', 'android', 'web'])` from `app/Modules/UserManagement/Http/Requests/UpdateDeviceTokenRequest.php`.
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, define a new enum named `DevicePlatform` with the following values: `IOS`, `ANDROID`, `WEB`."
-    *   **Expected LLM Output (to be added to schema.prisma):**
-        ```prisma
-        enum DevicePlatform {
-          IOS
-          ANDROID
-          WEB
-        }
-        ```
+**Module: PostService (Social/Community Features)** (Repeat MM.TS.1-5 pattern)
+
+*   `[ ]` **FIX.MM.PS.1: Create `post.service.ts`** (Methods: `createPost(user, data)`, `getPostsWithComments()`, `createComment(user, postId, data)`)
+*   `[ ]` **FIX.MM.PS.2: Create `post.controller.ts`** (Endpoints: `GET /posts`, `POST /posts`, `POST /posts/{id}/comments`)
+*   `[ ]` **FIX.MM.PS.3: Create DTOs:** `create-post.dto.ts`, `store-comment.dto.ts`
+*   `[ ]` **FIX.MM.PS.4: Create `post.module.ts`**
+*   `[ ]` **FIX.MM.PS.5: Register `PostModule` in `app.module.ts`**
+
+**Module: RoutineService** (Repeat MM.TS.1-5 pattern)
+
+*   `[ ]` **FIX.MM.RS.1: Create `routine.service.ts`** (Methods: `getAllRoutines(user)`, `createRoutine(user, data)`, `updateRoutine(user, routineId, data)`, `deleteRoutine(user, routineId)`, `getRoutineSteps(routineId)`)
+*   `[ ]` **FIX.MM.RS.2: Create `routine.controller.ts`** (Endpoints: `GET /routines`, `POST /routines`, `GET /routines/{id}`, `PUT /routines/{id}`, `DELETE /routines/{id}`, `GET /routines/{id}/steps`)
+*   `[ ]` **FIX.MM.RS.3: Create DTOs:** `store-routine.dto.ts`, `update-routine.dto.ts`
+*   `[ ]` **FIX.MM.RS.4: Create `routine.module.ts`**
+*   `[ ]` **FIX.MM.RS.5: Register `RoutineModule` in `app.module.ts`**
 
 ---
 
-**2.B. Update Prisma Model Fields to Use Defined Enums**
+## Phase FIX.2: Business Logic & Service Implementation (Porting from Laravel)
 
-*   **_**(User Action)**_** Ensure all enum definitions from step 2.A are present at the top level (outside any model) in your `nest-app/prisma/schema.prisma` file.
+**For each Service identified as partially complete or missing (Content, Notes, Reminders, SubscriptionBilling, Tracking, OfflineData, Post, Routine):**
 
-*   `[x]` **(DB) `Plan` Model - `interval` field (Already Done & Verified)**
-    *   **Context:** The `Plan` model in `nest-app/prisma/schema.prisma` already correctly uses `PlanInterval`.
-    *   **No LLM action needed if it's exactly:**
-        ```prisma
-        model Plan {
-          // ... other fields
-          interval         PlanInterval @default(MONTH)
-          // ... other fields
-        }
-        ```
+*   `[ ]` **FIX.BL.CS.1: `ContentService` - Review & Complete**
+    *   **(File):** `nest-app/src/content-management/content.service.ts`
+    *   **(LLM Prompt):** "Review the existing `nest-app/src/content-management/content.service.ts`. Ensure all methods from Laravel's `ContentServiceInterface` (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`) are fully implemented using Prisma Client, matching the logic of `app/Modules/ContentManagement/Services/ContentService.php`. Pay attention to any conditional logic for free/premium content if it was handled in the Laravel service."
+    *   **(Verification):** Service methods correctly query and return data using Prisma, matching Laravel's logic.
 
-*   `[x]` **(DB) `Subscription` Model - `stripeStatus` field:**
-    *   **Context:** Currently `stripeStatus String`. Needs to use `SubscriptionStatus` enum.
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, modify the `Subscription` model. Change the type of the `stripeStatus` field from `String` to the `SubscriptionStatus` enum. Add a default value if appropriate (e.g., `@default(INCOMPLETE)`)."
-    *   **Expected LLM Change in `Subscription` model:**
-        ```diff
-        model Subscription {
-          // ... other fields
-        -  stripeStatus String
-        +  stripeStatus SubscriptionStatus @default(INCOMPLETE) // Or another appropriate default
-          // ... other fields
-        }
-        ```
+*   `[ ]` **FIX.BL.NS.1: `NoteService` - Review & Complete**
+    *   **(File):** `nest-app/src/notes-service/note.service.ts`
+    *   **(LLM Prompt):** "Review `nest-app/src/notes-service/note.service.ts`. Ensure all methods like `createNote`, `getNote`, `updateNote`, `deleteNote`, `getUserNotesCount`, `getPublicNotes`, `getPublicNotesForEpisode`, `attachCategoryToNote` accurately port logic from `app/Modules/NotesService/Services/NoteService.php` and `app/Services/NoteService.php` using Prisma. Ensure free note limit (`MAX_FREE_NOTES`) and ownership checks are correctly implemented, throwing `ForbiddenException` or `NotFoundException` as appropriate. The `attachCategoryToNote` method should create a record in `NoteCategoryPivot`."
+    *   **(Verification):** All methods implemented with correct Prisma queries and authorization logic.
 
-*   `[x]` **(DB) `Routine` Model (if generated/to be generated) - `frequency` field:**
-    *   **Context:** Assuming the `Routine` model will be generated (it's currently missing from `schema.prisma`). If it exists and `frequency` is `String`, it needs update.
-    *   **(LLM Prompt - if Routine model exists):** "In `nest-app/prisma/schema.prisma`, modify the `Routine` model. Change the type of the `frequency` field from `String` to the `RoutineFrequency` enum."
-    *   **(LLM Prompt - if Routine model needs generation, include this):** "When generating the `Routine` model for `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_000000_create_routines_table.php`, ensure the `frequency` field uses the `RoutineFrequency` enum."
-    *   **Expected field definition in `Routine` model:**
-        ```prisma
-        // In Routine model
-        frequency RoutineFrequency
-        ```
+*   `[ ]` **FIX.BL.RS.1: `ReminderService` - Review & Complete**
+    *   **(File):** `nest-app/src/protocol-engine/reminder.service.ts`
+    *   **(LLM Prompt):** "Review `nest-app/src/protocol-engine/reminder.service.ts`. Ensure methods `setReminder`, `getUserReminders`, `getReminder`, `updateReminder`, `deleteReminder` port logic from `app/Modules/ProtocolEngine/Services/ReminderService.php` using Prisma. Ensure jobs are correctly added to the BullMQ 'reminders' queue when reminders are created/updated and active."
+    *   **(Verification):** Methods implemented with Prisma and BullMQ integration.
 
-*   `[x]` **(DB) `Post` Model (if generated/to be generated) - `status` field:**
-    *   **Context:** Assuming the `Post` model will be generated.
-    *   **(LLM Prompt - if Post model exists):** "In `nest-app/prisma/schema.prisma`, modify the `Post` model. Change the type of the `status` field from `String` to the `PostStatus` enum. Set its default value to `PUBLISHED` (e.g., `@default(PUBLISHED)`)."
-    *   **(LLM Prompt - if Post model needs generation, include this):** "When generating the `Post` model for `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_100004_create_posts_table.php`, ensure the `status` field uses the `PostStatus` enum with a default of `PUBLISHED`."
-    *   **Expected field definition in `Post` model:**
-        ```prisma
-        // In Post model
-        status PostStatus @default(PUBLISHED)
-        ```
+*   `[ ]` **FIX.BL.SBS.1: `SubscriptionBillingService` - Review & Complete**
+    *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
+    *   **(LLM Prompt):** "Review `nest-app/src/subscription-billing/subscription-billing.service.ts`.
+        1.  Ensure `userHasActivePremiumSubscription(userId: string)` correctly queries the `Subscription` and `Plan` models via Prisma to check for 'ACTIVE' or 'TRIALING' status and 'premium' plan slug.
+        2.  For Stripe webhook handlers (`handleCheckoutSessionCompleted`, `handleCustomerSubscriptionUpdatedTrialEnded`, `handleInvoicePaymentSucceeded`, `handleInvoicePaymentFailed`, `handleCustomerSubscriptionUpdatedCancel`, `handleCustomerSubscriptionDeleted`): Port the detailed logic from `app/Modules/SubscriptionBilling/Http/Controllers/WebhookController.php` (Laravel Cashier's underlying logic might be complex, so focus on state changes in the `Subscription` model like status and `ends_at`, `trial_ends_at` based on webhook payload). Dispatch NestJS events (e.g., `SubscriptionRenewedEvent`) where Laravel dispatched them.
+        3.  For Apple webhook handlers (`handleAppleNotification`, `handleDidChangeRenewalStatus`): Complete the logic for updating subscription state in Prisma based on decoded JWS payload for all relevant `notificationType` values like `SUBSCRIBED`, `DID_RENEW`, `EXPIRED`, `DID_FAIL_TO_RENEW` similar to the Stripe handlers. Refer to `app/Modules/SubscriptionBilling/Services/SubscriptionService.php` (Laravel) for logic on how `stripe_status` and `ends_at` were managed for Apple events."
+    *   **(Verification):** Methods correctly implemented with Prisma and event dispatches.
 
-*   `[x]` **(DB) `UserDevice` Model - `platform` field:**
-    *   **Context:** Currently `platform String?` in Laravel migration. Needs to use `DevicePlatform` enum.
-    *   **(LLM Prompt):** "In `nest-app/prisma/schema.prisma`, modify the `UserDevice` model. Change the type of the `platform` field from `String?` to `DevicePlatform?` (still optional)."
-    *   **Expected LLM Change in `UserDevice` model:**
-        ```diff
-        model UserDevice {
-          // ... other fields
-          userId   String
-          user     User     @relation(fields: [userId], references: [id])
-        - platform String?  // Example: If it was previously generated as String
-        + platform DevicePlatform?
-          // ... other fields if any, like device_token
-        + deviceToken String // Assuming this should be here based on Laravel migration
-        }
-        ```
-        *(Self-correction: Noticed `deviceToken` was missing in the prompt context above, adding it here for completeness if the LLM hasn't added it yet for `UserDevice`)*
+*   **(Implement the following new services using the pattern above, porting logic from their Laravel counterparts):**
+    *   `[ ]` **FIX.BL.TS.1: `TrackingService` - Implement** (from `app/Modules/TrackingService/Services/TrackingService.php`)
+    *   `[ ]` **FIX.BL.ODS.1: `OfflineDataService` - Implement** (from `app/Services/OfflineDataService.php`)
+    *   `[ ]` **FIX.BL.PS.1: `PostService` - Implement** (from `app/Services/PostService.php`)
+    *   `[ ]` **FIX.BL.RSVC.1: `RoutineService` - Implement** (from `app/Services/RoutineService.php`)
 
 ---
 
-**2.C. Apply Prisma Migrations and Generate Client**
+## Phase FIX.3: DTO and Controller Implementation/Refinement (Porting from Laravel)
 
-*   `[x]` **(DB) Review Prisma Schema (User Action):**
-    *   **_**(User Action)**_** Carefully review the *entire* `nest-app/prisma/schema.prisma` file.
-        *   Verify all enums from step 2.A are defined correctly.
-        *   Verify all model fields from step 2.B now use the correct enum types and have appropriate default values if specified.
-        *   Verify all other models (Summary, NoteCategory, NoteTag, Routine, RoutineStep, Post, Comment, etc.) have been generated or refined correctly with all their fields and relations from the earlier general prompts.
-        *   **Pay close attention to optional fields (`?`) and list fields (`[]`) to ensure they match Laravel's nullability and data structures (e.g., `specific_days String[]?` for UserReminder).**
+**For each new/stubbed Controller (Tracking, OfflineData, Post, Routine) and existing ones needing review:**
 
-*   `[x]` **(DB) Create and Apply Prisma Migration (User Action):**
-    *   **_**(User Action)**_** Once the schema looks accurate and complete:
-        ```bash
-        npx prisma migrate dev --schema=./nest-app/prisma/schema.prisma --name "add-enums-and-refine-schema"
-        ```
-        *(You can choose a more descriptive name like "complete-laravel-schema-migration-with-enums" if this step also includes the previously missing models.)*
-    *   **_**(User Action)**_** Prisma will show you the SQL it's about to execute. Review this SQL to ensure it matches your expectations (e.g., `ALTER TABLE ... ALTER COLUMN ... TYPE ... USING ...::enum_name;` for changing types to enums, `CREATE TYPE ... AS ENUM (...)`). If it looks good, confirm the migration.
+*   `[ ]` **FIX.DTO.TS.1: `StoreTrackingLogDto` - Review/Complete**
+    *   **(File):** `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts`
+    *   **(LLM Prompt):** "Ensure `StoreTrackingLogDto` in `nest-app/src/tracking-service/dto/store-tracking-log.dto.ts` matches the validation rules from Laravel's `app/Modules/TrackingService/Http/Requests/StoreTrackingLogRequest.php`: `protocol_id` (required, integer, exists:protocols,id), `tracked_at` (required, date_format:Y-m-d), `notes` (nullable, string, max:10000), `metadata` (nullable, array), `metadata.*` (nullable, string, max:255). Use `class-validator` decorators. Add `@ApiProperty()` for Swagger."
+    *   **(Verification):** DTO has correct properties, validation, and Swagger decorators.
 
-*   `[x]` **(DB) Generate Prisma Client (User Action):**
-    *   **_**(User Action)**_** After the migration is successfully applied:
-        ```bash
-        npx prisma generate --schema=./nest-app/prisma/schema.prisma
-        ```
-        This updates the Prisma Client in `nest-app/src/generated/prisma` to include the new enums and any other schema changes.
+*   `[ ]` **FIX.CTRL.TS.1: `TrackingController` - Implement Endpoints**
+    *   **(File):** `nest-app/src/tracking-service/tracking.controller.ts`
+    *   **(LLM Prompt):** "Implement the `store` and `getSummary` methods in `nest-app/src/tracking-service/tracking.controller.ts`.
+        *   `store`: Use `@Post('/log')`, `@Body() storeTrackingLogDto: StoreTrackingLogDto`, `@Req() req`. Call `trackingService.logAdherence()`. Add `@ApiOperation` and `@ApiResponse` decorators.
+        *   `getSummary`: Use `@Get('/summary/:protocolId')`, `@Param('protocolId') protocolId: string`, `@Req() req`. Call `trackingService.calculateStreak()`. Add `@ApiOperation` and `@ApiResponse` decorators."
+    *   **(Verification):** Endpoints implemented with correct decorators, DTOs, service calls, and Swagger docs.
 
----
+*   **(Repeat FIX.DTO.*.1 and FIX.CTRL.*.1 for other new/stubbed modules):**
+    *   `[ ]` **FIX.DTO.ODS.1 & FIX.CTRL.ODS.1:** `OfflineDataController` & `sync-offline-data.dto.ts`
+    *   `[ ]` **FIX.DTO.PS.1 & FIX.CTRL.PS.1:** `PostController` & DTOs (`create-post.dto.ts`, `store-comment.dto.ts`)
+    *   `[ ]` **FIX.DTO.RS.1 & FIX.CTRL.RS.1:** `RoutineController` & DTOs (`store-routine.dto.ts`, `update-routine.dto.ts`)
 
-This detailed breakdown should give your LLM very specific, manageable chunks to work with for the enum part of the schema migration. Remember to integrate the LLM's output carefully into your `schema.prisma` file after each prompt related to enums and model field updates, before running the final `prisma migrate dev` command.
-
-*   `[x]` **(DB) Expand Seed Script (`nest-app/prisma/seed.ts`):**
-    *   **(LLM Prompt):** "Translate Laravel's `EpisodeSeeder.php` [paste content] into TypeScript code to be added to `nest-app/prisma/seed.ts` for seeding Episode data using Prisma client."
-    *   **(LLM Prompt):** "Translate Laravel's `ProtocolSeeder.php` [paste content]..."
-    *   **(LLM Prompt):** "Translate Laravel's `SummarySeeder.php` [paste content]..."
-    *   **(LLM Prompt):** "Translate Laravel's `EpisodeProtocolSeeder.php` [paste content]..."
-    *   **(LLM Prompt):** "Translate Laravel's `NoteTagFactory.php` and associated seeding logic (if any) ..."
-    *   **(LLM Prompt):** "Translate Laravel's `UserReminderFactory.php` and associated seeding logic (if any) ..."
-    *   *(Repeat for all relevant Laravel Seeders/Factories: `OfflineDataFactory`, `RoutineFactory`, `RoutineStepFactory` etc.)*
-    *   **_**(User Action)**_** Run the full seeder:
-        ```bash
-        npx prisma db seed --schema=./nest-app/prisma/schema.prisma
-        ```
+*   `[ ]` **FIX.CTRL.REVIEW.1: Review Existing Controllers for Full Logic Porting**
+    *   **(Files):** `protocol.controller.ts`, `note.controller.ts`, `reminder.controller.ts`, `subscription-billing.controller.ts`, `authentication.controller.ts`.
+    *   **(LLM Prompt):** "For each of the following controllers, review its methods against its Laravel counterpart and ensure all route parameters, query parameters, request body handling (using DTOs), service calls, and response structures are accurately ported:
+        1.  `nest-app/src/content-management/protocol.controller.ts` (compare with `app/Modules/ContentManagement/Http/Controllers/ProtocolController.php`)
+        2.  `nest-app/src/notes-service/note.controller.ts` (compare with `app/Modules/NotesService/Http/Controllers/NoteController.php`)
+        3.  `nest-app/src/protocol-engine/reminder.controller.ts` (compare with `app/Modules/ProtocolEngine/Http/Controllers/ReminderController.php`)
+        4.  `nest-app/src/subscription-billing/subscription-billing.controller.ts` (compare with `app/Modules/SubscriptionBilling/Http/Controllers/WebhookController.php` for webhooks, and `SubscriptionController.php` for any direct user-facing billing routes if planned).
+        5.  `nest-app/src/authentication/authentication.controller.ts` (compare with `app/Modules/Authentication/Http/Controllers/AuthController.php`, `ForgotPasswordController.php`, `NewPasswordController.php`). Ensure password reset endpoints are added if missing."
+    *   **(Verification):** Controllers accurately reflect Laravel endpoint functionality.
 
 ---
 
+## Phase FIX.4: Guard & Authorization Refinement
 
+*   `[ ]` **FIX.GUARD.PG.1: `PremiumGuard` - Refine to use `SubscriptionBillingService`**
+    *   **(File):** `nest-app/src/common/guards/premium.guard.ts`
+    *   **(LLM Prompt):** "Modify `nest-app/src/common/guards/premium.guard.ts`. Inject `SubscriptionBillingService`. In the `canActivate` method, instead of querying Prisma directly, call `this.subscriptionBillingService.userHasActivePremiumSubscription(user.id)` (or `user.sub` depending on how Supabase user ID is populated on `request.user`). Ensure `user` and `user.id`/`user.sub` are correctly accessed from the request."
+    *   **(Verification):** `PremiumGuard` now uses `SubscriptionBillingService`.
 
-
-
-
-## Phase 3: Business Logic and Core Services Migration
-
-*   For *each* Laravel Service (`ContentService`, `NoteService`, `ReminderService`, `SubscriptionService`, `TrackingService`, `OfflineDataService`, `PostService`, `RoutineService`, etc.):
-    *   `[x]` **(SVC)** **Migrate Service Logic:**
-            *   **(LLM Prompt):** "Here is the Laravel service `app/Modules/Xyz/Services/XyzService.php`: [paste content]. Migrate its business logic to the NestJS service `nest-app/src/xyz/xyz.service.ts` [paste existing stub if any].
-                *   Replace Eloquent queries with Prisma Client queries.
-                *   Adapt method signatures to accept an authenticated user object (e.g., `user: Request['user']` or a specific User type from Supabase/Prisma) where `Auth::id()` or `auth()->user()` was used.
-                *   Ensure all public methods from the Laravel service (and its interface) are implemented.
-                *   Throw appropriate NestJS exceptions (e.g., `NotFoundException`, `ForbiddenException`, `BadRequestException`) instead of Laravel exceptions or `response()->json(...)`."
-            *   **_**(User Action)**_** Review and integrate the generated service code. Manually resolve any complex logic or type issues.
-*   `[x]` **(SVC) Subscription Service - Specifics:**
-        *   **(LLM Prompt):** "Refine the `userHasActivePremiumSubscription` method in `nest-app/src/subscription-billing/subscription-billing.service.ts`. It should replicate the logic from Laravel's `SubscriptionServiceInterface` and `SubscriptionService.php` [paste relevant Laravel code], checking for active/trialing status against 'Premium%' plan names using Prisma."
-*   `[x]` **(SVC) Remove Placeholder User Logic:**
-    *   **_**(User Action)**_** Manually search for and remove all instances of `const user = { id: 1 };` (or similar) in generated NestJS services. Ensure methods that require user context receive it as a parameter.
+*   `[ ]` **FIX.GUARD.OWN.1: Implement Ownership Checks / Fine-grained Guards (Example: Notes)**
+    *   **(File):** `nest-app/src/notes-service/note.service.ts` and/or new guards if needed.
+    *   **(LLM Prompt):** "Review `nest-app/src/notes-service/note.service.ts`. For methods like `getNote`, `updateNote`, `deleteNote` that operate on a specific note, ensure there's a check: `if (note.userId !== userIdFromAuthenticatedUser) { throw new ForbiddenException('Access denied'); }`. If this logic is complex or repeated, consider creating a dedicated `NoteOwnerGuard` and apply it in `note.controller.ts` to the relevant endpoints (`@UseGuards(SupabaseAuthGuard, NoteOwnerGuard)`)."
+    *   **(Verification):** Ownership checks are present for note operations, either in service or via a new guard.
+    *   **(Apply this pattern FIX.GUARD.OWN.* for other modules like Reminders, Routines, TrackingLogs if they have user-owned resources and the checks are not already robust in their services.)**
 
 ---
 
-## Phase 4: API Endpoints, DTOs, and Controllers Migration
+## Phase FIX.5: Webhook Logic Enhancement
 
-*   For *each* Laravel Controller and its associated Form Requests:
-    *   `[x]` **(API) Generate DTOs:**
-        *   **(LLM Prompt):** "Here is the Laravel Form Request `app/Http/Requests/StoreXyzRequest.php`: [paste content]. Generate an equivalent NestJS DTO class named `store-xyz.dto.ts` in the appropriate `nest-app/src/module-name/dto/` directory. Use `class-validator` decorators for validation rules derived from the Laravel request."
-    *   `[x]` **(API) Migrate Controller Logic:**
-        *   **(LLM Prompt):** "Here is the Laravel Controller `app/Modules/Xyz/Http/Controllers/XyzController.php`: [paste content]. Migrate its methods to the NestJS Controller `nest-app/src/xyz/xyz.controller.ts` [paste existing stub if any].
-            *   Inject and use the corresponding NestJS service (e.g., `XyzService`).
-            *   Use the generated DTOs for request body validation (`@Body() createXyzDto: CreateXyzDto`).
-            *   Apply `SupabaseAuthGuard` to routes requiring authentication.
-            *   Apply `PremiumGuard` (or other custom guards) to routes requiring premium access or specific permissions.
-            *   Ensure route parameters (`@Param()`) and query parameters (`@Query()`) are correctly handled.
-            *   Return appropriate data or NestJS `HttpCode` responses."
-        *   **_**(User Action)**_** Review and integrate. Ensure all routes from the Laravel module's `api.php` are mapped.
+*   `[ ]` **FIX.WH.S.1: Stripe Webhook - Robust Error Handling & Event Dispatch**
+    *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts`, for each Stripe event handler method (e.g., `handleCheckoutSessionCompleted`):
+        1.  Wrap the core logic in a try-catch block. Log detailed errors using `@nestjs/common` Logger.
+        2.  Ensure appropriate NestJS events (e.g., `SubscriptionStartedEvent`, `SubscriptionRenewedEvent`, `SubscriptionCanceledEvent`, `SubscriptionExpiredEvent`, `PaymentFailedEvent` - create these event classes in `nest-app/src/common/events/` if they don't exist) are dispatched using `this.eventEmitter.emit()` after successful state changes. Pass the relevant subscription or user object to the event."
+    *   **(Verification):** Stripe handlers have try-catch blocks, log errors, and dispatch specific NestJS events.
 
----
+*   `[ ]` **FIX.WH.A.1: Apple Webhook - Full Event Type Handling & Error Logic**
+    *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts` within the `handleAppleNotification` method's switch statement:
+        1.  Implement full logic for `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED` cases. This involves finding the user (e.g., via `originalTransactionId`), updating their subscription state in Prisma (status, `ends_at`, `trial_ends_at`), and dispatching corresponding NestJS events (similar to Stripe). Refer to Laravel's `SubscriptionService` for how these states were managed.
+        2.  Add robust error handling (try-catch) within each case and for JWS verification in `apple.service.ts` if not already comprehensive."
+    *   **(Verification):** All key Apple notification types are handled with Prisma updates and event dispatches. Error handling is present.
 
-## Phase 5: Guards and Authorization Logic Migration
-
-*   `[x]` **(GUARD) PremiumGuard Refinement:**
-        *   **(LLM Prompt):** "Review the existing `PremiumGuard` (`nest-app/src/common/guards/premium.guard.ts`). If Laravel's `CheckPremiumAccess` middleware or `SubscriptionServiceInterface->userHasActivePremiumSubscription` contains more complex logic than a simple plan check, update `PremiumGuard` to inject and use `SubscriptionBillingService` to replicate that logic."
-*   For *each* Laravel Policy (e.g., `NotePolicy`, `ReminderPolicy`, `TrackingLogPolicy`, `RoutinePolicy`, `PostPolicy`, etc.):
-    *   `[x]` **(GUARD) Migrate Policy Logic:**
-        *   **(LLM Prompt):** "Analyze Laravel's `app/Policies/XyzPolicy.php`: [paste content]. Translate its authorization logic (e.g., `viewAny`, `view`, `create`, `update`, `delete`) into NestJS. This may involve:
-            1.  Adding checks within the corresponding `xyz.service.ts` methods (e.g., checking ownership `if (log.userId !== user.id) throw new ForbiddenException();`).
-            2.  If complex route-level checks are needed beyond `SupabaseAuthGuard` and `PremiumGuard` (e.g., resource ownership that can't be easily checked in the service before fetching), generate a new NestJS Guard (e.g., `XyzOwnerGuard.ts`) and apply it to relevant controller methods.
-            3.  Ensure `ForbiddenException` or `NotFoundException` are thrown for failed authorization."
+*   `[ ]` **FIX.WH.G.1: Google Play Webhook - Implement Real Logic**
+    *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts`, replace the mock/placeholder logic for Google Play RTDN handling.
+        1.  Implement logic to decode the Pub/Sub message data.
+        2.  For `SUBSCRIPTION_PURCHASED`, `SUBSCRIPTION_RENEWED`, `SUBSCRIPTION_CANCELED`, `SUBSCRIPTION_EXPIRED` (and other relevant types): Find the user, update their subscription state in Prisma, and dispatch NestJS events.
+        3.  Implement purchase token validation and acknowledgement using the Google Play Developer API (use `googleapis` library - `npm install googleapis`). This will require setting up a Google Cloud service account and using its credentials. Add placeholder for API client initialization if full setup is too complex for one step.
+        4.  Add robust error handling."
+    *   **(Verification):** Google Play webhook handling is implemented with actual validation (or clear placeholders for API client setup) and state updates.
 
 ---
 
-## Phase 6: Webhook Logic Migration
+## Phase FIX.6: Event, Job, Notification Enhancement
 
-*   **Stripe Webhooks:**
-    *   For each Stripe event type handled in Laravel's `WebhookController` (e.g., `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.updated`, `invoice.payment_failed`, `customer.subscription.deleted`):
-        *   `[x]` **(SVC) Migrate Stripe Event Handler:**
-            *   **(LLM Prompt):** "Migrate the Stripe webhook handling logic for the `{EVENT_TYPE}` event from Laravel's `app/Modules/SubscriptionBilling/Http/Controllers/WebhookController.php` [paste relevant Laravel method(s) and any helper methods it uses] to a new method within `nest-app/src/subscription-billing/subscription-billing.service.ts`. This method should accept the Stripe event payload. Use Prisma Client for database operations (e.g., finding users by Stripe customer ID, creating/updating subscriptions). If Laravel dispatched events, prepare to dispatch equivalent NestJS events (to be implemented in Phase 7)."
-    *   `[x]` **(API) Stripe Webhook Controller Endpoint:**
-        *   **(LLM Prompt):** "Implement the `handleStripeWebhook` method in `nest-app/src/subscription-billing/subscription-billing.controller.ts`. It should:
-            1.  Verify the Stripe webhook signature (you might need a utility or to adapt Laravel's middleware logic).
-            2.  Call the appropriate method in `SubscriptionBillingService` based on `event.type`.
-            3.  Return a 200 OK response to Stripe."
-*   **Apple App Store Server Notifications (V2):**
-    *   `[x]` **(SVC) JWS Verification & Processing:**
-        *   **(LLM Prompt):** "Review the `AppleSubscriptionService.php` from Laravel [paste content]. Implement similar JWS decoding and verification logic within `nest-app/src/subscription-billing/subscription-billing.service.ts` (or a new `apple.service.ts`). Use a suitable JWT library for Node.js/NestJS (e.g., `jsonwebtoken` or NestJS's `@nestjs/jwt`). Include logic for fetching Apple's public keys."
-    *   For each Apple notification type handled (e.g., `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`):
-        *   `[x]` **(SVC) Migrate Apple Notification Handler:**
-            *   **(LLM Prompt):** "Migrate the Apple notification handling logic for the `{NOTIFICATION_TYPE}` event from Laravel [paste relevant Laravel method(s)] to `nest-app/src/subscription-billing/subscription-billing.service.ts`. Use the JWS verification output. Use Prisma for database operations. Prepare for NestJS event dispatches."
-    *   `[x]` **(API) Apple Webhook Controller Endpoint:**
-        *   **(LLM Prompt):** "Implement an `handleAppleWebhook` method in `nest-app/src/subscription-billing/subscription-billing.controller.ts`. It should call the JWS verification and processing logic in the service and then route to specific handlers based on notification type."
-*   **Google Play Billing Notifications (RTDN):**
-    *   (Similar detailed steps as Apple, focusing on Pub/Sub message decoding, purchase token validation with Google Play Developer API, and handling specific notification types like `SUBSCRIPTION_PURCHASED`, `SUBSCRIPTION_RENEWED`, `SUBSCRIPTION_CANCELED`, `SUBSCRIPTION_EXPIRED`.)
+*   `[ ]` **FIX.EVENT.LSR.1: `SubscriptionRenewedListener` - Implement Cache Clearing**
+    *   **(File):** `nest-app/src/subscription-billing/listeners/subscription-renewed.listener.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/listeners/subscription-renewed.listener.ts`, uncomment and implement the actual cache clearing logic. If a generic NestJS caching module (`@nestjs/cache-manager`) is used, inject `Cache` and use `this.cacheManager.del('user:${event.userId}:premium_subscription')` or similar. If no global cache manager, this step might be deferred or use a custom solution. For now, ensure the logging shows the intent to clear cache for `event.userId`."
+    *   **(Verification):** Listener attempts to clear a user-specific cache key or logs the intent clearly. User `isPremium` update is removed if it's not a direct field on User model.
+
+*   `[ ]` **FIX.NOTIF.S.1: `NotificationService` - Implement Real FCM/APNS Sending**
+    *   **(File):** `nest-app/src/protocol-engine/notification.service.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/protocol-engine/notification.service.ts`:
+        1.  For `sendFcmNotification`: Install `firebase-admin` (`npm install firebase-admin`). Initialize Firebase Admin SDK (typically in `main.ts` or a Firebase module, then inject `admin.messaging()`). Use `admin.messaging().send({ token: deviceToken, notification: { title, body } })`.
+        2.  For `sendApnsNotification`: Choose and install an APNS library (e.g., `apn` or use Firebase Admin SDK if configured for APNS via FCM). Implement sending logic using the chosen library.
+        3.  Add error handling for send operations."
+    *   **(Verification):** Methods use actual FCM/APNS libraries to send notifications (or have very clear SDK initialization placeholders).
 
 ---
 
-## Phase 7: Event, Job, and Notification System Migration
+## Phase FIX.7: Seed Script Completion
 
-*   **Events & Listeners:**
-    *   **_**(User Action)**_** Install NestJS event emitter: `cd nest-app && npm install @nestjs/event-emitter && cd ..`
-    *   **_**(User Action)**_** Import and register `EventEmitterModule.forRoot()` in `nest-app/src/app.module.ts`.
-    *   For each Laravel Event/Listener pair (e.g., `SubscriptionRenewed` / `ClearUserEntitlementCache`):
-        *   `[x]` **(EVENT) Define NestJS Event Class/Interface:**
-            *   **(LLM Prompt):** "Define a simple class or interface for a NestJS event equivalent to Laravel's `SubscriptionRenewed` event [paste Laravel event class if it has properties]."
-        *   `[x]` **(EVENT) Implement NestJS Listener:**
-            *   `[x]` **(EVENT) Implement NestJS Listener:**
-                *   `[x]` **(EVENT) Implement NestJS Listener:**
-                    *   `[x]` **(EVENT) Implement NestJS Listener:**
-                        *   **(LLM Prompt):** "Translate the Laravel listener `app/Listeners/ClearUserEntitlementCache.php` [paste content] into a NestJS listener class using `@OnEvent('event.name')` from `@nestjs/event-emitter`. It should handle the NestJS event defined above. Implement cache clearing logic appropriate for NestJS (e.g., using NestJS Caching module if adopted, or a custom cache service)."
-        *   `[x]` **(SVC) Dispatch NestJS Events:**
-            *   **(LLM Prompt):** "In the NestJS services where the original Laravel code dispatched an event (e.g., `SubscriptionBillingService` after a renewal), inject `EventEmitter2` and replace `Event::dispatch(...)` with `this.eventEmitter.emit('event.name', new EventPayload(...));`."
-*   **Queued Jobs:**
-    *   **_**(User Action)**_** Install BullMQ and its NestJS integration: `cd nest-app && npm install @nestjs/bullmq bullmq && cd ..`
-    *   **_**(User Action)**_** Configure BullModule in `app.module.ts` and relevant feature modules (e.g., `ProtocolEngineModule` for reminder jobs).
-    *   For each Laravel Queued Job (e.g., `SendProtocolReminderNotification`):
-        *   `[x]` **(JOB) Create BullMQ Processor:**
-            *   **(LLM Prompt):** "Translate the Laravel Job `app/Jobs/SendProtocolReminderNotification.php` [paste handle() method content] into a NestJS BullMQ Processor class (e.g., `ReminderProcessor.ts`). It should define a handler method decorated with `@Process('jobName')`. The logic should fetch necessary data using Prisma and send the notification."
-        *   `[x]` **(SVC) Add Job to Queue:**
-            *   **(LLM Prompt):** "In the NestJS service that originally dispatched the Laravel job (e.g., `ReminderService` in `protocol-engine.service.ts` after creating a reminder, or the `reminders:send-due` command equivalent), inject the BullMQ Queue (`@InjectQueue('queueName')`) and add a job to it (e.g., `await this.reminderQueue.add('jobName', { reminderId: ... });`)."
-*   **Notifications:**
-    *   For each Laravel Notification class (e.g., `ProtocolReminder`, `ResetPasswordNotification`):
-        *   `[x]` **(NOTIF) Implement Notification Sending Logic:**
-            *   **(LLM Prompt):** "Translate the Laravel Notification `app/Notifications/ProtocolReminder.php` [paste `via()` and `toFcm()`/`toApns()`/`toMail()` methods] into methods within a NestJS service (e.g., `NotificationService.ts` or directly in the service that needs to send it, like `ReminderProcessor` or `AuthenticationService`).
-                *   For push notifications, this method should use a library like `firebase-admin` (for FCM) or an HTTP client to send requests to APNS/FCM gateways. Assume device tokens are available on the Prisma `User` or `UserDevice` model.
-                *   For email notifications (like password reset), use a mailer library (e.g., `@nestjs-modules/mailer` with Nodemailer, or a transactional email service SDK like SendGrid/Postmark)."
-            *   **_**(User Action)**_** Install any necessary SDKs (e.g., `firebase-admin`, mailer libraries).
+*   `[ ]` **FIX.SEED.OD.1: Add OfflineData Seeding**
+    *   **(File):** `nest-app/prisma/seed.ts`
+    *   **(LLM Prompt):** "In `nest-app/prisma/seed.ts`, add logic to seed `OfflineData`. Create a few sample `User` records if they don't exist or pick existing ones. For each sample user, create a few `OfflineData` entries with a `key` (string) and `value` (JSON string, e.g., `JSON.stringify({ setting: 'value' })`)."
+    *   **(Verification):** `seed.ts` includes OfflineData seeding.
+
+*   `[ ]` **FIX.SEED.PCO.1: Add Post & Comment Seeding**
+    *   **(File):** `nest-app/prisma/seed.ts`
+    *   **(LLM Prompt):** "In `nest-app/prisma/seed.ts`, add logic to seed `Post` and `Comment` data. Create sample Users. For each User, create a few Posts. For each Post, create a few Comments from different sample Users."
+    *   **(Verification):** `seed.ts` includes Post and Comment seeding.
+
+*   `[ ]` **FIX.SEED.RUN.1: _**(User Action)**_ Re-run Seed Script**
+    *   **_**(User Action)**_** Execute `npx prisma db seed --schema=./nest-app/prisma/schema.prisma`.
+    *   **(Verification):** Seed script completes without errors. Check database for new seed data.
 
 ---
 
-## Phase 8: API Documentation (Swagger/OpenAPI)
+## Phase FIX.8: API Documentation (Swagger)
 
-*   `[x]` **(DOC) Setup Swagger in `main.ts` (LLM Prompt)** (Already seems done)
-*   For *each* DTO generated in Phase 4:
-    *   `[ ]` **(DOC) Add DTO Property Decorators:**
-        *   **(LLM Prompt):** "For the DTO file `nest-app/src/module-name/dto/xyz.dto.ts` [paste DTO content], add `@ApiProperty()` (and `@ApiPropertyOptional()` where applicable) decorators from `@nestjs/swagger` to each property to document it for Swagger/OpenAPI."
-*   For *each* Controller method generated in Phase 4:
-    *   `[ ]` **(DOC) Add Controller Operation & Response Decorators:**
-        *   **(LLM Prompt):** "For the NestJS Controller `nest-app/src/module-name/xyz.controller.ts` [paste controller content], add `@ApiOperation({ summary: '...' })` and `@ApiResponse({ status: 200, description: '...', type: XyzDto })` (and for other statuses like 201, 400, 401, 403, 404, 422) decorators from `@nestjs/swagger` to each endpoint method to thoroughly document its purpose, parameters, and responses."
+**For every DTO file in `nest-app/src/**/dto/*.dto.ts`:**
+*   `[ ]` **FIX.API_DOC.DTO.1 (Example: `create-protocol.dto.ts`)**
+    *   **(File):** `nest-app/src/content-management/dto/create-protocol.dto.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/content-management/dto/create-protocol.dto.ts`, import `ApiProperty` and `ApiPropertyOptional` from `@nestjs/swagger`. Add `@ApiProperty()` decorator above each required field (e.g., `title`). Add `@ApiPropertyOptional()` above each optional field (e.g., `description`, `isFree`). Provide `description` and `example` values in the decorator options where appropriate (e.g. `@ApiProperty({ description: 'The title of the protocol', example: 'Morning Sunlight Viewing' })`)."
+    *   **(Verification):** All properties in the DTO are decorated with `@ApiProperty` or `@ApiPropertyOptional`.
+    *   **(Repeat this pattern for ALL DTOs: `create-note.dto.ts`, `update-note.dto.ts`, `attach-category.dto.ts`, `store-reminder.dto.ts`, `update-reminder.dto.ts`, `store-tracking-log.dto.ts`, and any DTOs created for OfflineData, Post, Routine modules).**
 
----
-
-## Phase 9: Final Review, Testing & Cleanup
-
-*   **_**(User Action)**_** **Code Review:** Manually review all generated NestJS code for:
-    *   Correctness of logic.
-    *   Proper use of NestJS conventions and decorators.
-    *   Type safety.
-    *   Security considerations (ensure guards are applied, input is validated).
-    *   Performance (e.g., avoiding N+1 query issues with Prisma includes).
-*   **_**(User Action)**_** **Implement NestJS Testing:**
-    *   Write unit tests for services and complex logic (using Jest).
-    *   Write integration tests for controllers/endpoints (using Jest and Supertest).
-    *   Consider E2E tests for critical user flows.
-*   **_**(User Action)**_** **Configuration Validation:** Ensure all environment variables in `.env` are correctly used by the NestJS application.
-*   **_**(User Action)**_** **Linting & Formatting:** Run `npm run lint --prefix nest-app` and `npm run format --prefix nest-app`.
-*   **(LLM Prompt):** "Generate an updated `README.md` for the project root, focusing on the Nest.js application in the `nest-app` directory. Include instructions for setup, running in development, running tests, and accessing the Swagger API documentation."
-*   **_**(User Action)**_** Remove old Laravel project files and documentation (once fully satisfied with the migration).
+**For every Controller method in `nest-app/src/**/*.controller.ts`:**
+*   `[ ]` **FIX.API_DOC.CTRL.1 (Example: `ProtocolController.index`)**
+    *   **(File):** `nest-app/src/content-management/protocol.controller.ts`
+    *   **(LLM Prompt):** "In `nest-app/src/content-management/protocol.controller.ts`, for the `index()` method:
+        1.  Import `ApiOperation`, `ApiResponse`, `ApiBearerAuth` (if auth is used) from `@nestjs/swagger`.
+        2.  Add `@ApiOperation({ summary: 'Get a list of protocols' })`.
+        3.  Add `@ApiResponse({ status: 200, description: 'List of protocols (content may vary based on subscription status)', type: [ProtocolResource] })` (assuming `ProtocolResource` is or will be defined with `@ApiProperty` on its fields, or use a DTO directly).
+        4.  If the endpoint requires authentication, add `@ApiBearerAuth()`.
+        Repeat for the `show()` method, documenting its `@Param('id')` with `@ApiParam({ name: 'id', type: 'string', description: 'ID of the protocol' })` and appropriate `@ApiResponse` for 200 and 404."
+    *   **(Verification):** Controller methods are decorated with `@ApiOperation`, `@ApiResponse`, `@ApiParam` (if needed), and `@ApiBearerAuth` (if needed).
+    *   **(Repeat this pattern for ALL methods in ALL Controllers: `NoteController`, `ReminderController`, `TrackingController`, `OfflineDataController`, `PostController`, `RoutineController`, `AuthenticationController`, `SubscriptionBillingController`).**
 
 ---
 
-This refined TODO list should provide a much more granular and complete path for the migration. Remember to provide the LLM with as much context as possible (especially the original Laravel code snippets) for each prompt. Good luck!
+## Phase FIX.9: Testing (Stubs & Guidance - Primarily User Action)
+
+*   `[ ]` **FIX.TEST.UNIT.1: Create Service Unit Test Stubs**
+    *   **(LLM Prompt):** "For each of the following services, create a basic Jest unit test file (`.spec.ts`) if one doesn't exist. Include a `describe` block and a placeholder `it('should be defined')` test:
+        *   `nest-app/src/content-management/content.service.ts`
+        *   `nest-app/src/notes-service/note.service.ts`
+        *   `nest-app/src/protocol-engine/reminder.service.ts`
+        *   `nest-app/src/protocol-engine/notification.service.ts`
+        *   `nest-app/src/subscription-billing/subscription-billing.service.ts`
+        *   `nest-app/src/subscription-billing/apple.service.ts`
+        *   `nest-app/src/tracking-service/tracking.service.ts`
+        *   `nest-app/src/offline-data/offline-data.service.ts`
+        *   `nest-app/src/post/post.service.ts`
+        *   `nest-app/src/routine/routine.service.ts`
+        Each test file should mock `PrismaService` and any other injected dependencies."
+    *   **(Verification):** `.spec.ts` files created with basic structure for each service.
+
+*   `[ ]` **FIX.TEST.E2E.1: Create Controller E2E Test Stubs**
+    *   **(LLM Prompt):** "For each of the following controllers, create a basic Jest E2E test file (`.e2e-spec.ts`) in the `nest-app/test/` directory if one doesn't exist. Include `beforeEach` to setup the Nest application testing module and a placeholder `it('/GET endpointName', () => { return request(app.getHttpServer()).get('/endpointName').expect(200); });` test for one GET endpoint if applicable:
+        *   `nest-app/src/content-management/protocol.controller.ts`
+        *   `nest-app/src/notes-service/note.controller.ts`
+        *   `nest-app/src/protocol-engine/reminder.controller.ts`
+        *   `nest-app/src/subscription-billing/subscription-billing.controller.ts` (Note: testing webhooks E2E is complex, focus on any direct GET endpoints if they exist, or just a basic app health check).
+        *   `nest-app/src/tracking-service/tracking.controller.ts`
+        *   `nest-app/src/offline-data/offline-data.controller.ts`
+        *   `nest-app/src/post/post.controller.ts`
+        *   `nest-app/src/routine/routine.controller.ts`"
+    *   **(Verification):** `.e2e-spec.ts` files created with basic structure for each controller.
+
+---
+
+This plan is extensive. The LLM should proceed step-by-step, and you (the user) should verify each generated piece of code or file modification before instructing the LLM to move to the next step. Good luck!
