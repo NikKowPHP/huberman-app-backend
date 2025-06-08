@@ -93,7 +93,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 *   `[x]` **FIX.MM.PS.1: Create `post.service.ts`** (Methods: `createPost(user, data)`, `getPostsWithComments()`, `createComment(user, postId, data)`)
 *   `[x]` **FIX.MM.PS.2: Create `post.controller.ts`** (Endpoints: `GET /posts`, `POST /posts`, `POST /posts/{id}/comments`)
 *   `[x]` **FIX.MM.PS.3: Create DTOs:** `create-post.dto.ts`, `store-comment.dto.ts`
-*   `[ ]` **FIX.MM.PS.4: Create `post.module.ts`**
+*   `[x]` **FIX.MM.PS.4: Create `post.module.ts`**
 *   `[ ]` **FIX.MM.PS.5: Register `PostModule` in `app.module.ts`**
 
 **Module: RoutineService** (Repeat MM.TS.1-5 pattern)
