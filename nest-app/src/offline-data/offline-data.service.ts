@@ -6,14 +6,29 @@ export class OfflineDataService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getDataForUser(userId: string) {
-    console.log(`Getting offline data for user ${userId}`);
-    // TODO: Implement based on Laravel's OfflineDataService
-    throw new Error('Not implemented');
+    return this.prisma.offlineData.findMany({
+      where: { userId }
+    });
   }
 
-  async syncDataForUser(userId: string, data: any) {
-    console.log(`Syncing offline data for user ${userId}`, data);
-    // TODO: Implement based on Laravel's OfflineDataService
-    throw new Error('Not implemented');
+  async syncDataForUser(userId: string, data: Array<{key: string, value: any}>) {
+    await Promise.all(data.map(item => 
+      this.prisma.offlineData.upsert({
+        where: {
+          userId_key: {
+            userId,
+            key: item.key
+          }
+        },
+        update: {
+          value: JSON.stringify(item.value)
+        },
+        create: {
+          userId,
+          key: item.key,
+          value: JSON.stringify(item.value)
+        }
+      })
+    ));
   }
 }
