@@ -1,4 +1,4 @@
-Okay, here is a very detailed and simple `fixes_todo.md` plan designed for a 4B LLM to follow and implement the remaining tasks. Each step aims to be atomic and actionable.
+Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan designed for a 4B LLM to follow and implement the remaining tasks. Each step aims to be atomic and actionable.
 
 **Legend:**
 *   `[ ]` - To Do
@@ -9,7 +9,7 @@ Okay, here is a very detailed and simple `fixes_todo.md` plan designed for a 4B 
 
 ---
 
-**`fixes_todo.md`**
+**`migration_nestjs_todo.md.md`**
 
 # Huberman App - NestJS Migration - Fixes & Completion Plan
 
@@ -24,7 +24,7 @@ Okay, here is a very detailed and simple `fixes_todo.md` plan designed for a 4B 
     *   **(LLM Prompt):** "In `nest-app/src/app.module.ts`, import `BullModule` from `@nestjs/bullmq` and `ConfigModule`, `ConfigService` from `@nestjs/config` (if not already imported). Add `ConfigModule.forRoot({ isGlobal: true })` to the `imports` array. Then, add `BullModule.forRootAsync({ imports: [ConfigModule], useFactory: async (configService: ConfigService) => ({ connection: { host: configService.get<string>('REDIS_HOST', 'localhost'), port: configService.get<number>('REDIS_PORT', 6379), }, }), inject: [ConfigService], })` to the `imports` array of `AppModule`. Ensure `REDIS_HOST` and `REDIS_PORT` are defined in your `.env` file (e.g., `REDIS_HOST=localhost`, `REDIS_PORT=6379`)."
     *   **(Verification):** `app.module.ts` now correctly imports and configures `BullModule` using environment variables for Redis connection.
 
-*   `[ ]` **FIX.SETUP.2: Register `ReminderProcessor` in `ProtocolEngineModule`**
+*   `[x]` **FIX.SETUP.2: Register `ReminderProcessor` in `ProtocolEngineModule`**
     *   **(File):** `nest-app/src/protocol-engine/protocol-engine.module.ts` (Create if it doesn't exist, or update if it's just `@Module({})`)
     *   **(LLM Prompt):** "Ensure `nest-app/src/protocol-engine/protocol-engine.module.ts` exists. Import `Module` from `@nestjs/common`, `BullModule` from `@nestjs/bullmq`, `ReminderProcessor` from `./reminder.processor`, `ReminderService` from `./reminder.service`, `NotificationService` from `./notification.service`, and `PrismaService` from `../common/prisma/prisma.service`. Configure the module as follows:
         ```typescript
