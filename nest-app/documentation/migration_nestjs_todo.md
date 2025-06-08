@@ -69,33 +69,33 @@ Okay, this is an excellent request. Based on my previous observations, here's a 
         *   **(LLM Prompt):** "Refine the existing `Subscription` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_205510_create_subscriptions_table.php` and model `app/Modules/SubscriptionBilling/Models/Subscription.php`. Include all fields: `userId`, `planId`, `name`, `stripeId`, `stripeStatus`, `stripePrice`, `quantity`, `trialEndsAt`, `endsAt`. Define relations to `User` and `Plan`."
     *   `[x]` **(DB) Episode Model:**
         *   **(LLM Prompt):** "Refine the existing `Episode` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_24_211846_create_episodes_table.php` and model `app/Modules/ContentManagement/Models/Episode.php`. Include `title`, `slug`, `description`, `content`, `duration`, `publishedAt`. Add relation for `EpisodeProtocol`."
-    *   `[ ]` **(DB) Protocol Model:**
+    *   `[x]` **(DB) Protocol Model:**
         *   **(LLM Prompt):** "Refine the existing `Protocol` model in `nest-app/prisma/schema.prisma` based on Laravel migrations `2025_04_24_211928_create_protocols_table.php`, `2025_04_24_195725_add_is_free_to_protocols_table.php` and model `app/Modules/ContentManagement/Models/Protocol.php`. Include `title`, `slug`, `description`, `implementation_guide`, `category`, and `is_free`. Add relation for `EpisodeProtocol` and `UserReminder` and `TrackingLog`."
     *   `[x]` **(DB) EpisodeProtocol (Pivot) Model:**
         *   **(LLM Prompt):** "Ensure the `EpisodeProtocol` model in `nest-app/prisma/schema.prisma` correctly defines the many-to-many relationship between `Episode` and `Protocol` with a composite ID, based on Laravel migration `2025_04_24_212153_create_episode_protocol_table.php`."
-    *   `[ ]` **(DB) Summary Model:**
+    *   `[x]` **(DB) Summary Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for the `Summary` table and add it to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_04_24_212127_create_summaries_table.php` and model `app/Modules/ContentManagement/Models/Summary.php`. Include `episode_id`, `content`, and relation to `Episode`."
-    *   `[ ]` **(DB) Note Model:**
+    *   `[x]` **(DB) Note Model:**
         *   **(LLM Prompt):** "Refine the existing `Note` model in `nest-app/prisma/schema.prisma` based on Laravel migrations `2025_04_30_074905_create_notes_table.php`, `2025_04_30_110629_add_is_public_to_notes_table.php` and model `app/Modules/NotesService/Models/Note.php`. Include `userId`, `title`, `content`, `isPublic`. Add relations to `User` and potentially `Episode`, `NoteCategory`, `NoteTag`."
-    *   `[ ]` **(DB) NoteCategory Model:**
+    *   `[x]` **(DB) NoteCategory Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `NoteCategory` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100000_create_note_categories_table.php` and model `app/Modules/NotesService/Models/NoteCategory.php`. Include `name`, `description`, `color`. Add relation for pivot table to `Note`."
-    *   `[ ]` **(DB) NoteTag Model:**
+    *   `[x]` **(DB) NoteTag Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `NoteTag` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100001_create_note_tags_table.php` and model `app/Models/NoteTag.php` (or `app/Modules/NotesService/Models/NoteTag.php`). Include `name`, `color`. Add relation for pivot table to `Note`."
-    *   `[ ]` **(DB) NoteCategoryPivot Model (Explicit or Implicit):**
+    *   `[x]` **(DB) NoteCategoryPivot Model (Explicit or Implicit):**
         *   **(LLM Prompt):** "Define the many-to-many relationship between `Note` and `NoteCategory` in `nest-app/prisma/schema.prisma` using an explicit pivot table model named `NoteCategoryPivot` (or let Prisma handle it implicitly), based on Laravel migration `2025_05_01_100002_create_note_category_pivot_table.php`."
-    *   `[ ]` **(DB) NoteTagPivot Model (Explicit or Implicit):**
+    *   `[x]` **(DB) NoteTagPivot Model (Explicit or Implicit):**
         *   **(LLM Prompt):** "Define the many-to-many relationship between `Note` and `NoteTag` in `nest-app/prisma/schema.prisma` using an explicit pivot table model named `NoteTagPivot` (or let Prisma handle it implicitly), based on Laravel migration `2025_05_01_100003_create_note_tag_pivot_table.php`."
-    *   `[ ]` **(DB) UserReminder Model:**
+    *   `[x]` **(DB) UserReminder Model:**
         *   **(LLM Prompt):** "Refine the existing `UserReminder` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_071413_create_user_reminders_table.php` and model `app/Modules/ProtocolEngine/Models/UserReminder.php`. Include `userId`, `protocolId`, `reminder_time` (String, as in DTOs), `frequency` (String or Enum), `specific_days` (String[] or Json), `message`, `is_active`, `last_sent_at`. Define relations to `User` and `Protocol`."
-    *   `[ ]` **(DB) Routine Model:**
+    *   `[x]` **(DB) Routine Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `Routine` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_000000_create_routines_table.php` and model `app/Models/Routine.php`. Include `user_id`, `name`, `description`, `frequency`, `start_time`, `end_time`, `is_active`. Define relations."
-    *   `[ ]` **(DB) RoutineStep Model:**
+    *   `[x]` **(DB) RoutineStep Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `RoutineStep` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_000001_create_routine_steps_table.php` and model `app/Models/RoutineStep.php`. Include `routine_id`, `name`, `description`, `duration`, `order`, `is_optional`. Define relations."
-    *   `[ ]` **(DB) TrackingLog Model (`user_protocol_tracking`):**
+    *   `[x]` **(DB) TrackingLog Model (`user_protocol_tracking`):**
         *   **(LLM Prompt):** "Refine the existing `TrackingLog` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_05_01_100004_create_user_protocol_tracking_table.php` and model `app/Modules/TrackingService/Models/TrackingLog.php`. Include `user_id`, `protocol_id`, `tracked_at` (DateTime), `notes` (String?), `metadata` (Json?). Define relations."
-    *   `[ ]` **(DB) Post Model:**
+    *   `[x]` **(DB) Post Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `Post` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100004_create_posts_table.php` and model `app/Models/Post.php`. Include `user_id`, `title`, `content`, `status`. Define relations."
-    *   `[ ]` **(DB) Comment Model:**
+    *   `[x]` **(DB) Comment Model:**
         *   **(LLM Prompt):** "Generate the Prisma model for `Comment` and add to `nest-app/prisma/schema.prisma`, based on Laravel migration `2025_05_01_100005_create_comments_table.php` and model `app/Models/Comment.php`. Include `user_id`, `post_id`, `content`. Define relations."
     *   `[x]` **(DB) UserDevice Model:** (Already covered and seems fine)
         *   **(LLM Prompt):** "Refine the existing `UserDevice` model in `nest-app/prisma/schema.prisma` based on Laravel migration `2025_04_30_104700_create_user_devices_table.php` and model `app/Modules/UserManagement/Models/UserDevice.php`. Ensure it includes `userId`, `device_token`, `platform`."
@@ -113,7 +113,7 @@ Okay, this is an excellent request. Based on my previous observations, here's a 
         ```bash
         npx prisma generate --schema=./nest-app/prisma/schema.prisma
         ```
-*   `[ ]` **(DB) Expand Seed Script (`nest-app/prisma/seed.ts`):**
+*   `[x]` **(DB) Expand Seed Script (`nest-app/prisma/seed.ts`):**
     *   **(LLM Prompt):** "Translate Laravel's `EpisodeSeeder.php` [paste content] into TypeScript code to be added to `nest-app/prisma/seed.ts` for seeding Episode data using Prisma client."
     *   **(LLM Prompt):** "Translate Laravel's `ProtocolSeeder.php` [paste content]..."
     *   **(LLM Prompt):** "Translate Laravel's `SummarySeeder.php` [paste content]..."
