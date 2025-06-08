@@ -125,7 +125,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Review `nest-app/src/protocol-engine/reminder.service.ts`. Ensure methods `setReminder`, `getUserReminders`, `getReminder`, `updateReminder`, `deleteReminder` port logic from `app/Modules/ProtocolEngine/Services/ReminderService.php` using Prisma. Ensure jobs are correctly added to the BullMQ 'reminders' queue when reminders are created/updated and active."
     *   **(Verification):** Methods implemented with Prisma and BullMQ integration.
 
-*   `[ ]` **FIX.BL.SBS.1: `SubscriptionBillingService` - Review & Complete**
+*   `[x]` **FIX.BL.SBS.1: `SubscriptionBillingService` - Review & Complete**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Prompt):** "Review `nest-app/src/subscription-billing/subscription-billing.service.ts`.
         1.  Ensure `userHasActivePremiumSubscription(userId: string)` correctly queries the `Subscription` and `Plan` models via Prisma to check for 'ACTIVE' or 'TRIALING' status and 'premium' plan slug.
