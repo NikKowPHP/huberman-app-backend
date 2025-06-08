@@ -9,10 +9,9 @@ class OfflineDataItemDto {
 
   @ApiProperty({
     description: 'The JSON string value of the offline data',
-    example: '{"theme": "dark", "notifications": true}',
-    required: false
+    example: '{"theme": "dark", "notifications": true}'
   })
-  value?: string;
+  value: string;
 }
 
 export class SyncOfflineDataDto {
