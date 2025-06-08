@@ -362,7 +362,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
     *   For each Apple notification type handled (e.g., `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`):
         *   `[x]` **(SVC) Migrate Apple Notification Handler:**
             *   **(LLM Prompt):** "Migrate the Apple notification handling logic for the `{NOTIFICATION_TYPE}` event from Laravel [paste relevant Laravel method(s)] to `nest-app/src/subscription-billing/subscription-billing.service.ts`. Use the JWS verification output. Use Prisma for database operations. Prepare for NestJS event dispatches."
-    *   `[ ]` **(API) Apple Webhook Controller Endpoint:**
+    *   `[x]` **(API) Apple Webhook Controller Endpoint:**
         *   **(LLM Prompt):** "Implement an `handleAppleWebhook` method in `nest-app/src/subscription-billing/subscription-billing.controller.ts`. It should call the JWS verification and processing logic in the service and then route to specific handlers based on notification type."
 *   **Google Play Billing Notifications (RTDN):**
     *   (Similar detailed steps as Apple, focusing on Pub/Sub message decoding, purchase token validation with Google Play Developer API, and handling specific notification types like `SUBSCRIPTION_PURCHASED`, `SUBSCRIPTION_RENEWED`, `SUBSCRIPTION_CANCELED`, `SUBSCRIPTION_EXPIRED`.)
