@@ -88,6 +88,24 @@ services:
       timeout: 5s
       retries: 5
 
+  # Vector Database (Qdrant)
+  qdrant:
+    image: qdrant/qdrant
+    container_name: huberman_app_qdrant
+    restart: unless-stopped
+    ports:
+      - "${QDRANT_PORT:-6333}:6333" # Expose Qdrant HTTP port
+      - "6334:6334" # Expose Qdrant gRPC port
+    volumes:
+      - huberman_qdrant_data:/qdrant/storage # Persistent Qdrant data
+    networks:
+      - huberman_app_network
+    healthcheck: # Basic healthcheck
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 # Define Networks
 networks:
   huberman_app_network:
@@ -98,4 +116,6 @@ volumes:
   huberman_db_data:
     driver: local
   huberman_redis_data:
+    driver: local
+  huberman_qdrant_data:
     driver: local
