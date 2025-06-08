@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards } from '@nes
 import { NoteService } from './note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
+import { SupabaseAuthGuard } from '../authentication/guards/supabase-auth.guard';
 
 @Controller('notes')
 export class NoteController {
