@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SyncOfflineDataDto {
+class OfflineDataItemDto {
   @ApiProperty({
     description: 'The key for the offline data',
     example: 'user_settings'
@@ -9,7 +9,16 @@ export class SyncOfflineDataDto {
 
   @ApiProperty({
     description: 'The JSON string value of the offline data',
-    example: '{"theme": "dark", "notifications": true}'
+    example: '{"theme": "dark", "notifications": true}',
+    required: false
   })
-  value: string;
+  value?: string;
+}
+
+export class SyncOfflineDataDto {
+  @ApiProperty({
+    description: 'Array of offline data items to sync',
+    type: [OfflineDataItemDto]
+  })
+  data: OfflineDataItemDto[];
 }
