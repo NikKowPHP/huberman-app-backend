@@ -337,7 +337,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
 *   `[x]` **(GUARD) PremiumGuard Refinement:**
         *   **(LLM Prompt):** "Review the existing `PremiumGuard` (`nest-app/src/common/guards/premium.guard.ts`). If Laravel's `CheckPremiumAccess` middleware or `SubscriptionServiceInterface->userHasActivePremiumSubscription` contains more complex logic than a simple plan check, update `PremiumGuard` to inject and use `SubscriptionBillingService` to replicate that logic."
 *   For *each* Laravel Policy (e.g., `NotePolicy`, `ReminderPolicy`, `TrackingLogPolicy`, `RoutinePolicy`, `PostPolicy`, etc.):
-    *   `[ ]` **(GUARD) Migrate Policy Logic:**
+    *   `[x]` **(GUARD) Migrate Policy Logic:**
         *   **(LLM Prompt):** "Analyze Laravel's `app/Policies/XyzPolicy.php`: [paste content]. Translate its authorization logic (e.g., `viewAny`, `view`, `create`, `update`, `delete`) into NestJS. This may involve:
             1.  Adding checks within the corresponding `xyz.service.ts` methods (e.g., checking ownership `if (log.userId !== user.id) throw new ForbiddenException();`).
             2.  If complex route-level checks are needed beyond `SupabaseAuthGuard` and `PremiumGuard` (e.g., resource ownership that can't be easily checked in the service before fetching), generate a new NestJS Guard (e.g., `XyzOwnerGuard.ts`) and apply it to relevant controller methods.
