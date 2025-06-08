@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TrackingServiceModule } from './tracking-service/tracking-service.module';
+import { OfflineDataModule } from './offline-data/offline-data.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TrackingServiceModule } from './tracking-service/tracking-service.modul
       inject: [ConfigService],
     }),
     TrackingServiceModule,
+    OfflineDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],
