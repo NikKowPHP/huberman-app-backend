@@ -360,7 +360,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
     *   `[x]` **(SVC) JWS Verification & Processing:**
         *   **(LLM Prompt):** "Review the `AppleSubscriptionService.php` from Laravel [paste content]. Implement similar JWS decoding and verification logic within `nest-app/src/subscription-billing/subscription-billing.service.ts` (or a new `apple.service.ts`). Use a suitable JWT library for Node.js/NestJS (e.g., `jsonwebtoken` or NestJS's `@nestjs/jwt`). Include logic for fetching Apple's public keys."
     *   For each Apple notification type handled (e.g., `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`):
-        *   `[ ]` **(SVC) Migrate Apple Notification Handler:**
+        *   `[x]` **(SVC) Migrate Apple Notification Handler:**
             *   **(LLM Prompt):** "Migrate the Apple notification handling logic for the `{NOTIFICATION_TYPE}` event from Laravel [paste relevant Laravel method(s)] to `nest-app/src/subscription-billing/subscription-billing.service.ts`. Use the JWS verification output. Use Prisma for database operations. Prepare for NestJS event dispatches."
     *   `[ ]` **(API) Apple Webhook Controller Endpoint:**
         *   **(LLM Prompt):** "Implement an `handleAppleWebhook` method in `nest-app/src/subscription-billing/subscription-billing.controller.ts`. It should call the JWS verification and processing logic in the service and then route to specific handlers based on notification type."
