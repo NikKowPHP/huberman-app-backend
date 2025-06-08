@@ -308,8 +308,8 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
                 *   Ensure all public methods from the Laravel service (and its interface) are implemented.
                 *   Throw appropriate NestJS exceptions (e.g., `NotFoundException`, `ForbiddenException`, `BadRequestException`) instead of Laravel exceptions or `response()->json(...)`."
             *   **_**(User Action)**_** Review and integrate the generated service code. Manually resolve any complex logic or type issues.
-*   `[ ]` **(SVC) Subscription Service - Specifics:**
-    *   **(LLM Prompt):** "Refine the `userHasActivePremiumSubscription` method in `nest-app/src/subscription-billing/subscription-billing.service.ts`. It should replicate the logic from Laravel's `SubscriptionServiceInterface` and `SubscriptionService.php` [paste relevant Laravel code], checking for active/trialing status against 'Premium%' plan names using Prisma."
+*   `[x]` **(SVC) Subscription Service - Specifics:**
+        *   **(LLM Prompt):** "Refine the `userHasActivePremiumSubscription` method in `nest-app/src/subscription-billing/subscription-billing.service.ts`. It should replicate the logic from Laravel's `SubscriptionServiceInterface` and `SubscriptionService.php` [paste relevant Laravel code], checking for active/trialing status against 'Premium%' plan names using Prisma."
 *   `[ ]` **(SVC) Remove Placeholder User Logic:**
     *   **_**(User Action)**_** Manually search for and remove all instances of `const user = { id: 1 };` (or similar) in generated NestJS services. Ensure methods that require user context receive it as a parameter.
 
@@ -334,8 +334,8 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
 
 ## Phase 5: Guards and Authorization Logic Migration
 
-*   `[ ]` **(GUARD) PremiumGuard Refinement:**
-    *   **(LLM Prompt):** "Review the existing `PremiumGuard` (`nest-app/src/common/guards/premium.guard.ts`). If Laravel's `CheckPremiumAccess` middleware or `SubscriptionServiceInterface->userHasActivePremiumSubscription` contains more complex logic than a simple plan check, update `PremiumGuard` to inject and use `SubscriptionBillingService` to replicate that logic."
+*   `[x]` **(GUARD) PremiumGuard Refinement:**
+        *   **(LLM Prompt):** "Review the existing `PremiumGuard` (`nest-app/src/common/guards/premium.guard.ts`). If Laravel's `CheckPremiumAccess` middleware or `SubscriptionServiceInterface->userHasActivePremiumSubscription` contains more complex logic than a simple plan check, update `PremiumGuard` to inject and use `SubscriptionBillingService` to replicate that logic."
 *   For *each* Laravel Policy (e.g., `NotePolicy`, `ReminderPolicy`, `TrackingLogPolicy`, `RoutinePolicy`, `PostPolicy`, etc.):
     *   `[ ]` **(GUARD) Migrate Policy Logic:**
         *   **(LLM Prompt):** "Analyze Laravel's `app/Policies/XyzPolicy.php`: [paste content]. Translate its authorization logic (e.g., `viewAny`, `view`, `create`, `update`, `delete`) into NestJS. This may involve:
