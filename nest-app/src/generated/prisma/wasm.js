@@ -154,17 +154,38 @@ exports.Prisma.SubscriptionScalarFieldEnum = {
 
 exports.Prisma.NoteScalarFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  userId: 'userId',
+  title: 'title',
+  content: 'content',
+  isPublic: 'isPublic',
+  episodeId: 'episodeId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.UserReminderScalarFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  userId: 'userId',
+  protocolId: 'protocolId',
+  reminderTime: 'reminderTime',
+  frequency: 'frequency',
+  specificDays: 'specificDays',
+  message: 'message',
+  isActive: 'isActive',
+  lastSentAt: 'lastSentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TrackingLogScalarFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  userId: 'userId',
+  protocolId: 'protocolId',
+  trackedAt: 'trackedAt',
+  notes: 'notes',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.PlanScalarFieldEnum = {
@@ -194,7 +215,15 @@ exports.Prisma.EpisodeScalarFieldEnum = {
 };
 
 exports.Prisma.ProtocolScalarFieldEnum = {
-  id: 'id'
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  implementationGuide: 'implementationGuide',
+  category: 'category',
+  isFree: 'isFree',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.EpisodeProtocolScalarFieldEnum = {
@@ -202,9 +231,93 @@ exports.Prisma.EpisodeProtocolScalarFieldEnum = {
   protocolId: 'protocolId'
 };
 
+exports.Prisma.SummaryScalarFieldEnum = {
+  id: 'id',
+  episodeId: 'episodeId',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NoteCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NoteTagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NoteCategoryPivotScalarFieldEnum = {
+  noteId: 'noteId',
+  noteCategoryId: 'noteCategoryId'
+};
+
+exports.Prisma.NoteTagPivotScalarFieldEnum = {
+  noteId: 'noteId',
+  noteTagId: 'noteTagId'
+};
+
+exports.Prisma.RoutineScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  description: 'description',
+  frequency: 'frequency',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoutineStepScalarFieldEnum = {
+  id: 'id',
+  routineId: 'routineId',
+  name: 'name',
+  description: 'description',
+  duration: 'duration',
+  order: 'order',
+  isOptional: 'isOptional',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  content: 'content',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  postId: 'postId',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -215,6 +328,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.PlanInterval = exports.$Enums.PlanInterval = {
   MONTH: 'MONTH',
@@ -231,7 +350,16 @@ exports.Prisma.ModelName = {
   Plan: 'Plan',
   Episode: 'Episode',
   Protocol: 'Protocol',
-  EpisodeProtocol: 'EpisodeProtocol'
+  EpisodeProtocol: 'EpisodeProtocol',
+  Summary: 'Summary',
+  NoteCategory: 'NoteCategory',
+  NoteTag: 'NoteTag',
+  NoteCategoryPivot: 'NoteCategoryPivot',
+  NoteTagPivot: 'NoteTagPivot',
+  Routine: 'Routine',
+  RoutineStep: 'RoutineStep',
+  Post: 'Post',
+  Comment: 'Comment'
 };
 
 /**

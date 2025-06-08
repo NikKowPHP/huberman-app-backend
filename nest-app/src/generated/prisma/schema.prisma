@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -30,6 +24,9 @@ model User {
   notes         Note[]
   reminders     UserReminder[]
   trackingLogs  TrackingLog[]
+  routines      Routine[]
+  posts         Post[]
+  comments      Comment[]
 }
 
 model UserDevice {
@@ -56,21 +53,48 @@ model Subscription {
 }
 
 model Note {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String?
+  content   String
+  isPublic  Boolean  @default(false)
+  episodeId String?
+  episode   Episode? @relation(fields: [episodeId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories NoteCategoryPivot[]
+  tags       NoteTagPivot[]
 }
 
 model UserReminder {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  protocolId   String
+  protocol     Protocol  @relation(fields: [protocolId], references: [id])
+  reminderTime String
+  frequency    String
+  specificDays String[]
+  message      String
+  isActive     Boolean   @default(true)
+  lastSentAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model TrackingLog {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  protocolId String
+  protocol   Protocol @relation(fields: [protocolId], references: [id])
+  trackedAt  DateTime
+  notes      String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Plan {
@@ -106,11 +130,24 @@ model Episode {
   updatedAt   DateTime  @updatedAt
 
   EpisodeProtocol EpisodeProtocol[]
+  summaries       Summary[]
+  notes           Note[]
 }
 
 model Protocol {
-  id              String            @id @default(cuid())
+  id                  String   @id @default(cuid())
+  title               String
+  slug                String   @unique
+  description         String?
+  implementationGuide String?
+  category            String?
+  isFree              Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
   EpisodeProtocol EpisodeProtocol[]
+  userReminders   UserReminder[]
+  trackingLogs    TrackingLog[]
 }
 
 model EpisodeProtocol {
@@ -120,4 +157,105 @@ model EpisodeProtocol {
   protocol   Protocol @relation(fields: [protocolId], references: [id])
 
   @@id([episodeId, protocolId])
+}
+
+model Summary {
+  id        String   @id @default(cuid())
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NoteCategory {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String   @default("#6b7280")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  notes NoteCategoryPivot[]
+}
+
+model NoteTag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("#6b7280")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes NoteTagPivot[]
+}
+
+model NoteCategoryPivot {
+  noteId         String
+  note           Note         @relation(fields: [noteId], references: [id])
+  noteCategoryId String
+  noteCategory   NoteCategory @relation(fields: [noteCategoryId], references: [id])
+
+  @@id([noteId, noteCategoryId])
+}
+
+model NoteTagPivot {
+  noteId    String
+  note      Note    @relation(fields: [noteId], references: [id])
+  noteTagId String
+  noteTag   NoteTag @relation(fields: [noteTagId], references: [id])
+
+  @@id([noteId, noteTagId])
+}
+
+model Routine {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  frequency   String
+  startTime   DateTime
+  endTime     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  steps RoutineStep[]
+}
+
+model RoutineStep {
+  id          String   @id @default(cuid())
+  routineId   String
+  routine     Routine  @relation(fields: [routineId], references: [id])
+  name        String
+  description String?
+  duration    Int
+  order       Int
+  isOptional  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  content   String
+  status    String   @default("published")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
