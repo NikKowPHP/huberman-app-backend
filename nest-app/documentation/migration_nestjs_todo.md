@@ -55,7 +55,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 **Module: TrackingService**
 
-*   `[ ]` **FIX.MM.TS.1: Create `tracking.service.ts`**
+*   `[x]` **FIX.MM.TS.1: Create `tracking.service.ts`**
     *   **(File):** `nest-app/src/tracking-service/tracking.service.ts`
     *   **(LLM Prompt):** "Create `nest-app/src/tracking-service/tracking.service.ts`. Add a basic `TrackingService` class decorated with `@Injectable()`. Inject `PrismaService`. Include placeholder methods based on Laravel's `TrackingServiceInterface`: `logAdherence(user, protocolId, date, notes, metadata)`, `getUserTrackingData(user, protocolId, dateRange)`, `calculateStreak(user, protocolId)`, `getTrackingLogById(user, logId)`, `updateTrackingLog(user, logId, data)`, `deleteTrackingLog(user, logId)`. These methods can initially just log a message or throw `NotImplementedException`."
     *   **(Verification):** File created with the service class, PrismaService injection, and stubbed methods.
