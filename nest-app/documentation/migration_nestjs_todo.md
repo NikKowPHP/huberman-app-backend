@@ -310,7 +310,7 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
             *   **_**(User Action)**_** Review and integrate the generated service code. Manually resolve any complex logic or type issues.
 *   `[x]` **(SVC) Subscription Service - Specifics:**
         *   **(LLM Prompt):** "Refine the `userHasActivePremiumSubscription` method in `nest-app/src/subscription-billing/subscription-billing.service.ts`. It should replicate the logic from Laravel's `SubscriptionServiceInterface` and `SubscriptionService.php` [paste relevant Laravel code], checking for active/trialing status against 'Premium%' plan names using Prisma."
-*   `[ ]` **(SVC) Remove Placeholder User Logic:**
+*   `[x]` **(SVC) Remove Placeholder User Logic:**
     *   **_**(User Action)**_** Manually search for and remove all instances of `const user = { id: 1 };` (or similar) in generated NestJS services. Ensure methods that require user context receive it as a parameter.
 
 ---
