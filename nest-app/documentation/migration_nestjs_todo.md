@@ -99,7 +99,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 **Module: RoutineService** (Repeat MM.TS.1-5 pattern)
 
 *   `[x]` **FIX.MM.RS.1: Create `routine.service.ts`** (Methods: `getAllRoutines(user)`, `createRoutine(user, data)`, `updateRoutine(user, routineId, data)`, `deleteRoutine(user, routineId)`, `getRoutineSteps(routineId)`)
-*   `[ ]` **FIX.MM.RS.2: Create `routine.controller.ts`** (Endpoints: `GET /routines`, `POST /routines`, `GET /routines/{id}`, `PUT /routines/{id}`, `DELETE /routines/{id}`, `GET /routines/{id}/steps`)
+*   `[x]` **FIX.MM.RS.2: Create `routine.controller.ts`** (Endpoints: `GET /routines`, `POST /routines`, `GET /routines/{id}`, `PUT /routines/{id}`, `DELETE /routines/{id}`, `GET /routines/{id}/steps`)
 *   `[ ]` **FIX.MM.RS.3: Create DTOs:** `store-routine.dto.ts`, `update-routine.dto.ts`
 *   `[ ]` **FIX.MM.RS.4: Create `routine.module.ts`**
 *   `[ ]` **FIX.MM.RS.5: Register `RoutineModule` in `app.module.ts`**
