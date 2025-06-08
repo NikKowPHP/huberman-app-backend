@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
 import Stripe from 'stripe';
+import { AppleService } from './apple.service';
 
 @Injectable()
 export class SubscriptionBillingService {
   private stripe: Stripe;
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly appleService: AppleService
+  ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-05-28.basil',
     });
@@ -153,5 +157,68 @@ export class SubscriptionBillingService {
         endsAt: new Date()
       }
     });
+  }
+
+  async handleAppleNotification(jws: string, notificationType: string): Promise<void> {
+    const payload = await this.appleService.decodeAndVerifyJWS(jws);
+    
+    switch (notificationType) {
+      case 'DID_CHANGE_RENEWAL_STATUS':
+        await this.handleDidChangeRenewalStatus(payload);
+        break;
+      // Add cases for other notification types as needed
+      default:
+        console.warn(`Unhandled Apple notification type: ${notificationType}`);
+    }
+  }
+
+  private async handleDidChangeRenewalStatus(payload: any): Promise<void> {
+    const autoRenewStatus = payload?.data?.autoRenewStatus;
+    const productId = payload?.data?.productId;
+    
+    if (autoRenewStatus === false && productId) {
+      const subscription = await this.prisma.subscription.findFirst({
+        where: { plan_product_id: productId }
+      });
+
+      if (subscription) {
+        await this.prisma.subscription.update({
+          where: { id: subscription.id },
+          data: { status: 'CANCELED' }
+        });
+        // TODO: Dispatch SubscriptionExpired event when event system is implemented
+        console.log(`Canceled subscription ${subscription.id} for product ${productId}`);
+      }
+    }
+  }
+}
+async handleAppleNotification(jws: string, notificationType: string): Promise<void> {
+  const payload = await this.appleService.decodeAndVerifyJWS(jws);
+  
+  switch (notificationType) {
+    case 'DID_CHANGE_RENEWAL_STATUS':
+      await this.handleDidChangeRenewalStatus(payload);
+      break;
+    default:
+      console.warn(`Unhandled Apple notification type: ${notificationType}`);
+  }
+}
+
+private async handleDidChangeRenewalStatus(payload: any): Promise<void> {
+  const autoRenewStatus = payload?.data?.autoRenewStatus;
+  const productId = payload?.data?.productId;
+  
+  if (autoRenewStatus === false && productId) {
+    const subscription = await this.prisma.subscription.findFirst({
+      where: { plan_product_id: productId }
+    });
+
+    if (subscription) {
+      await this.prisma.subscription.update({
+        where: { id: subscription.id },
+        data: { status: 'CANCELED' }
+      });
+      console.log(`Canceled subscription ${subscription.id} for product ${productId}`);
+    }
   }
 }
