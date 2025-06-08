@@ -82,7 +82,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 **Module: OfflineDataService** (Repeat MM.TS.1-5 pattern)
 
-*   `[ ]` **FIX.MM.ODS.1: Create `offline-data.service.ts`** (Methods: `getDataForUser(user)`, `syncDataForUser(user, data)`)
+*   `[x]` **FIX.MM.ODS.1: Create `offline-data.service.ts`** (Methods: `getDataForUser(user)`, `syncDataForUser(user, data)`)
 *   `[ ]` **FIX.MM.ODS.2: Create `offline-data.controller.ts`** (Endpoints: `GET /offline-data`, `POST /offline-data/sync`)
 *   `[ ]` **FIX.MM.ODS.3: Create DTOs:** `sync-offline-data.dto.ts` (based on `SyncOfflineDataRequest.php`)
 *   `[ ]` **FIX.MM.ODS.4: Create `offline-data.module.ts`**
