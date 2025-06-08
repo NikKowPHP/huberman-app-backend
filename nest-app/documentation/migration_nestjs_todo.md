@@ -301,13 +301,13 @@ This detailed breakdown should give your LLM very specific, manageable chunks to
 ## Phase 3: Business Logic and Core Services Migration
 
 *   For *each* Laravel Service (`ContentService`, `NoteService`, `ReminderService`, `SubscriptionService`, `TrackingService`, `OfflineDataService`, `PostService`, `RoutineService`, etc.):
-    *   `[ ]` **(SVC)** **Migrate Service Logic:**
-        *   **(LLM Prompt):** "Here is the Laravel service `app/Modules/Xyz/Services/XyzService.php`: [paste content]. Migrate its business logic to the NestJS service `nest-app/src/xyz/xyz.service.ts` [paste existing stub if any].
-            *   Replace Eloquent queries with Prisma Client queries.
-            *   Adapt method signatures to accept an authenticated user object (e.g., `user: Request['user']` or a specific User type from Supabase/Prisma) where `Auth::id()` or `auth()->user()` was used.
-            *   Ensure all public methods from the Laravel service (and its interface) are implemented.
-            *   Throw appropriate NestJS exceptions (e.g., `NotFoundException`, `ForbiddenException`, `BadRequestException`) instead of Laravel exceptions or `response()->json(...)`."
-        *   **_**(User Action)**_** Review and integrate the generated service code. Manually resolve any complex logic or type issues.
+    *   `[x]` **(SVC)** **Migrate Service Logic:**
+            *   **(LLM Prompt):** "Here is the Laravel service `app/Modules/Xyz/Services/XyzService.php`: [paste content]. Migrate its business logic to the NestJS service `nest-app/src/xyz/xyz.service.ts` [paste existing stub if any].
+                *   Replace Eloquent queries with Prisma Client queries.
+                *   Adapt method signatures to accept an authenticated user object (e.g., `user: Request['user']` or a specific User type from Supabase/Prisma) where `Auth::id()` or `auth()->user()` was used.
+                *   Ensure all public methods from the Laravel service (and its interface) are implemented.
+                *   Throw appropriate NestJS exceptions (e.g., `NotFoundException`, `ForbiddenException`, `BadRequestException`) instead of Laravel exceptions or `response()->json(...)`."
+            *   **_**(User Action)**_** Review and integrate the generated service code. Manually resolve any complex logic or type issues.
 *   `[ ]` **(SVC) Subscription Service - Specifics:**
     *   **(LLM Prompt):** "Refine the `userHasActivePremiumSubscription` method in `nest-app/src/subscription-billing/subscription-billing.service.ts`. It should replicate the logic from Laravel's `SubscriptionServiceInterface` and `SubscriptionService.php` [paste relevant Laravel code], checking for active/trialing status against 'Premium%' plan names using Prisma."
 *   `[ ]` **(SVC) Remove Placeholder User Logic:**
