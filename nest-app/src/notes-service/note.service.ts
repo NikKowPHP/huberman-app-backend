@@ -1,6 +1,6 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { SubscriptionBillingService } from '../../subscription-billing/subscription-billing.service';
+import { SubscriptionBillingService } from '../subscription-billing/subscription-billing.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 
@@ -13,8 +13,8 @@ export class NoteService {
         private readonly subscriptionBillingService: SubscriptionBillingService
     ) {}
 
-    async createNote(createNoteDto: CreateNoteDto) {
-        const { userId, ...data } = createNoteDto;
+    async createNote(createNoteDto: CreateNoteDto, userId: string) {
+        const { ...data } = createNoteDto;
 
         if (await this.subscriptionBillingService.userHasActivePremiumSubscription(userId)) {
             return this.prisma.note.create({

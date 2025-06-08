@@ -22,11 +22,8 @@ export class NoteController {
     @Post()
     @UseGuards(SupabaseAuthGuard)
     async store(@Req() req: Request, @Body() createNoteDto: CreateNoteDto) {
-        const data = {
-            ...createNoteDto,
-            userId: (req as any).user.sub,
-        };
-        return this.noteService.createNote(data);
+        const userId = (req as any).user.sub;
+        return this.noteService.createNote(createNoteDto, userId);
     }
 
     @Get()
