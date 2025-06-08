@@ -1,6 +1,6 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ContentService } from './content.service';
-import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
+import { SupabaseAuthGuard } from '../authentication/guards/supabase-auth.guard';
 import { PremiumGuard } from '../common/guards/premium.guard';
 
 @Controller('protocols')

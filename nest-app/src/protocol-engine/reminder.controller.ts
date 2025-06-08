@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards } from '@nes
 import { ReminderService } from './reminder.service';
 import { StoreReminderDto } from './dto/store-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
+import { SupabaseAuthGuard } from '../authentication/guards/supabase-auth.guard';
 
 @Controller('reminders')
 export class ReminderController {
