@@ -3,6 +3,7 @@
 namespace App\Modules\SubscriptionBilling\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use OpenApi\Annotations as OA;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -32,6 +33,35 @@ class WebhookController extends CashierController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
+     */
+    /**
+     * Handle Stripe webhook events
+     *
+     * @OA\Post(
+     *     path="/webhooks/stripe",
+     *     tags={"SubscriptionBilling"},
+     *     summary="Stripe Webhook",
+     *     description="Handles Stripe subscription events like checkout.session.completed, customer.subscription.updated, etc.",
+     *     security={{"stripeWebhook": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="string", example="evt_1P8Z2xKZv8"),
+     *             @OA\Property(property="object", type="string", example="event"),
+     *             @OA\Property(property="type", type="string", example="checkout.session.completed"),
+     *             @OA\Property(property="data", type="object", example={"object": {"id": "cs_test_123", "object": "checkout.session"}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Webhook processed successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid webhook payload"
+     *     )
+     * )
      */
     public function handleWebhook(Request $request)
     {
@@ -232,6 +262,35 @@ class WebhookController extends CashierController
         }
     }
 
+    /**
+     * Handle Apple App Store Server Notifications
+     *
+     * @OA\Post(
+     *     path="/webhooks/apple",
+     *     tags={"SubscriptionBilling"},
+     *     summary="Apple App Store Webhook",
+     *     description="Handles Apple App Store subscription notifications (JWS signed payload)",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="signedPayload", type="string", example="eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJub3RpZmljYXRpb25UeXBlIjoiU1VCU0NSSUJFRCIsImRhdGEiOnsib3JpZ2luYWxUcmFuc2FjdGlvbklkIjoiMTAwMDAwMDEifX0.SIGNATURE")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Webhook processed successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid payload structure"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error processing webhook"
+     *     )
+     * )
+     */
     public function handleAppleWebhook(Request $request)
     {
         try {
@@ -357,6 +416,40 @@ class WebhookController extends CashierController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
+     */
+    /**
+     * Handle Google Play RTDN Notifications
+     *
+     * @OA\Post(
+     *     path="/webhooks/google",
+     *     tags={"SubscriptionBilling"},
+     *     summary="Google Play Webhook",
+     *     description="Handles Google Play Real-Time Developer Notifications (base64 encoded Pub/Sub messages)",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="string",
+     *                     example="eyJzdWJzY3JpcHRpb25Ob3RpZmljYXRpb25UeXBlIjoiU1VCU0NSSVBUSU9OX1BVUkNIQVNFRCJ9",
+     *                     description="Base64 encoded Pub/Sub message"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Webhook processed successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid message format"
+     *     )
+     * )
      */
     public function handleGoogleWebhook(Request $request)
     {
