@@ -5,8 +5,8 @@ import { PrismaService } from '../common/prisma/prisma.service';
 export class ContentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getProtocols() {
-    return this.prisma.protocol.findMany();
+  async getProtocols(options?: { where?: { is_free?: boolean } }) {
+    return this.prisma.protocol.findMany(options);
   }
 
   async getProtocolDetails(id: number) {
