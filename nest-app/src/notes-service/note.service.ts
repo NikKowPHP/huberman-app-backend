@@ -41,36 +41,18 @@ export class NoteService {
         });
     }
 
-    async getNote(id: string, userId: string) {
-        const note = await this.prisma.note.findUnique({ where: { id } });
-        
-        if (!note || note.userId !== userId) {
-            throw new ForbiddenException('Note not found or access denied');
-        }
-        
-        return note;
+    async getNote(id: string) {
+        return this.prisma.note.findUniqueOrThrow({ where: { id } });
     }
 
-    async updateNote(id: string, updateNoteDto: UpdateNoteDto, userId: string) {
-        const note = await this.prisma.note.findUnique({ where: { id } });
-        
-        if (!note || note.userId !== userId) {
-            throw new ForbiddenException('Note not found or access denied');
-        }
-        
+    async updateNote(id: string, updateNoteDto: UpdateNoteDto) {
         return this.prisma.note.update({
             where: { id },
             data: updateNoteDto
         });
     }
 
-    async deleteNote(id: string, userId: string) {
-        const note = await this.prisma.note.findUnique({ where: { id } });
-        
-        if (!note || note.userId !== userId) {
-            throw new ForbiddenException('Note not found or access denied');
-        }
-        
+    async deleteNote(id: string) {
         return this.prisma.note.delete({ where: { id } });
     }
 

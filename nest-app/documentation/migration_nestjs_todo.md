@@ -181,7 +181,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(LLM Prompt):** "Modify `nest-app/src/common/guards/premium.guard.ts`. Inject `SubscriptionBillingService`. In the `canActivate` method, instead of querying Prisma directly, call `this.subscriptionBillingService.userHasActivePremiumSubscription(user.id)` (or `user.sub` depending on how Supabase user ID is populated on `request.user`). Ensure `user` and `user.id`/`user.sub` are correctly accessed from the request."
     *   **(Verification):** `PremiumGuard` now uses `SubscriptionBillingService`.
 
-*   `[ ]` **FIX.GUARD.OWN.1: Implement Ownership Checks / Fine-grained Guards (Example: Notes)**
+*   `[x]` **FIX.GUARD.OWN.1: Implement Ownership Checks / Fine-grained Guards (Example: Notes)**
     *   **(File):** `nest-app/src/notes-service/note.service.ts` and/or new guards if needed.
     *   **(LLM Prompt):** "Review `nest-app/src/notes-service/note.service.ts`. For methods like `getNote`, `updateNote`, `deleteNote` that operate on a specific note, ensure there's a check: `if (note.userId !== userIdFromAuthenticatedUser) { throw new ForbiddenException('Access denied'); }`. If this logic is complex or repeated, consider creating a dedicated `NoteOwnerGuard` and apply it in `note.controller.ts` to the relevant endpoints (`@UseGuards(SupabaseAuthGuard, NoteOwnerGuard)`)."
     *   **(Verification):** Ownership checks are present for note operations, either in service or via a new guard.
