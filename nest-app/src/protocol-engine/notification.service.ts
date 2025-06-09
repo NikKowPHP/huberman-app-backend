@@ -1,9 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class NotificationService {
-    constructor(private readonly prisma: PrismaService) {}
+    private readonly logger = new Logger(NotificationService.name);
+    
+    constructor(private readonly prisma: PrismaService) {
+        // Initialize Firebase Admin SDK
+        if (!admin.apps.length) {
+            admin.initializeApp({
+                credential: admin.credential.cert({
+                    projectId: process.env.FIREBASE_PROJECT_ID,
+                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+                })
+            });
+        }
+    }
 
     async sendReminderNotification(reminderId: number) {
         const reminder = await this.prisma.userReminder.findUnique({
@@ -42,22 +56,38 @@ export class NotificationService {
     }
 
     private async sendFcmNotification(token: string, title: string, body: string) {
-        // Placeholder for FCM notification logic
-        console.log(`Sending FCM to ${token}: ${title} - ${body}`);
-        // Actual implementation would use firebase-admin SDK
-        // await admin.messaging().send({
-        //   token: token,
-        //   notification: { title, body }
-        // });
+        try {
+            await admin.messaging().send({
+                token: token,
+                notification: { title, body },
+                android: {
+                    priority: 'high'
+                }
+            });
+            this.logger.log(`FCM notification sent to ${token}`);
+        } catch (error) {
+            this.logger.error(`Failed to send FCM to ${token}:`, error);
+            throw error;
+        }
     }
 
     private async sendApnsNotification(token: string, title: string, body: string) {
-        // Placeholder for APNS notification logic
-        console.log(`Sending APNS to ${token}: ${title} - ${body}`);
-        // Actual implementation would use @nestjs/apn or similar
-        // await apnProvider.send({
-        //   token: token,
-        //   notification: { title, body, sound: 'default' }
-        // });
+        try {
+            await admin.messaging().send({
+                token: token,
+                notification: { title, body },
+                apns: {
+                    payload: {
+                        aps: {
+                            sound: 'default'
+                        }
+                    }
+                }
+            });
+            this.logger.log(`APNS notification sent to ${token}`);
+        } catch (error) {
+            this.logger.error(`Failed to send APNS to ${token}:`, error);
+            throw error;
+        }
     }
 }
