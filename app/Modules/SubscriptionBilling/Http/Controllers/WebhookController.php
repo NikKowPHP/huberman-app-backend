@@ -414,10 +414,11 @@ class WebhookController extends CashierController
                 }
 
                 \Log::info('Google Pub/Sub Message (Mock Processed)', $message);
-                // TODO: Implement actual validation and acknowledgement logic
-                // based on the message type (e.g., SUBSCRIPTION_PURCHASED,
-                // SUBSCRIPTION_RENEWED, SUBSCRIPTION_CANCELED, etc.)
-                if ($message['message']['attributes']['subscriptionNotificationType'] === 'SUBSCRIPTION_PURCHASED' || $message['message']['attributes']['subscriptionNotificationType'] === 'SUBSCRIPTION_RENEWED') {
+                // Handle different Google Play subscription notification types
+                $notificationType = $message['message']['attributes']['subscriptionNotificationType'] ?? '';
+                switch ($notificationType) {
+                    case 'SUBSCRIPTION_PURCHASED':
+                    case 'SUBSCRIPTION_RENEWED':
                     $userId = $message['message']['data']['userId'] ?? null;
                     $productId = $message['message']['data']['productId'] ?? null;
                     $purchaseToken = $message['message']['data']['purchaseToken'] ?? null;
@@ -454,6 +455,69 @@ class WebhookController extends CashierController
                     } else {
                         \Log::warning('User not found for Google Pub/Sub message', $message);
                     }
+                    break;
+                
+                case 'SUBSCRIPTION_REVOKED':
+                    $userId = $message['message']['data']['userId'] ?? null;
+                    $purchaseToken = $message['message']['data']['purchaseToken'] ?? null;
+
+                    if ($userId && $purchaseToken) {
+                        $user = User::find($userId);
+                        if ($user) {
+                            $subscription = $user->subscriptions()
+                                ->where('google_play_purchase_token', $purchaseToken)
+                                ->first();
+                            
+                            if ($subscription) {
+                                $subscription->update([
+                                    'stripe_status' => 'revoked',
+                                    'ends_at' => now()
+                                ]);
+                                
+                                Event::dispatch(new \App\Events\SubscriptionExpired($user));
+                                \Log::info('Google Play Subscription Revoked', [
+                                    'user_id' => $userId,
+                                    'purchase_token' => $purchaseToken
+                                ]);
+                            }
+                        }
+                    }
+                    break;
+                
+                case 'SUBSCRIPTION_PAUSED':
+                    $userId = $message['message']['data']['userId'] ?? null;
+                    $purchaseToken = $message['message']['data']['purchaseToken'] ?? null;
+                    $pauseExpiry = $message['message']['data']['pauseExpiry'] ?? null;
+
+                    if ($userId && $purchaseToken) {
+                        $user = User::find($userId);
+                        if ($user) {
+                            $subscription = $user->subscriptions()
+                                ->where('google_play_purchase_token', $purchaseToken)
+                                ->first();
+                            
+                            if ($subscription) {
+                                $updateData = ['stripe_status' => 'paused'];
+                                
+                                if ($pauseExpiry) {
+                                    $updateData['ends_at'] = \Carbon\Carbon::createFromTimestampMs($pauseExpiry);
+                                }
+                                
+                                $subscription->update($updateData);
+                                
+                                \Log::info('Google Play Subscription Paused', [
+                                    'user_id' => $userId,
+                                    'purchase_token' => $purchaseToken,
+                                    'pause_expiry' => $pauseExpiry
+                                ]);
+                            }
+                        }
+                    }
+                    break;
+                
+                default:
+                    \Log::info('Unhandled Google Play notification type: ' . $notificationType, $message);
+                    break;
                 }
             }
 

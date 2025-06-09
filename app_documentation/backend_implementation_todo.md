@@ -233,7 +233,7 @@
     *   `[x]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event (Mock).
     *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
-    *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
+    *   `[x]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
 
 *   **Scheduled Job for Status Check:**
     *   `[x]` Implement `CheckExpiredSubscriptions` job/command.
