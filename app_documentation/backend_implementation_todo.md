@@ -154,7 +154,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
 
 **Objective:** Improve the application's robustness and developer experience by standardizing responses, error handling, and environment setup.
 
-*   `[ ]` **P3.1: Create Global Exception Filter**
+*   `[x]` **P3.1: Create Global Exception Filter**
     *   **(File):** `nest-app/src/common/filters/all-exceptions.filter.ts`
     *   **(LLM Action):** Create a new file `nest-app/src/common/filters/all-exceptions.filter.ts` and add the following code to create a global filter for consistent JSON error responses.
         ```typescript
