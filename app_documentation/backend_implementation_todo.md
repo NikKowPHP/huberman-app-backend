@@ -1,14 +1,13 @@
-Of course. Based on my analysis and your decision to proceed with the existing Supabase integration, here is a detailed, simplified, and step-by-step plan in a markdown todo list format.
 
-This plan is specifically designed to be executed by a 4B LLM. Each step is atomic, explicit, and includes verification criteria.
+### New, Detailed Plan for Production Readiness
 
----
+Here is a revised, simple, and step-by-step `backend_implementation_todo.md` that addresses the critical schema flaw first, and then outlines the remaining tasks to achieve a production-ready state. This is designed to be actionable by a 4B LLM.
 
-### **`prod_ready_nestjs_todo.md`**
+### **`backend_implementation_todo.md`**
 
-# NestJS Production Readiness Plan
+# NestJS Production Readiness Plan - V2
 
-**Goal:** Finalize the NestJS application to be feature-complete, robust, and ready for production. This plan addresses all identified gaps from the migration analysis, embracing the existing Supabase authentication structure.
+**Goal:** Fix the critical database schema issue and complete the final features to make the NestJS application feature-complete, robust, and ready for production.
 
 **Legend:**
 *   `[ ]` - To-Do
@@ -18,73 +17,46 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
 
 ---
 
-## Phase 1: Authentication & User Synchronization
+## Phase 0: Critical Schema & Webhook Fix
 
-**Objective:** Fully integrate NestJS with the Supabase authentication system, including user sync and password reset functionality.
+**Objective:** Correct the database schema to properly handle mobile subscriptions and complete the Google Play webhook logic.
 
-*   `[x]` **P1.1: Create Supabase DB Trigger for User Sync**
-    *   **(File):** `supabase/init.sql`
-    *   **(LLM Action):** In the `supabase/` directory, create a new file named `init.sql`. Populate this file with the following SQL script. This script defines a trigger that automatically copies a new user from Supabase's `auth.users` table into your public `User` table upon sign-up.
-        ```sql
-        -- Ensures new users in Supabase auth are copied to the public users table
-        create or replace function public.handle_new_user()
-        returns trigger
-        language plpgsql
-        security definer set search_path = public
-        as $$
-        begin
-          insert into public."User" (id, email, name) -- Ensure table and column names match your Prisma schema exactly ("User")
-          values (new.id, new.email, new.raw_user_meta_data->>'name');
-          return new;
-        end;
-        $$;
+*   `[ ]` **P0.1: Update Prisma Schema for Subscriptions**
+    *   **(File):** `nest-app/prisma/schema.prisma`
+    *   **(LLM Action):** Modify the `User` and `Subscription` models in `nest-app/prisma/schema.prisma`. Add `appleOriginalTransactionId` and `googlePlayPurchaseToken` to the `User` model, and `googlePlaySubscriptionId` to the `Subscription` model.
+        ```prisma
+        // In the User model, add these fields:
+        appleOriginalTransactionId  String? @unique
+        googlePlayPurchaseToken     String? @unique
 
-        -- drop trigger if exists on_auth_user_created on auth.users; -- uncomment to reset
-        create or replace trigger on_auth_user_created
-          after insert on auth.users
-          for each row execute procedure public.handle_new_user();
+        // In the Subscription model, add these fields:
+        googlePlaySubscriptionId    String? @unique
+        appleOriginalTransactionId  String?
         ```
-    *   **(Verification):** The file `supabase/init.sql` exists and contains the correct SQL code. (Note: A human must run this SQL in their Supabase dashboard's SQL Editor).
+    *   **(Verification):** The `User` and `Subscription` models in `prisma.schema` now contain the new fields.
 
-*   `[x]` **P1.2: Implement Password Reset Logic**
-    *   **(File):** `nest-app/src/authentication/authentication.service.ts`
-    *   **(LLM Action):** In the `AuthenticationService`, add a new method `resetPassword` that uses the Supabase client to trigger a password reset email.
-        ```typescript
-        // Add this method inside the AuthenticationService class
-        async resetPassword(email: string) {
-          const supabase = this.supabaseService.getSupabaseClient();
-          const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: process.env.PASSWORD_RESET_URL, // You'll need to add this to your .env
-          });
-          if (error) throw error;
-          return { message: 'Password reset email sent successfully. Please check your inbox.' };
-        }
+*   `[ ]` **P0.2: Create New Database Migration**
+    *   **(File):** A new file in `nest-app/prisma/migrations/`
+    *   **(LLM Action):** Run the following command from the `nest-app` directory to create a new migration file reflecting the schema changes:
+        ```bash
+        npx prisma migrate dev --name "add_mobile_subscription_ids"
         ```
-    *   **(Verification):** The `resetPassword` method exists in `authentication.service.ts`.
+    *   **(Verification):** A new migration folder is created inside `nest-app/prisma/migrations/` containing a `migration.sql` file that adds the new columns to the "User" and "Subscription" tables.
 
-*   `[x]` **P1.3: Expose Password Reset Endpoint**
-    *   **(File):** `nest-app/src/authentication/authentication.controller.ts`
-    *   **(LLM Action):** In the `AuthenticationController`, add a new endpoint to handle password reset requests.
-        ```typescript
-        // Add this method inside the AuthenticationController class
-        @Post('reset-password')
-        async resetPassword(@Body('email') email: string) {
-          return this.authenticationService.resetPassword(email);
-        }
-        ```
-    *   **(Verification):** The `resetPassword` endpoint exists in `authentication.controller.ts` with the `@Post('reset-password')` decorator.
-
----
-
-## Phase 2: Complete Webhook Logic
-
-**Objective:** Implement the missing subscription logic for Google Play to ensure all payment providers are handled.
-
-*   `[x]` **P2.1: Implement Google Play Webhook Logic**
+*   `[ ]` **P0.3: Update Google Webhook Service Logic**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
-    *   **(LLM Action):** In the `handleGoogleNotification` method, replace the placeholder `// TODO` logic with a `switch` statement that handles different notification types by updating the subscription status in the Prisma database.
+    *   **(LLM Action):** In the `handleGoogleNotification` method, update the Prisma query to use the new `googlePlaySubscriptionId` field.
         ```typescript
-        // Replace the existing handleGoogleNotification method with this
+        // In handleGoogleNotification, find this line:
+        // const subscription = await this.prisma.subscription.findFirst({
+        //   where: { googlePlaySubscriptionId: subscriptionId },
+        // });
+        
+        // Ensure it correctly uses the new field. It already does, so this is just a verification step.
+        // Also, add logic to find the user via purchaseToken and associate the subscription if it's a new purchase.
+        // For now, let's refine the query to be more robust.
+        
+        // Replace the existing handleGoogleNotification method with this updated version
         async handleGoogleNotification(message: any) {
             try {
               const dataString = Buffer.from(message.data, 'base64').toString('utf-8');
@@ -97,13 +69,13 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
                 return;
               }
 
-              // In a real app, you would find the user/subscription via the purchaseToken or subscriptionId
-              // For now, we will log the intent.
               this.logger.log(`Received Google Play Notification: ${notificationType} for subscriptionId: ${subscriptionId}`);
 
-              // Find the subscription linked to this Google Play ID
+              // TODO: Add logic to validate the purchaseToken with the Google Play Developer API here.
+
               const subscription = await this.prisma.subscription.findFirst({
                   where: { googlePlaySubscriptionId: subscriptionId },
+                  include: { user: true },
               });
 
               if (!subscription) {
@@ -111,13 +83,15 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
                   return;
               }
 
+              const { user } = subscription;
+
               switch (notificationType) {
                 case 4: // SUBSCRIPTION_RENEWED
                   await this.prisma.subscription.update({
                     where: { id: subscription.id },
                     data: { stripeStatus: 'ACTIVE' },
                   });
-                  this.eventEmitter.emit('subscription.renewed', { userId: subscription.userId });
+                  this.eventEmitter.emit('subscription.renewed', { userId: user.id });
                   break;
 
                 case 3: // SUBSCRIPTION_CANCELED
@@ -125,7 +99,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
                     where: { id: subscription.id },
                     data: { stripeStatus: 'CANCELED' },
                   });
-                  this.eventEmitter.emit('subscription.canceled', { userId: subscription.userId });
+                  this.eventEmitter.emit('subscription.canceled', { userId: user.id });
                   break;
 
                 case 12: // SUBSCRIPTION_EXPIRED
@@ -133,10 +107,9 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
                     where: { id: subscription.id },
                     data: { stripeStatus: 'EXPIRED', endsAt: new Date() },
                   });
-                   this.eventEmitter.emit('subscription.ended', { userId: subscription.userId });
+                   this.eventEmitter.emit('subscription.ended', { userId: user.id });
                   break;
 
-                // Add other cases as needed (e.g., 2: PURCHASED, 5: ON_HOLD)
                 default:
                   this.logger.warn(`Unhandled Google Play notification type: ${notificationType}`);
               }
@@ -146,167 +119,55 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
             }
         }
         ```
-    *   **(Verification):** The `handleGoogleNotification` method in `subscription-billing.service.ts` is updated with the new `switch` statement and Prisma logic.
+    *   **(Verification):** The `handleGoogleNotification` method is updated with the more robust logic.
 
 ---
 
-## Phase 3: Application Polish & Consistency
+## Phase 1: Complete Seeding
 
-**Objective:** Improve the application's robustness and developer experience by standardizing responses, error handling, and environment setup.
+**Objective:** Ensure the database can be fully populated with realistic sample data for all features.
 
-*   `[x]` **P3.1: Create Global Exception Filter**
-    *   **(File):** `nest-app/src/common/filters/all-exceptions.filter.ts`
-    *   **(LLM Action):** Create a new file `nest-app/src/common/filters/all-exceptions.filter.ts` and add the following code to create a global filter for consistent JSON error responses.
+*   `[ ]` **P1.1: Add Post & Comment Seeding**
+    *   **(File):** `nest-app/prisma/seed.ts`
+    *   **(LLM Action):** "In `nest-app/prisma/seed.ts`, add logic to seed `Post` and `Comment` data. After seeding users, loop through them to create a few posts for each. Then, loop through the created posts and add a few comments from different users to each post."
+    *   **(Verification):** `seed.ts` now contains logic for seeding posts and comments.
+
+*   `[ ]` **P1.2: _**(User Action)**_ Re-run Full Seed**
+    *   **_**(User Action)**_** Execute `npx prisma migrate reset` to clear the database and re-run all migrations and the seed script.
+    *   **(Verification):** The command completes successfully. The database contains data for users, plans, posts, comments, etc.
+
+---
+
+## Phase 2: Final Polish & Testing Stubs
+
+**Objective:** Add final touches for consistency and create the remaining test file stubs.
+
+*   `[ ]` **P2.1: Implement Global Response Interceptor**
+    *   **(File):** `nest-app/src/common/interceptors/transform.interceptor.ts`
+    *   **(LLM Action):** "Create a new file `nest-app/src/common/interceptors/transform.interceptor.ts`. Implement a `TransformInterceptor` that wraps all successful API responses in a `{ "data": ... }` object to ensure a consistent output format."
         ```typescript
-        import {
-          ExceptionFilter,
-          Catch,
-          ArgumentsHost,
-          HttpException,
-          HttpStatus,
-        } from '@nestjs/common';
-        import { HttpAdapterHost } from '@nestjs/core';
+        import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+        import { Observable } from 'rxjs';
+        import { map } from 'rxjs/operators';
 
-        @Catch()
-        export class AllExceptionsFilter implements ExceptionFilter {
-          constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+        export interface Response<T> {
+          data: T;
+        }
 
-          catch(exception: unknown, host: ArgumentsHost): void {
-            const { httpAdapter } = this.httpAdapterHost;
-            const ctx = host.switchToHttp();
-
-            const httpStatus =
-              exception instanceof HttpException
-                ? exception.getStatus()
-                : HttpStatus.INTERNAL_SERVER_ERROR;
-
-            const responseBody = {
-              statusCode: httpStatus,
-              timestamp: new Date().toISOString(),
-              path: httpAdapter.getRequestUrl(ctx.getRequest()),
-              message: exception instanceof HttpException ? exception.message : 'Internal server error',
-            };
-
-            httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+        @Injectable()
+        export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> {
+          intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
+            return next.handle().pipe(map(data => ({ data })));
           }
         }
         ```
-    *   **(Verification):** The file `all-exceptions.filter.ts` is created with the specified content.
+    *   **(Verification):** The file `transform.interceptor.ts` is created with the specified code.
 
-*   `[x]` **P3.2: Register Global Exception Filter**
+*   `[ ]` **P2.2: Register Global Response Interceptor**
     *   **(File):** `nest-app/src/main.ts`
-    *   **(LLM Action):** In `nest-app/src/main.ts`, register the `AllExceptionsFilter` globally.
-        ```typescript
-        // Add these imports at the top
-        import { HttpAdapterHost } from '@nestjs/core';
-        import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+    *   **(LLM Action):** "In `nest-app/src/main.ts`, register the `TransformInterceptor` globally using `app.useGlobalInterceptors(new TransformInterceptor());`."
+    *   **(Verification):** `main.ts` now includes the code to register the global interceptor.
 
-        // Inside the bootstrap() function, after `const app = ...` and before `app.listen()`
-        const { httpAdapter } = app.get(HttpAdapterHost);
-        app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
-        ```
-    *   **(Verification):** `main.ts` now includes the code to register the global filter.
-
-*   `[x]` **P3.3: Create `.env.example` file**
-    *   **(File):** `nest-app/.env.example`
-    *   **(LLM Action):** Create a new file `nest-app/.env.example` and populate it with all the necessary environment variables for the project.
-        ```
-        # App
-        PORT=3000
-
-        # Database (Prisma)
-        DATABASE_URL="postgresql://user:password@host:port/database?schema=public"
-
-        # Supabase
-        SUPABASE_URL=
-        SUPABASE_KEY=
-        PASSWORD_RESET_URL=
-
-        # Redis (BullMQ)
-        REDIS_HOST=localhost
-        REDIS_PORT=6379
-
-        # Stripe
-        STRIPE_SECRET_KEY=
-        STRIPE_WEBHOOK_SECRET=
-
-        # Firebase (for Push Notifications)
-        FIREBASE_PROJECT_ID=
-        FIREBASE_CLIENT_EMAIL=
-        FIREBASE_PRIVATE_KEY=
-        ```
-    *   **(Verification):** The file `nest-app/.env.example` exists with the required variables.
-
----
-
-## Phase 4: Foundational Testing
-
-**Objective:** Establish a clear testing pattern by implementing one basic unit and one basic E2E test.
-
-*   `[x]` **P4.1: Implement a Basic Unit Test**
-    *   **(File):** `nest-app/src/app.service.spec.ts`
-    *   **(LLM Action):** Open the existing file `nest-app/src/app.service.spec.ts` and ensure the test correctly checks the behavior of the `getHello()` method.
-        ```typescript
-        import { Test, TestingModule } from '@nestjs/testing';
-        import { AppService } from './app.service';
-
-        describe('AppService', () => {
-          let service: AppService;
-
-          beforeEach(async () => {
-            const module: TestingModule = await Test.createTestingModule({
-              providers: [AppService],
-            }).compile();
-
-            service = module.get<AppService>(AppService);
-          });
-
-          it('should be defined', () => {
-            expect(service).toBeDefined();
-          });
-
-          it('should return "Hello World!"', () => {
-            expect(service.getHello()).toBe('Hello World!');
-          });
-        });
-        ```
-    *   **(Verification):** The unit test `nest-app/src/app.service.spec.ts` contains the updated, correct code.
-
-*   `[x]` **P4.2: Implement a Basic E2E Test**
-    *   **(File):** `nest-app/test/app.e2e-spec.ts`
-    *   **(LLM Action):** Open `nest-app/test/app.e2e-spec.ts` and ensure the E2E test for the root endpoint (`GET /`) is correctly implemented.
-        ```typescript
-        import { Test, TestingModule } from '@nestjs/testing';
-        import { INestApplication } from '@nestjs/common';
-        import * as request from 'supertest';
-        import { AppModule } from './../src/app.module';
-
-        describe('AppController (e2e)', () => {
-          let app: INestApplication;
-
-          beforeEach(async () => {
-            const moduleFixture: TestingModule = await Test.createTestingModule({
-              imports: [AppModule],
-            }).compile();
-
-            app = moduleFixture.createNestApplication();
-            await app.init();
-          });
-
-          afterAll(async () => {
-            await app.close();
-          });
-
-          it('/ (GET)', () => {
-            return request(app.getHttpServer())
-              .get('/')
-              .expect(200)
-              .expect('Hello World!');
-          });
-        });
-        ```
-    *   **(Verification):** The E2E test `nest-app/test/app.e2e-spec.ts` contains the updated, correct code, including an `afterAll` hook to close the app.
-*   `[x]` **P4.3: _**(User Action)**_ Run Tests**
-      * *AGENT_NOTE: This task requires manual execution of `npm run test` and `npm run test:e2e` from the nest-app directory.*
-    *   **_**(User Action)**_** Execute `npm run test` and `npm run test:e2e` from the `nest-app` directory.
-    *   **(Verification):** Both test suites should run and pass.
+*   `[ ]` **P2.3: Create Remaining Test Stubs**
+    *   **(LLM Action):** "Following the pattern from task **P4.1** and **P4.2**, create placeholder `.spec.ts` (unit) and `.e2e-spec.ts` (E2E) files for the newly created services and controllers in the `tracking-service`, `offline-data`, `post`, and `routine` modules."
+    *   **(Verification):** Basic test stub files exist for all new services and controllers.
