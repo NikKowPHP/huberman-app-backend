@@ -300,6 +300,7 @@ paths:
   /notes:
     get:
       summary: Get a list of the authenticated user's notes
+      description: Returns all notes belonging to the authenticated user. Premium users can create public notes visible to others.
       tags:
         - NotesService
       security:
@@ -321,6 +322,7 @@ paths:
                 $ref: '#/components/responses/UnauthorizedError'
     post:
       summary: Create a new note
+      description: Create a new note associated with an episode or protocol. Premium users can mark notes as public.
       tags:
         - NotesService
       security:
@@ -345,7 +347,7 @@ paths:
               schema:
                 $ref: '#/components/responses/UnauthorizedError'
         '403':
-          description: Forbidden (e.g., premium limit reached)
+          description: Forbidden (note creation limit reached for free tier)
           content:
             application/json:
               schema:
@@ -359,6 +361,7 @@ paths:
   /notes/{id}:
     get:
       summary: Get a specific note by ID
+      description: Retrieve details of a specific note. Premium users can access public notes created by other users.
       tags:
         - NotesService
       security:
@@ -369,6 +372,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 123
           description: ID of the note to retrieve
       responses:
         '200':
@@ -384,7 +388,7 @@ paths:
               schema:
                 $ref: '#/components/responses/UnauthorizedError'
         '403':
-          description: Forbidden (user does not own the note)
+          description: Forbidden (user does not own the note and it's not public)
           content:
             application/json:
               schema:
@@ -397,6 +401,7 @@ paths:
                 $ref: '#/components/schemas/NotFound'
     put:
       summary: Update a specific note by ID
+      description: Update the content or visibility of a note. Premium users can mark notes as public.
       tags:
         - NotesService
       security:
@@ -407,6 +412,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 123
           description: ID of the note to update
       requestBody:
         required: true
@@ -447,6 +453,7 @@ paths:
                 $ref: '#/components/schemas/ValidationError'
     delete:
       summary: Delete a specific note by ID
+      description: Permanently delete a note. Available to note owner only.
       tags:
         - NotesService
       security:
@@ -457,6 +464,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 123
           description: ID of the note to delete
       responses:
         '204':
@@ -482,6 +490,7 @@ paths:
   /episodes/{id}/public-notes:
     get:
       summary: Get public notes for a specific episode
+      description: Retrieve public notes from all users for a specific episode. Premium users can create public notes that appear here.
       tags:
         - NotesService
       parameters:
@@ -490,6 +499,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 456
           description: ID of the episode to retrieve public notes for
       responses:
         '200':
@@ -834,49 +844,56 @@ paths:
 
 components:
   schemas:
+    Timestamps:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: password123
     RegisterRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: User's name
-          example: John Doe
-        email:
-          type: string
-          format: email
-          description: User's email address
-          example: john.doe@example.com
-        password:
-          type: string
-          format: password
-          description: User's password
-          example: password123
-        password_confirmation:
-          type: string
-          format: password
-          description: Password confirmation
-          example: password123
-      required:
-        - name
-        - email
-        - password
-        - password_confirmation
+      allOf:
+        - $ref: '#/components/schemas/AuthRequest'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: User's name
+              example: John Doe
+            password_confirmation:
+              type: string
+              format: password
+              description: Password confirmation
+              example: password123
+          required:
+            - name
+            - password_confirmation
     LoginRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          description: User's email address
-          example: john.doe@example.com
-        password:
-          type: string
-          format: password
-          description: User's password
-          example: password123
-      required:
-        - email
-        - password
+      allOf:
+        - $ref: '#/components/schemas/AuthRequest'
     AuthSuccessResponse:
       type: object
       properties:
@@ -887,29 +904,23 @@ components:
           description: Authentication token
           example: 1|abcdefghijklmnopqrstuvwxyz1234567890
     User:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: User ID
-          example: 1
-        name:
-          type: string
-          description: User's name
-          example: John Doe
-        email:
-          type: string
-          format: email
-          description: User's email address
-          example: john.doe@example.com
-        created_at:
-          type: string
-          format: date-time
-          description: User creation timestamp
-        updated_at:
-          type: string
-          format: date-time
-          description: User update timestamp
+      allOf:
+        - $ref: '#/components/schemas/Timestamps'
+        - type: object
+          properties:
+            id:
+              type: integer
+              description: User ID
+              example: 1
+            name:
+              type: string
+              description: User's name
+              example: John Doe
+            email:
+              type: string
+              format: email
+              description: User's email address
+              example: john.doe@example.com
     UpdateUserProfileRequest:
       type: object
       properties:
@@ -1096,41 +1107,44 @@ components:
           description: Summary update timestamp
     Note:
       type: object
+      description: Represents a user's note associated with an episode or protocol. Premium users can share notes publicly.
       properties:
         id:
           type: integer
-          description: Note ID
-          example: 1
+          description: Unique identifier for the note
+          example: 123
         user_id:
           type: integer
-          description: User ID
-          example: 1
+          description: ID of the user who created the note
+          example: 456
         episode_id:
           type: integer
           nullable: true
-          description: Associated episode ID
-          example: 1
+          description: ID of the associated episode (if applicable)
+          example: 789
         protocol_id:
           type: integer
           nullable: true
-          description: Associated protocol ID
-          example: 1
+          description: ID of the associated protocol (if applicable)
+          example: 101
         content:
           type: string
-          description: Note content
-          example: My thoughts on this topic...
+          description: The text content of the note
+          example: "This protocol helped me improve my sleep quality significantly."
         is_public:
           type: boolean
-          description: Indicates if the note is public
-          example: false
+          description: Whether the note is visible to other users (Premium feature)
+          example: true
         created_at:
           type: string
           format: date-time
-          description: Note creation timestamp
+          description: Timestamp when the note was created
+          example: "2025-05-15T10:00:00Z"
         updated_at:
           type: string
           format: date-time
-          description: Note update timestamp
+          description: Timestamp when the note was last updated
+          example: "2025-05-15T11:30:00Z"
     CreateNoteRequest:
       type: object
       properties:
