@@ -160,7 +160,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 *   **(Repeat FIX.DTO.*.1 and FIX.CTRL.*.1 for other new/stubbed modules):**
     *   `[ ]` **FIX.DTO.ODS.1 & FIX.CTRL.ODS.1:** `OfflineDataController` & `sync-offline-data.dto.ts`
     *   `[x]` **FIX.DTO.PS.1 & FIX.CTRL.PS.1:** `PostController` & DTOs (`create-post.dto.ts`, `store-comment.dto.ts`)
-    *   `[ ]` **FIX.DTO.RS.1 & FIX.CTRL.RS.1:** `RoutineController` & DTOs (`store-routine.dto.ts`, `update-routine.dto.ts`)
+    *   `[x]` **FIX.DTO.RS.1 & FIX.CTRL.RS.1:** `RoutineController` & DTOs (`store-routine.dto.ts`, `update-routine.dto.ts`)
 
 *   `[x]` **FIX.CTRL.REVIEW.1: Review ProtocolController, NoteController & ReminderController** (other controllers still need review)
     *   **(Files):** `protocol.controller.ts`, `note.controller.ts`, `reminder.controller.ts`, `subscription-billing.controller.ts`, `authentication.controller.ts`.
