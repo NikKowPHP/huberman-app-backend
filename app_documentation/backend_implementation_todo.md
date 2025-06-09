@@ -1,410 +1,311 @@
-# Huberman App: Backend Implementation TODO Checklist (TDD Approach)
+Of course. Based on my analysis and your decision to proceed with the existing Supabase integration, here is a detailed, simplified, and step-by-step plan in a markdown todo list format.
 
-**Project Goal:** Implement the Laravel backend for the Huberman App, supporting a Freemium model, content delivery, user interactions, reminders, tracking, and subscription management, ready for production deployment.
+This plan is specifically designed to be executed by a 4B LLM. Each step is atomic, explicit, and includes verification criteria.
 
-**Development Approach:** Test-Driven Development (TDD) will be used. For each functional component, write tests *first* to define expected behavior, then implement the code to make the tests pass, and finally refactor.
-**COMMAND EXECUTION** Every command should be executed with 'docker-compose exec app' prefix.
+---
+
+### **`prod_ready_nestjs_todo.md`**
+
+# NestJS Production Readiness Plan
+
+**Goal:** Finalize the NestJS application to be feature-complete, robust, and ready for production. This plan addresses all identified gaps from the migration analysis, embracing the existing Supabase authentication structure.
 
 **Legend:**
-*   `[ ]` - To Do
-*   `[x]` - Done
-*   `(TDD)` - Indicates steps where writing tests *before* implementation is paramount.
+*   `[ ]` - To-Do
+*   `(File)` - The primary file to modify or create.
+*   `(LLM Action)` - The specific instruction for the AI agent.
+*   `(Verification)` - How to confirm the step was completed successfully.
 
 ---
 
-## Phase 1: Project Setup & Foundation (Milestone 1 & 2 Prep)
+## Phase 1: Authentication & User Synchronization
 
-*   **Environment & Tooling:**
-    *   `[x]` Initialize Git repository.
-    *   `[x]` Install Laravel (`11.x`) using Composer (`composer create-project laravel/laravel huberman-app-backend`).
-    *   `[x]` Configure basic `.env` file for local development (App Name, Key, Debug, Log level, DB connection defaults).
-    *   `[x]` Create/Finalize Docker environment (`docker-compose.yml`) based on `infrastructure_devops_details.md` with services:
-        *   `[x]` PHP (`8.2+`) container + Dockerfile.
-        *   `[x]` Web Server (Nginx or Caddy) container + config.
-        *   `[x]` PostgreSQL (`17.x` or latest supported) container.
-        *   `[x]` Redis (`7.x`) container.
-        *   `[x]` Node.js (LTS) container (optional, for build tools).
-    *   `[x]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
-    *   `[x]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
-    *   `[x]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).
-    *   `[x]` Install & Configure SAST tools:
-        *   `[x]` Install `phpstan/phpstan`, `larastan/larastan`. Configure `phpstan.neon`.
-        *   `[x]` (Optional) Install `vimeo/psalm`. Configure `psalm.xml`.
-    *   `[x]` Run initial SAST checks to ensure baseline setup.
+**Objective:** Fully integrate NestJS with the Supabase authentication system, including user sync and password reset functionality.
 
-*   **Core Structure & Base Components:**
-*   `[x]` Define base module structure: Create `app/Modules/` directory and subdirectories (`Authentication`, `UserManagement`, `SubscriptionBilling`, `ContentManagement`, `ProtocolEngine`, `NotesService`, `CoreApi` - adjust as needed).
-    *   `[x]` Create base API test case (`tests/Feature/ApiTestCase.php`) setting common headers (Accept: application/json).
-    *   `[x]` Implement base API controller (`app/Modules/CoreApi/Http/Controllers/Api/BaseApiController.php`) with common methods/traits if needed.
-    *   `[x]` Implement standard API response structure/trait (e.g., `ApiResponseHelpers`) if deviating from simple resource responses.
-    *   `[x]` Configure API routing (`routes/api.php`): Set up version prefix (`/v1`) and include route files from modules.
+*   `[x]` **P1.1: Create Supabase DB Trigger for User Sync**
+    *   **(File):** `supabase/init.sql`
+    *   **(LLM Action):** In the `supabase/` directory, create a new file named `init.sql`. Populate this file with the following SQL script. This script defines a trigger that automatically copies a new user from Supabase's `auth.users` table into your public `User` table upon sign-up.
+        ```sql
+        -- Ensures new users in Supabase auth are copied to the public users table
+        create or replace function public.handle_new_user()
+        returns trigger
+        language plpgsql
+        security definer set search_path = public
+        as $$
+        begin
+          insert into public."User" (id, email, name) -- Ensure table and column names match your Prisma schema exactly ("User")
+          values (new.id, new.email, new.raw_user_meta_data->>'name');
+          return new;
+        end;
+        $$;
 
----
+        -- drop trigger if exists on_auth_user_created on auth.users; -- uncomment to reset
+        create or replace trigger on_auth_user_created
+          after insert on auth.users
+          for each row execute procedure public.handle_new_user();
+        ```
+    *   **(Verification):** The file `supabase/init.sql` exists and contains the correct SQL code. (Note: A human must run this SQL in their Supabase dashboard's SQL Editor).
 
-## Phase 2: Core User & Authentication (Milestone 2 - TDD Focus)
+*   `[ ]` **P1.2: Implement Password Reset Logic**
+    *   **(File):** `nest-app/src/authentication/authentication.service.ts`
+    *   **(LLM Action):** In the `AuthenticationService`, add a new method `resetPassword` that uses the Supabase client to trigger a password reset email.
+        ```typescript
+        // Add this method inside the AuthenticationService class
+        async resetPassword(email: string) {
+          const supabase = this.supabaseService.getSupabaseClient();
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: process.env.PASSWORD_RESET_URL, // You'll need to add this to your .env
+          });
+          if (error) throw error;
+          return { message: 'Password reset email sent successfully. Please check your inbox.' };
+        }
+        ```
+    *   **(Verification):** The `resetPassword` method exists in `authentication.service.ts`.
 
-*   **User Model & Migration:**
-    *   `[x]` (TDD) Write tests for `User` model creation, relationships (initially Subscription, Notes, Reminders, Tracking), attributes, fillable, hidden (`password`, `remember_token`), casts (`email_verified_at`), `$with` relations.
-    *   `[x]` Implement `create_users_table` migration based on `database_migrations_plan.md`. Ensure soft deletes, timestamps.
-    *   `[x]` Run migration (`php artisan migrate`).
-    *   `[x]` Implement `User` model (`app/Modules/UserManagement/Models/User.php`) extending Authenticatable.
-    *   `[x]` Ensure User model tests pass.
-
-*   **Authentication (Sanctum):**
-    *   `[x]` Install Laravel Sanctum (`composer require laravel/sanctum`). Publish migrations & config.
-    *   `[x]` Run Sanctum migrations (`php artisan migrate`).
-    *   `[x]` Add `HasApiTokens` trait to `User` model.
-    *   `[x]` Configure Sanctum (token expiry, domains) in `config/sanctum.php` and `.env`.
-
-*   **Registration:**
-    *   `[x]` (TDD) Write API tests for `POST /api/v1/register`: Validation rules, success (DB check, 201, user+token response), email uniqueness.
-    *   `[x]` Implement `RegisterRequest` Form Request (`app/Modules/Authentication/Http/Requests/`).
-    *   `[x]` Implement `AuthController::register` method (`app/Modules/Authentication/Http/Controllers/`).
-    *   `[x]` Define route in module's API routes file. Ensure tests pass.
-
-*   **Login:**
-    *   `[x]` (TDD) Write API tests for `POST /api/v1/login`: Validation rules, success (correct credentials -> 200, user+token), failure (incorrect credentials -> 401/422).
-    *   `[x]` Implement `LoginRequest` Form Request.
-    *   `[x]` Implement `AuthController::login` method.
-    *   `[x]` Define route. Ensure tests pass.
-
-*   **Logout:**
-    *   `[x]` (TDD) Write API tests for `POST /api/v1/logout` (authenticated): Successful logout (token invalid, 204), unauthenticated access (401).
-    *   `[x]` Implement `AuthController::logout` method (invalidate current token).
-    *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
-
-*   **Authenticated User Endpoint:**
-    *   `[x]` (TDD) Write API tests for `GET /api/v1/user/profile` (authenticated): Fetches user data, unauthenticated access (401).
-    *   `[x]` Implement `UserController::profile` (`app/Modules/UserManagement/Http/Controllers/`).
-    *   `[x]` Define route, protected by `auth:sanctum`. Ensure tests pass.
-
-*   **Password Reset:**
-    *   `[x]` Configure Mail driver for local testing (e.g., Mailtrap, Log driver in `.env`).
-    *   `[x]` (TDD) Test Forgot Password (`POST /api/v1/forgot-password`): Validation (email exists), success response, mock `Notification::send`.
-    *   `[x]` (TDD) Test Reset Password (`POST /api/v1/reset-password`): Validation (token, email, password, confirmation), successful reset, token consumed/invalidated.
-    *   `[x]` Implement necessary Controllers (`ForgotPasswordController`, `NewPasswordController`), Requests, Notifications (`ResetPasswordNotification`).
-    *   `[x]` Define password reset routes. Ensure tests pass.
-
-*   **Security Controls:**
-    *   `[x]` (TDD) Write tests for rate limiting on auth endpoints (`login`, `register`, `forgot-password`).
-    *   `[x]` Apply Laravel's default rate limiting middleware to auth routes in `RouteServiceProvider` or route definitions. Configure limits (e.g., in `.env`). Ensure tests pass.
+*   `[ ]` **P1.3: Expose Password Reset Endpoint**
+    *   **(File):** `nest-app/src/authentication/authentication.controller.ts`
+    *   **(LLM Action):** In the `AuthenticationController`, add a new endpoint to handle password reset requests.
+        ```typescript
+        // Add this method inside the AuthenticationController class
+        @Post('reset-password')
+        async resetPassword(@Body('email') email: string) {
+          return this.authenticationService.resetPassword(email);
+        }
+        ```
+    *   **(Verification):** The `resetPassword` endpoint exists in `authentication.controller.ts` with the `@Post('reset-password')` decorator.
 
 ---
 
-## Phase 3: Subscription & Billing Foundation (Milestone 4 Prep - TDD Focus)
+## Phase 2: Complete Webhook Logic
 
-*   **Models & Migrations:**
-    *   `[x]` Implement `create_plans_table` migration. Run migration.
-    *   `[x]` Implement `create_subscriptions_table` migration (FKs, indexes, onDelete). Run migration.
-    *   `[x]` (TDD) Test `Plan` model (attributes, factory, maybe `isActive` scope). Implement model (`app/Modules/SubscriptionBilling/Models/Plan.php`).
-    *   `[x]` (TDD) Test `Subscription` model (attributes, relationships `User`/`Plan`, casts, scopes like `active()`, `trialing()`). Implement model (`app/Modules/SubscriptionBilling/Models/Subscription.php`).
-    *   `[x]` Add `hasMany(Subscription::class)` relationship to `User` model.
+**Objective:** Implement the missing subscription logic for Google Play to ensure all payment providers are handled.
 
-*   **Cashier Integration (Stripe):**
-    *   `[x]` Install Laravel Cashier Stripe (`composer require laravel/cashier`). Publish migrations & config.
-    *   `[x]` Run Cashier migrations (`php artisan migrate`).
-    *   `[x]` Configure Cashier (`config/cashier.php`, `services.stripe.key/secret/webhook_secret` in `.env`). Set User model.
-    *   `[x]` Add `Billable` trait to `User` model.
+*   `[ ]` **P2.1: Implement Google Play Webhook Logic**
+    *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
+    *   **(LLM Action):** In the `handleGoogleNotification` method, replace the placeholder `// TODO` logic with a `switch` statement that handles different notification types by updating the subscription status in the Prisma database.
+        ```typescript
+        // Replace the existing handleGoogleNotification method with this
+        async handleGoogleNotification(message: any) {
+            try {
+              const dataString = Buffer.from(message.data, 'base64').toString('utf-8');
+              const data = JSON.parse(dataString);
+              const { subscriptionNotification } = data;
+              const { notificationType, purchaseToken, subscriptionId } = subscriptionNotification;
 
-*   **Core Service & API Stubs:**
-    *   `[x]` Define `SubscriptionServiceInterface` contract (`app/Modules/SubscriptionBilling/Contracts/`) with key methods (`userHasActivePremiumSubscription`, `getUserPlan`, `handleWebhook`, `getSubscriptionStatus`, etc.).
-    *   `[x]` Implement basic `SubscriptionService` class (`app/Modules/SubscriptionBilling/Services/`) implementing the interface (methods return defaults/throw `NotImplementedException`).
-    *   `[x]` Bind interface to implementation in a service provider (`SubscriptionBillingServiceProvider`).
-    *   `[x]` **Plans API:**
-        *   `[x]` Seed `Plans` table (Free, Premium Monthly, Premium Annual) using a `PlanSeeder`.
-        *   `[x]` (TDD) API Test `GET /api/v1/plans`: Assert returns seeded plans (200 OK).
-        *   `[x]` Implement `SubscriptionController::plans` endpoint to fetch and return `Plan` data. Use an API Resource (`PlanResource`). Define route.
-    *   `[x]` **User Subscription API:**
-        *   `[x]` (TDD) API Test `GET /api/v1/user/subscription` (authenticated): Assert returns null/empty initially (200 OK).
-        *   `[x]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
+              if (!purchaseToken) {
+                this.logger.error('Google Play notification is missing purchaseToken.');
+                return;
+              }
 
-*   **Webhook Foundation (Stripe):**
-    *   `[x]` Implement `VerifyStripeWebhookSignature` middleware (or use Cashier's built-in route protection).
-    *   `[x]` (TDD) Write test for signature verification middleware/logic (mock Stripe request/header/secret). Assert pass/fail scenarios.
-    *   `[x]` Implement `WebhookController` (`app/Modules/SubscriptionBilling/Http/Controllers/`) with `handleStripeWebhook` method.
-    *   `[x]` Define `POST /api/webhooks/stripe` route (ensure CSRF protection is disabled for this route). Apply signature verification middleware.
-    *   `[x]` Ensure verification tests pass.
+              // In a real app, you would find the user/subscription via the purchaseToken or subscriptionId
+              // For now, we will log the intent.
+              this.logger.log(`Received Google Play Notification: ${notificationType} for subscriptionId: ${subscriptionId}`);
 
----
+              // Find the subscription linked to this Google Play ID
+              const subscription = await this.prisma.subscription.findFirst({
+                  where: { googlePlaySubscriptionId: subscriptionId },
+              });
 
-## Phase 4: Basic Content Management (Milestone 3 & 5 Prep)
+              if (!subscription) {
+                  this.logger.warn(`Subscription with Google Play ID ${subscriptionId} not found.`);
+                  return;
+              }
 
-*   **Models & Migrations:**
-    *   `[x]` Implement `create_episodes_table` migration. Run migration.
-    *   `[x]` Implement `create_protocols_table` migration. Run migration.
-    *   `[x]` Implement `create_summaries_table` migration. Run migration.
-    *   `[x]` Implement `create_episode_protocol_table` (pivot) migration. Run migration.
-    *   `[x]` (TDD) Test `Episode` model (attributes, relationships `Protocols`/`Summaries`/`Notes`). Implement model (`app/Modules/ContentManagement/Models/Episode.php`).
-    *   `[x]` (TDD) Test `Protocol` model (attributes, relationships `Episodes`). Implement model (`app/Modules/ContentManagement/Models/Protocol.php`).
-    *   `[x]` (TDD) Test `Summary` model (attributes, relationship `Episode`). Implement model (`app/Modules/ContentManagement/Models/Summary.php`).
-    *   `[x]` Test `Episode<->Protocol` many-to-many relationship.
+              switch (notificationType) {
+                case 4: // SUBSCRIPTION_RENEWED
+                  await this.prisma.subscription.update({
+                    where: { id: subscription.id },
+                    data: { stripeStatus: 'ACTIVE' },
+                  });
+                  this.eventEmitter.emit('subscription.renewed', { userId: subscription.userId });
+                  break;
 
-*   **Seeding:**
-    *   `[x]` Create `EpisodeSeeder` (placeholder episodes).
-    *   `[x]` Create `ProtocolSeeder` (foundational protocols based on `content_strategy_management.md`).
-    *   `[x]` Create `SummarySeeder` (summaries for foundational protocols).
-    *   `[x]` Create `EpisodeProtocolSeeder` (link placeholders).
-    *   `[x]` Update `DatabaseSeeder` to call new seeders in correct order.
-    *   `[!]` Run seeders (`php artisan db:seed`).
-      * *AGENT_NOTE: Skipped after 3 failed attempts. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
+                case 3: // SUBSCRIPTION_CANCELED
+                  await this.prisma.subscription.update({
+                    where: { id: subscription.id },
+                    data: { stripeStatus: 'CANCELED' },
+                  });
+                  this.eventEmitter.emit('subscription.canceled', { userId: subscription.userId });
+                  break;
 
-*   **Core Service & API:**
-    *   `[x]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`).
-    *   `[x]` Implement basic `ContentService` implementing the interface. Bind interface.
-    *   `[x]` Implement API Resources (`EpisodeResource`, `ProtocolResource`, `SummaryResource`).
-    *   `[x]` **Protocols API:**
-        *   `[x]` (TDD) API Test `GET /api/v1/protocols`: List protocols (unauthenticated).
-        *   `[x]` Implement `ProtocolController::index`. Define route.
-        *   `[x]` (TDD) API Test `GET /api/v1/protocols/{id}`: Show protocol details (unauthenticated).
-        *   `[x]` Implement `ProtocolController::show`. Define route.
-    *   `[x]` **Episodes API:**
-        *   `[x]` (TDD) API Test `GET /api/v1/episodes`: List episodes.
-        *   `[x]` Implement `EpisodeController::index`. Define route.
-        *   `[x]` (TDD) API Test `GET /api/v1/episodes/{id}`: Show episode details.
-        *   `[x]` Implement `EpisodeController::show`. Define route.
-    *   `[x]` *(Add similar for Summaries if needed as top-level endpoint)*
-    *   `[x]` Ensure basic content API tests pass.
+                case 12: // SUBSCRIPTION_EXPIRED
+                  await this.prisma.subscription.update({
+                    where: { id: subscription.id },
+                    data: { stripeStatus: 'EXPIRED', endsAt: new Date() },
+                  });
+                   this.eventEmitter.emit('subscription.ended', { userId: subscription.userId });
+                  break;
+
+                // Add other cases as needed (e.g., 2: PURCHASED, 5: ON_HOLD)
+                default:
+                  this.logger.warn(`Unhandled Google Play notification type: ${notificationType}`);
+              }
+            } catch (error) {
+              this.logger.error(`Error handling Google Play notification: ${error.message}`, error.stack);
+              throw error;
+            }
+        }
+        ```
+    *   **(Verification):** The `handleGoogleNotification` method in `subscription-billing.service.ts` is updated with the new `switch` statement and Prisma logic.
 
 ---
 
-## Phase 5: Feature Gating Implementation (Milestone 4 & 5 - TDD Focus)
+## Phase 3: Application Polish & Consistency
 
-*   **Subscription Service Logic:**
-    *   `[x]` (TDD - Unit) Test `SubscriptionService::userHasActivePremiumSubscription` covering scenarios: no sub, free plan, active premium, trialing premium, canceled (before/after `ends_at`), expired, past_due. Use factories.
-    *   `[x]` Implement logic in `SubscriptionService` querying `subscriptions` table (via User relationship), joining `plans`, checking status (`active`, `trialing`), `ends_at`. Ensure 'premium' plan type check.
-    *   `[x]` (TDD - Unit) Test caching: cache hit avoids DB query, miss populates cache, TTL works, cache clear invalidates.
-    *   `[x]` Implement caching layer within `userHasActivePremiumSubscription` (e.g., `Cache::remember`). Use appropriate cache tags (e.g., `user:{id}`).
+**Objective:** Improve the application's robustness and developer experience by standardizing responses, error handling, and environment setup.
 
-*   **Middleware:**
-    *   `[x]` Implement `CheckPremiumAccess` middleware using `SubscriptionServiceInterface`. # Assuming done as file exists
-    *   `[x]` (TDD - Feature) Write feature tests applying middleware to a test route: premium user passes (200), free user fails (403), unauthenticated fails (401 - handled by `auth:sanctum`).
-    *   `[x]` Register middleware alias in `app/Http/Kernel.php`. (Updated in bootstrap/app.php for L11)
-    *   `[x]` Apply middleware to relevant premium API route groups (e.g., start with `/reminders`, `/tracking`). Ensure tests pass. (Pending creation of relevant routes)
+*   `[ ]` **P3.1: Create Global Exception Filter**
+    *   **(File):** `nest-app/src/common/filters/all-exceptions.filter.ts`
+    *   **(LLM Action):** Create a new file `nest-app/src/common/filters/all-exceptions.filter.ts` and add the following code to create a global filter for consistent JSON error responses.
+        ```typescript
+        import {
+          ExceptionFilter,
+          Catch,
+          ArgumentsHost,
+          HttpException,
+          HttpStatus,
+        } from '@nestjs/common';
+        import { HttpAdapterHost } from '@nestjs/core';
 
-*   **Gated Content API:**
-    *   `[x]` Refine `ProtocolResource` to conditionally include `implementation_guide` based on `$request->user()->hasActivePremiumSubscription()` (or similar check).
-    *   `[x]` (TDD - Feature) Test `GET /api/v1/protocols/{id}`: Authenticated free user gets protocol *without* `implementation_guide`. Authenticated premium user gets protocol *with* `implementation_guide`.
-    *   `[x]` Refactor `ProtocolController` or `ContentService` if needed to support different data loading based on user status (API Resource often sufficient). Ensure tests pass.
+        @Catch()
+        export class AllExceptionsFilter implements ExceptionFilter {
+          constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
----
+          catch(exception: unknown, host: ArgumentsHost): void {
+            const { httpAdapter } = this.httpAdapterHost;
+            const ctx = host.switchToHttp();
 
-## Phase 6: Full Subscription Lifecycle via Webhooks (Milestone 4 - TDD Focus)
+            const httpStatus =
+              exception instanceof HttpException
+                ? exception.getStatus()
+                : HttpStatus.INTERNAL_SERVER_ERROR;
 
-*   **Webhook Processing Logic (Stripe via Cashier):**
-        *   **Event: `checkout.session.completed`**
-        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription` created (`trialing`/`active`), `ends_at`/`trial_ends_at` set, `SubscriptionStarted` event dispatched, `User.stripe_id` updated.
-        *   `[x]` Verify/Implement Cashier listener logic.
-    *   **Event: `customer.subscription.updated` (Trial Ends -> Active - via `invoice.payment_succeeded`)**
-        *   `[x]` (TDD) Test: Simulates `invoice.payment_succeeded` post-trial, asserts status -> `active`, `trial_ends_at` nullified, `ends_at` updated.
-        *   `[x]` Verify Cashier listener.
-    *   **Event: `invoice.payment_succeeded` (Renewal)**
-        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription.ends_at` updated, `SubscriptionRenewed` event dispatched.
-        *   `[x]` Verify Cashier listener.
-    *   **Event: `invoice.payment_failed`**
-        *   `[x]` (TDD) Test: Simulates webhook, asserts `Subscription.status` -> `past_due` (if configured), `PaymentFailed` event dispatched.
-        *   `[x]` Verify/Implement Cashier listener based on retry settings.
-    *   **Event: `customer.subscription.updated` (Cancel at Period End)**
-        *   `[x]` (TDD) Test: Simulates webhook (`cancel_at_period_end=true`), asserts `Subscription.status` updated (`canceled`?), `ends_at` reflects cancel date, `SubscriptionCanceled` event dispatched.
-        *   `[x]` Verify Cashier listener (`onSubscriptionUpdated`).
-    *   **Event: `customer.subscription.deleted` (Immediate Cancel / Final Failure)**
-        *   `[x]` (TDD) Test: Simulates webhook, asserts status -> `canceled`/`expired`, `ends_at` set to past/now, `SubscriptionExpired`/`SubscriptionCanceled` event dispatched.
-        *   `[x]` Verify Cashier listener.
+            const responseBody = {
+              statusCode: httpStatus,
+              timestamp: new Date().toISOString(),
+              path: httpAdapter.getRequestUrl(ctx.getRequest()),
+              message: exception instanceof HttpException ? exception.message : 'Internal server error',
+            };
 
-*   **Webhook Processing Logic (Apple IAP - Server Notifications V2):**
-    *   `[x]` Implement `WebhookController::handleAppleWebhook`.
-    *   `[x]` Implement service/logic to decode & verify Apple JWS payload (use library if available).
-    *   `[x]` Define `POST /api/webhooks/apple` route (disable CSRF).
-    *   `[x]` Implement App Store Server API client (library?) for server-side validation (optional).
-    *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
-    *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
-    *   `[x]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
-    *   `[x]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
+            httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+          }
+        }
+        ```
+    *   **(Verification):** The file `all-exceptions.filter.ts` is created with the specified content.
 
-*   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
-    *   `[!]` Set up Google Cloud Pub/Sub topic & push subscription.
-      * *AGENT_NOTE: Skipped - Requires external Google Cloud Platform configuration*
-    *   `[x]` Implement `WebhookController::handleGoogleWebhook` (Mock).
-    *   `[x]` Implement service/logic to decode base64 Pub/Sub data.
-    *   `[x]` (TDD) Test Pub/Sub message decoding & parsing.
-    *   `[x]` Define `POST /api/webhooks/google` route (disable CSRF).
-    *   `[x]` Implement Google Play Developer API client (library?) for purchase validation/acknowledgement (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_PURCHASED` / `SUBSCRIPTION_RENEWED`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events, acknowledge purchase (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_IN_GRACE_PERIOD`:** Implement handler, (TDD) Test state -> `past_due`, update DB, dispatch event (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_ON_HOLD`:** Implement handler, (TDD) Test state -> `past_due`/`on_hold`, update DB (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_CANCELED`:** Implement handler, (TDD) Test state -> `canceled`, update DB, dispatch event (Mock).
-    *   `[x]` **Type: `SUBSCRIPTION_EXPIRED`:** Implement handler, handler, (TDD) Test state -> `expired`, update DB, dispatch event (Mock).
-    *   `[x]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
+*   `[ ]` **P3.2: Register Global Exception Filter**
+    *   **(File):** `nest-app/src/main.ts`
+    *   **(LLM Action):** In `nest-app/src/main.ts`, register the `AllExceptionsFilter` globally.
+        ```typescript
+        // Add these imports at the top
+        import { HttpAdapterHost } from '@nestjs/core';
+        import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
-*   **Scheduled Job for Status Check:**
-    *   `[x]` Implement `CheckExpiredSubscriptions` job/command.
-    *   `[x]` (TDD) Test job finds past `canceled` subs and sets status to `expired`.
-    *   `[x]` Schedule job in `Kernel.php` (e.g., `daily()`).
+        // Inside the bootstrap() function, after `const app = ...` and before `app.listen()`
+        const { httpAdapter } = app.get(HttpAdapterHost);
+        app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+        ```
+    *   **(Verification):** `main.ts` now includes the code to register the global filter.
 
-*   **Cache Invalidation:**
-    *   `[x]` Create `ClearUserEntitlementCache` Listener.
-    *   `[x]` Implement cache clearing logic (`Cache::tags("user:{$event->subscription->user_id}")->flush();` or similar).
-    *   `[x]` (TDD) Test Listener clears the correct cache tag/key.
-    *   `[x]` Register Listener for `SubscriptionStarted`, `SubscriptionRenewed`, `SubscriptionCanceled`, `SubscriptionExpired` events in `EventServiceProvider`.
-    *   `[x]` (TDD) Verify webhook tests dispatch events correctly using `Event::fake()`.
+*   `[ ]` **P3.3: Create `.env.example` file**
+    *   **(File):** `nest-app/.env.example`
+    *   **(LLM Action):** Create a new file `nest-app/.env.example` and populate it with all the necessary environment variables for the project.
+        ```
+        # App
+        PORT=3000
 
----
+        # Database (Prisma)
+        DATABASE_URL="postgresql://user:password@host:port/database?schema=public"
 
-## Phase 7: Implementing MVP Features (Milestone 5 & 6 Prep)
+        # Supabase
+        SUPABASE_URL=
+        SUPABASE_KEY=
+        PASSWORD_RESET_URL=
 
-*   **Free Tier - Basic Reminders:**
-    *   `[x]` Implement logic/scope in `Protocol` model to identify foundational protocols.
-    *   `[x]` Implement `SendFoundationalReminders` command/job.
-    *   `[x]` (TDD) Test command selects correct protocols & users (mock Notification).
-    *   `[x]` Schedule command in `Kernel.php`.
+        # Redis (BullMQ)
+        REDIS_HOST=localhost
+        REDIS_PORT=6379
 
-*   **Premium Tier - Full Content Access:**
-    *   `[x]` (TDD - Feature) Ensure `ProtocolResource` tests cover conditional loading of `implementation_guide`.
-    *   `[x]` (TDD - Feature) Ensure `GET /protocols` tests cover premium user getting full list / rich data via Resource.
+        # Stripe
+        STRIPE_SECRET_KEY=
+        STRIPE_WEBHOOK_SECRET=
 
-*   **Premium Tier - Custom Reminders (MVP Scope):**
-    *   **Database:**
-        *   `[x]` Implement `create_user_reminders_table` migration. Run migration.
-        *   `[x]` (TDD) Test `UserReminder` model attributes & relationships.
-        *   `[x]` Implement `UserReminder` model (`app/Modules/ProtocolEngine/Models/`).
-    *   **API CRUD:**
-        *   `[x]` Implement `ReminderPolicy`.
-        *   `[x]` (TDD) Test `ReminderPolicy` (premium check, ownership).
-        *   `[x]` **Create:** (TDD) API Test, `[x]` Implement `StoreReminderRequest`, `ReminderController::store`, `ReminderService::setReminder`, Define Route + Middleware/Policy.
-        *   `[x]` **List:** (TDD) API Test, Implement `ReminderController::index`, `ReminderService::getUserReminders`, Define Route + Middleware.
-        *   `[x]` **Update:** (TDD) API Test, Implement `UpdateReminderRequest`, `ReminderController::update`, `ReminderService::updateReminder`, Define Route + Middleware/Policy.
-        *   `[x]` **Delete:** (TDD) API Test, Implement `ReminderController::destroy`, `ReminderService::deleteReminder`, Define Route + Middleware/Policy.
-    *   **Scheduling Logic:**
-        *   `[x]` Implement `reminders:send-due` command logic (query, timezone conversion, frequency check).
-        *   `[x]` (TDD) Test `reminders:send-due` command finds due reminders (mock `now()`).
-        *   `[x]` Ensure command dispatches `SendProtocolReminderNotification` job.
-        *   `[x]` Schedule command in `Kernel.php` (`everyMinute()`).
-    *   **Notification Sending:**
-        *   `[x]` Implement `SendProtocolReminderNotification` Job.
-        *   `[x]` Implement `ProtocolReminder` Notification class (`toFcm`, `toApns`).
-        *   `[x]` (TDD) Test Job retrieves data, fetches token, constructs payload, mocks `Notification::send()`.
-        *   `[x]` Implement token fetching logic in Job.
-        *   `[x]` Implement `Notification::send()` call in Job.
-        *   `[x]` Implement `last_sent_at` update in Job.
-    *   **Device Token Management:**
-    *   `[x]` Add `device_tokens` column to `users` table OR create `user_devices` table migration. Run migration.
-    *   `[x]` (TDD) Test storing/retrieving tokens for a user.
-    *   `[x]` Implement `UpdateDeviceTokenRequest`.
-    *   `[x]` Implement `UserController::updateDeviceToken`.
-    *   `[x]` Define `POST /api/v1/user/device-token` route + `auth:sanctum`.
+        # Firebase (for Push Notifications)
+        FIREBASE_PROJECT_ID=
+        FIREBASE_CLIENT_EMAIL=
+        FIREBASE_PRIVATE_KEY=
+        ```
+    *   **(Verification):** The file `nest-app/.env.example` exists with the required variables.
 
 ---
 
-## Phase 8: Implementing Post-MVP Features (As Prioritized - TDD Focus)
+## Phase 4: Foundational Testing
 
-*   **Notes Service (Example):**
-    *   `[x]` **Models & Migrations:** Implement `create_notes_table`, (TDD) Test `Note` Model, Implement Model.
-    *   `[x]` **Policies & Auth:** Implement `NotePolicy`, (TDD) Test Policy (free limits, public premium, ownership).
-    *   `[x]` **Service Layer:** Define Interface, Implement `NoteService`, Bind Interface, (TDD - Unit) Test Service methods (CRUD, counts, public list).
-    *   `[x]` **API Endpoints:** Without running migrations and test executions
-        *   `[x]` **Create:** (TDD) API Test, `[x]` Implement Request, `[x]` Implement Controller, `[x]` Define Route.
-        *   `[x]` **List User:** (TDD) API Test, Implement Controller, Define Route.
-        *   `[x]` **Show:** (TDD) API Test, Implement Controller, Define Route.
-    *   `[x]` **Update:** (TDD) API Test, Implement Request, Controller, Define Route.
-    *   `[x]` **Delete:** (TDD) API Test, Implement Controller, Define Route.
-    *   `[x]` **List Public:** (TDD) API Test, Implement Controller, Define Route.
+**Objective:** Establish a clear testing pattern by implementing one basic unit and one basic E2E test.
 
-- [x] **Tracking Service (Placeholder - Apply same pattern):**
-    -   `[x]` **Models & Migrations:** (TDD) Test `TrackingLog` Model, Implement Model.
-    -   `[x]` **Policies & Auth:** Implement Policy (Premium check), (TDD) Test Policy.
-    -   `[x]` **Service Layer:** Define Interface, Implement Service (streak logic), Bind, (TDD - Unit) Test Service methods (CRUD, counts, public list).
-    -   `[x]` **API Endpoints:**
-        *   `[x]` **Log Adherence:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Get Summary/Streak:** (TDD) API Test, Implement Controller, Define Route.
-    -   Migration file created: database/migrations/2025_05_01_100004_create_user_protocol_tracking_table.php
+*   `[ ]` **P4.1: Implement a Basic Unit Test**
+    *   **(File):** `nest-app/src/app.service.spec.ts`
+    *   **(LLM Action):** Open the existing file `nest-app/src/app.service.spec.ts` and ensure the test correctly checks the behavior of the `getHello()` method.
+        ```typescript
+        import { Test, TestingModule } from '@nestjs/testing';
+        import { AppService } from './app.service';
 
--   **Offline Access:**
-    -   `[x]` **Models & Migrations:** (TDD) Test `OfflineData` Model, Implement Model.
-    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[x]` **Service Layer:** Define Interface, Implement Service (sync logic), Bind, (TDD - Unit) Test Service methods (CRUD, sync).
-    -   `[x]` **API Endpoints:**
-        -   `[x]` **Fetch Data:** (TDD) API Test, Implement Request, Controller, Define Route.
-        -   `[x]` **Sync Data:** (TDD) API Test, Implement Request, Controller, Define Route.
+        describe('AppService', () => {
+          let service: AppService;
 
--   **Advanced Notes Org:**
-    -   `[x]` **Models & Migrations:** (TDD) Test `NoteTag` Model, Implement Model.
-    -   `[x]` **Models & Migrations:** (TDD) Test `NoteCategory` Model, Implement Model.
-    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    -   `[x]` **Service Layer:** Define Interface, Implement Service (categorization, tagging logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[x]` **API Endpoints:**
-        *   `[x]` **Categorize Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Tag Note:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Get Notes by Category/Tag:** (TDD) API Test, Implement Request, Controller, Define Route.
+          beforeEach(async () => {
+            const module: TestingModule = await Test.createTestingModule({
+              providers: [AppService],
+            }).compile();
 
--   **Community:**
-    -   `[x]` **Models & Migrations:** (TDD) Test `Post`, `Comment` Models, Implement Models.
-    -   `[x]` **Policies & Auth:** Implement Policy (User access, moderation), (TDD) Test Policy.
-    -   `[x]` **Service Layer:** Define Interface, Implement Service (posting, commenting, moderation logic), Bind, (TDD - Unit) Test Service methods.
-    -   `[x]` **API Endpoints:**
-        *   `[x]` **Create Post:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Create Comment:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Get Posts/Comments:** (TDD) API Test, Implement Controller, Define Route.
-        *   `[x]` **Moderate Content:** (TDD) API Test, Implement Controller, Define Route.
+            service = module.get<AppService>(AppService);
+          });
 
--   **Routines:**
-    -   `[x]` **Models & Migrations:** (TDD) Test `Routine`, `RoutineStep` Models, Implement Models.
-    -   `[x]` **Policies & Auth:** Implement Policy (User access), (TDD) Test Policy.
-    *   `[x]` **Service Layer:** Define Interface, Implement Service (routine execution, scheduling logic), Bind, (TDD - Unit) Test Service methods.
-    *   `[x]` **API Endpoints:**
-        *   `[x]` **Create Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Execute Routine:** (TDD) API Test, Implement Request, Controller, Define Route.
-        *   `[x]` **Get Routines:** (TDD) API Test, Implement Controller, Define Route.
+          it('should be defined', () => {
+            expect(service).toBeDefined();
+          });
 
+          it('should return "Hello World!"', () => {
+            expect(service.getHello()).toBe('Hello World!');
+          });
+        });
+        ```
+    *   **(Verification):** The unit test `nest-app/src/app.service.spec.ts` contains the updated, correct code.
 
-*   *(Repeat pattern for other Post-MVP features like Offline Access, Advanced Notes Org, Community, Routines)*
+*   `[ ]` **P4.2: Implement a Basic E2E Test**
+    *   **(File):** `nest-app/test/app.e2e-spec.ts`
+    *   **(LLM Action):** Open `nest-app/test/app.e2e-spec.ts` and ensure the E2E test for the root endpoint (`GET /`) is correctly implemented.
+        ```typescript
+        import { Test, TestingModule } from '@nestjs/testing';
+        import { INestApplication } from '@nestjs/common';
+        import * as request from 'supertest';
+        import { AppModule } from './../src/app.module';
 
----
+        describe('AppController (e2e)', () => {
+          let app: INestApplication;
 
-## Phase 9: API Documentation & Refinement
+          beforeEach(async () => {
+            const moduleFixture: TestingModule = await Test.createTestingModule({
+              imports: [AppModule],
+            }).compile();
 
-*   **Setup:**
-    *   `[x]` Install & Configure `zircote/swagger-php` OR choose manual editing tool.
-*   **Annotation/Manual Update:**
-    *   `[x]` Review `openapi.yaml` structure.
-    *   `[x]` Annotate/Document: `Authentication` module endpoints & schemas.
-    *   `[x]` Annotate/Document: `UserManagement` module endpoints & schemas.
-    *   `[x]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
-    *   `[x]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
-    *   `[x]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
-    *   `[x]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
-    *   `[x]` Define/Review: Reusable schemas in `components/schemas`.
-    *   `[x]` Define/Review: Reusable error responses in `components/responses`.
-    *   `[x]` Define/Review: Security schemes (`bearerAuth`) and apply.
-*   **Generation & Validation:**
-    *   `[!]` Generate `openapi.yaml`.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` Validate `openapi.yaml` using validator tool. Fix errors.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-*   **Commit:**
-    *   `[x]` Commit final, validated `openapi.yaml` to repository.
+            app = moduleFixture.createNestApplication();
+            await app.init();
+          });
 
----
+          afterAll(async () => {
+            await app.close();
+          });
 
-## Phase 10: Testing & Quality Assurance
-
-*   **Test Coverage Review:**
-    *   `[!]` Generate PHPUnit code coverage report.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` Analyze report, identify gaps in critical modules.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` Write additional unit/integration tests to improve coverage.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-*   **Integration Flow Testing:**
-    *   `[!]` (TDD - Feature) Test Flow: Registration -> Login.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` (TDD - Feature) Test Flow: Free User Access (Check premium endpoint access denied).
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` (TDD - Feature) Test Flow: Subscription Upgrade (Simulated webhook -> Premium access granted).
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` (TDD - Feature) Test Flow: Reminder Setting & Receiving (Simulated: Create reminder -> Time passes -> Job runs -> Mock Notification sent).
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-*   **Manual QA:**
-    *   `[!]` Develop manual test cases/checklist (Free & Premium flows).
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[!]` Execute manual tests on Staging.
-      * *AGENT_NOTE: Skipped due to Docker configuration error. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
-    *   `[ ]
+          it('/ (GET)', () => {
+            return request(app.getHttpServer())
+              .get('/')
+              .expect(200)
+              .expect('Hello World!');
+          });
+        });
+        ```
+    *   **(Verification):** The E2E test `nest-app/test/app.e2e-spec.ts` contains the updated, correct code, including an `afterAll` hook to close the app.
+*   `[ ]` **P4.3: _**(User Action)**_ Run Tests**
+    *   **_**(User Action)**_** Execute `npm run test` and `npm run test:e2e` from the `nest-app` directory.
+    *   **(Verification):** Both test suites should run and pass.
