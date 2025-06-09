@@ -366,7 +366,7 @@
 *   **Annotation/Manual Update:**
     *   `[x]` Review `openapi.yaml` structure.
     *   `[x]` Annotate/Document: `Authentication` module endpoints & schemas.
-    *   `[ ]` Annotate/Document: `UserManagement` module endpoints & schemas.
+    *   `[x]` Annotate/Document: `UserManagement` module endpoints & schemas.
     *   `[ ]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
     *   `[ ]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
     *   `[ ]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).

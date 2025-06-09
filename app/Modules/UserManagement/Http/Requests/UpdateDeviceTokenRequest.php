@@ -4,7 +4,46 @@ namespace App\Modules\UserManagement\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateDeviceTokenRequest",
+ *     required={"device_token", "platform"},
+ *     @OA\Property(
+ *         property="device_token",
+ *         type="string",
+ *         description="Device token for push notifications",
+ *         example="fcm_token_or_apns_token"
+ *     ),
+ *     @OA\Property(
+ *         property="platform",
+ *         type="string",
+ *         description="Device platform",
+ *         enum={"ios", "android", "web"},
+ *         example="ios"
+ *     )
+ * )
+ */
+/**
+ * @OA\Schema(
+ *     schema="UpdateDeviceTokenRequest",
+ *     required={"device_token", "platform"},
+ *     @OA\Property(
+ *         property="device_token",
+ *         type="string",
+ *         description="Device token for push notifications",
+ *         example="fcm_token_or_apns_token"
+ *     ),
+ *     @OA\Property(
+ *         property="platform",
+ *         type="string",
+ *         description="Device platform",
+ *         enum={"ios", "android", "web"},
+ *         example="ios"
+ *     )
+ * )
+ */
 class UpdateDeviceTokenRequest extends FormRequest
 {
     /**
