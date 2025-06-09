@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 
 @Controller('authentication')
@@ -16,8 +16,12 @@ export class AuthenticationController {
   }
 
   @Post('logout')
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async logout() {
     await this.authenticationService.logout();
     return { message: 'Logged out successfully' };
+  }
+@Post('reset-password')
+  async resetPassword(@Body('email') email: string) {
+    return this.authenticationService.resetPassword(email);
   }
 }

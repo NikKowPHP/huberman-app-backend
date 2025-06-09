@@ -62,7 +62,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         ```
     *   **(Verification):** The `resetPassword` method exists in `authentication.service.ts`.
 
-*   `[ ]` **P1.3: Expose Password Reset Endpoint**
+*   `[x]` **P1.3: Expose Password Reset Endpoint**
     *   **(File):** `nest-app/src/authentication/authentication.controller.ts`
     *   **(LLM Action):** In the `AuthenticationController`, add a new endpoint to handle password reset requests.
         ```typescript
