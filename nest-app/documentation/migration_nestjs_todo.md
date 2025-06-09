@@ -254,7 +254,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 ## Phase FIX.8: API Documentation (Swagger)
 
 **For every DTO file in `nest-app/src/**/dto/*.dto.ts`:**
-*   `[ ]` **FIX.API_DOC.DTO.1 (Example: `create-protocol.dto.ts`)**
+*   `[x]` **FIX.API_DOC.DTO.1 (Example: `create-protocol.dto.ts`)**
     *   **(File):** `nest-app/src/content-management/dto/create-protocol.dto.ts`
     *   **(LLM Prompt):** "In `nest-app/src/content-management/dto/create-protocol.dto.ts`, import `ApiProperty` and `ApiPropertyOptional` from `@nestjs/swagger`. Add `@ApiProperty()` decorator above each required field (e.g., `title`). Add `@ApiPropertyOptional()` above each optional field (e.g., `description`, `isFree`). Provide `description` and `example` values in the decorator options where appropriate (e.g. `@ApiProperty({ description: 'The title of the protocol', example: 'Morning Sunlight Viewing' })`)."
     *   **(Verification):** All properties in the DTO are decorated with `@ApiProperty` or `@ApiPropertyOptional`.
