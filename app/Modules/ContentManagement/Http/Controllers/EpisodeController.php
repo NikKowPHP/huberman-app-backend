@@ -10,7 +10,39 @@ use Illuminate\Http\JsonResponse;
 class EpisodeController extends Controller
 {
     /**
-     * Display a listing of the public notes for the specified episode.
+     * @OA\Get(
+     *     path="/api/v1/episodes/{id}/public-notes",
+     *     summary="Get public notes for an episode",
+     *     description="Returns a list of public notes associated with the specified episode",
+     *     operationId="getEpisodePublicNotes",
+     *     tags={"Content Management"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the episode",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Note")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Episode not found"
+     *     )
+     * )
      */
     public function publicNotes(Episode $episode): JsonResponse
     {

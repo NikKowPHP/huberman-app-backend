@@ -17,7 +17,22 @@ class SummaryController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/v1/summaries",
+     *     summary="List all summaries",
+     *     description="Returns a list of available summaries",
+     *     operationId="getSummaries",
+     *     tags={"Content Management"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/SummaryResource")
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
@@ -25,10 +40,33 @@ class SummaryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/summaries/{id}",
+     *     summary="Get summary by ID",
+     *     description="Returns a single summary with full details",
+     *     operationId="getSummaryById",
+     *     tags={"Content Management"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of summary to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SummaryResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Summary not found"
+     *     )
+     * )
      */
     public function show(int $id): JsonResponse
     {
