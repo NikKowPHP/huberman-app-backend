@@ -237,7 +237,7 @@
 
 *   **Scheduled Job for Status Check:**
     *   `[x]` Implement `CheckExpiredSubscriptions` job/command.
-    *   `[ ]` (TDD) Test job finds past `canceled` subs and sets status to `expired`.
+    *   `[x]` (TDD) Test job finds past `canceled` subs and sets status to `expired`.
     *   `[x]` Schedule job in `Kernel.php` (e.g., `daily()`).
 
 *   **Cache Invalidation:**
