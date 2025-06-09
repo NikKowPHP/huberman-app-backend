@@ -261,7 +261,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
     *   **(Repeat this pattern for ALL DTOs: `create-note.dto.ts`, `update-note.dto.ts`, `attach-category.dto.ts`, `store-reminder.dto.ts`, `update-reminder.dto.ts`, `store-tracking-log.dto.ts`, and any DTOs created for OfflineData, Post, Routine modules).**
 
 **For every Controller method in `nest-app/src/**/*.controller.ts`:**
-*   `[ ]` **FIX.API_DOC.CTRL.1 (Example: `ProtocolController.index`)**
+*   `[x]` **FIX.API_DOC.CTRL.1 (Example: `ProtocolController.index`)**
     *   **(File):** `nest-app/src/content-management/protocol.controller.ts`
     *   **(LLM Prompt):** "In `nest-app/src/content-management/protocol.controller.ts`, for the `index()` method:
         1.  Import `ApiOperation`, `ApiResponse`, `ApiBearerAuth` (if auth is used) from `@nestjs/swagger`.
