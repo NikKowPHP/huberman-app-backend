@@ -217,7 +217,7 @@
     *   `[x]` Implement App Store Server API client (library?) for server-side validation (optional).
     *   `[x]` **Event: `SUBSCRIBED` / `DID_RENEW`:** Implement handler, (TDD) Test state -> `active`/`trialing`, update DB, dispatch events.
     *   `[x]` **Event: `DID_FAIL_TO_RENEW`:** Implement handler, (TDD) Test state -> `past_due`/`expired`, update DB, dispatch events.
-    *   `[ ]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
+    *   `[x]` **Event: `EXPIRED`:** Implement handler, (TDD) Test state -> `expired`, update DB, dispatch event.
     *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
 
 *   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
