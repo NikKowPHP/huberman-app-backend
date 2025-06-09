@@ -287,7 +287,7 @@
         *   `[x]` Implement `last_sent_at` update in Job.
     *   **Device Token Management:**
     *   `[x]` Add `device_tokens` column to `users` table OR create `user_devices` table migration. Run migration.
-    *   `[ ]` (TDD) Test storing/retrieving tokens for a user.
+    *   `[x]` (TDD) Test storing/retrieving tokens for a user.
     *   `[x]` Implement `UpdateDeviceTokenRequest`.
     *   `[x]` Implement `UserController::updateDeviceToken`.
     *   `[x]` Define `POST /api/v1/user/device-token` route + `auth:sanctum`.
