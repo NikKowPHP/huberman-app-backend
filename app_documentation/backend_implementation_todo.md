@@ -114,7 +114,7 @@
         *   `[x]` Seed `Plans` table (Free, Premium Monthly, Premium Annual) using a `PlanSeeder`.
         *   `[x]` (TDD) API Test `GET /api/v1/plans`: Assert returns seeded plans (200 OK).
         *   `[x]` Implement `SubscriptionController::plans` endpoint to fetch and return `Plan` data. Use an API Resource (`PlanResource`). Define route.
-    *   `[ ]` **User Subscription API:**
+    *   `[x]` **User Subscription API:**
         *   `[x]` (TDD) API Test `GET /api/v1/user/subscription` (authenticated): Assert returns null/empty initially (200 OK).
         *   `[x]` Implement `SubscriptionController::userSubscription` using `SubscriptionService` stub. Use an API Resource (`SubscriptionResource`). Define route protected by `auth:sanctum`.
 
@@ -369,7 +369,7 @@
     *   `[x]` Annotate/Document: `UserManagement` module endpoints & schemas.
     *   `[x]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
     *   `[x]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
-    *   `[ ]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
+    *   `[x]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
     *   `[ ]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
     *   `[ ]` Define/Review: Reusable schemas in `components/schemas`.
     *   `[ ]` Define/Review: Reusable error responses in `components/responses`.
