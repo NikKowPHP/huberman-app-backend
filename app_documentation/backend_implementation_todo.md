@@ -145,7 +145,8 @@
     *   `[x]` Create `SummarySeeder` (summaries for foundational protocols).
     *   `[x]` Create `EpisodeProtocolSeeder` (link placeholders).
     *   `[x]` Update `DatabaseSeeder` to call new seeders in correct order.
-    *   `[ ]` Run seeders (`php artisan db:seed`).
+    *   `[!]` Run seeders (`php artisan db:seed`).
+      * *AGENT_NOTE: Skipped after 3 failed attempts. Last error: Invalid interpolation format for "app" option in service "services": "${UID:-1000}".*
 
 *   **Core Service & API:**
     *   `[x]` Define `ContentServiceInterface` contract (`app/Modules/ContentManagement/Contracts/`) (e.g., `getProtocols`, `getProtocolDetails`, `getEpisodes`, `getEpisodeDetails`, `getSummariesForEpisode`).
