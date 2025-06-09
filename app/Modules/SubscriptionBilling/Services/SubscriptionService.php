@@ -256,4 +256,83 @@ class SubscriptionService implements SubscriptionServiceInterface
 
 
 
+    /**
+     * Handles the 'GRACE_PERIOD_EXPIRED' notification from Apple.
+     *
+     * @param object $data Decoded payload data from the JWS.
+     * @return void
+     */
+    public function handleAppleGracePeriodExpired(object $data): void
+    {
+        $originalTransactionId = $data->originalTransactionId ?? ($data->transactionInfo->originalTransactionId ?? null);
+
+        if (!$originalTransactionId) {
+            Log::error('Missing originalTransactionId in GRACE_PERIOD_EXPIRED notification.', ['data' => (array)$data]);
+            return;
+        }
+
+        $subscription = Subscription::where('stripe_id', $originalTransactionId)->first();
+
+        if (!$subscription) {
+            $user = User::where('appstore_transaction_id', $originalTransactionId)->first();
+            if ($user) {
+                $subscription = $user->subscriptions()->where('stripe_id', $originalTransactionId)->first();
+                if (!$subscription) {
+                    Log::warning('Subscription not found via User relation for originalTransactionId (GRACE_PERIOD_EXPIRED): ' . $originalTransactionId);
+                    return;
+                }
+            } else {
+                Log::error('Subscription and User not found for originalTransactionId (GRACE_PERIOD_EXPIRED): ' . $originalTransactionId);
+                return;
+            }
+        }
+
+        if ($subscription->stripe_status !== 'expired') {
+            $subscription->stripe_status = 'expired';
+            $subscription->ends_at = now();
+            $subscription->save();
+            event(new SubscriptionExpired($subscription->user));
+            Log::info('Subscription grace period expired via Apple notification.', ['subscription_id' => $subscription->id]);
+        }
+    }
+
+    /**
+     * Handles the 'REVOKED' notification from Apple.
+     *
+     * @param object $data Decoded payload data from the JWS.
+     * @return void
+     */
+    public function handleAppleRevoked(object $data): void
+    {
+        $originalTransactionId = $data->originalTransactionId ?? ($data->transactionInfo->originalTransactionId ?? null);
+
+        if (!$originalTransactionId) {
+            Log::error('Missing originalTransactionId in REVOKED notification.', ['data' => (array)$data]);
+            return;
+        }
+
+        $subscription = Subscription::where('stripe_id', $originalTransactionId)->first();
+
+        if (!$subscription) {
+            $user = User::where('appstore_transaction_id', $originalTransactionId)->first();
+            if ($user) {
+                $subscription = $user->subscriptions()->where('stripe_id', $originalTransactionId)->first();
+                if (!$subscription) {
+                    Log::warning('Subscription not found via User relation for originalTransactionId (REVOKED): ' . $originalTransactionId);
+                    return;
+                }
+            } else {
+                Log::error('Subscription and User not found for originalTransactionId (REVOKED): ' . $originalTransactionId);
+                return;
+            }
+        }
+
+        if ($subscription->stripe_status !== 'revoked') {
+            $subscription->stripe_status = 'revoked';
+            $subscription->ends_at = now();
+            $subscription->save();
+            event(new SubscriptionExpired($subscription->user));
+            Log::info('Subscription revoked via Apple notification.', ['subscription_id' => $subscription->id]);
+        }
+    }
 }

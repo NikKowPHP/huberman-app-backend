@@ -271,7 +271,12 @@ class WebhookController extends CashierController
                       // Call handler in SubscriptionService
                      $this->subscriptionService->handleAppleExpired($payloadData);
                       break;
-                // Add cases for other types like 'REVOKED', 'GRACE_PERIOD_EXPIRED', etc.
+                case 'GRACE_PERIOD_EXPIRED':
+                    $this->subscriptionService->handleAppleGracePeriodExpired($payloadData);
+                    break;
+                case 'REVOKED':
+                    $this->subscriptionService->handleAppleRevoked($payloadData);
+                    break;
                 default:
                     Log::info('Received unhandled Apple notification type: ' . $notificationType);
                     break;
