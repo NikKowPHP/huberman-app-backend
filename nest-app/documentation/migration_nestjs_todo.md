@@ -205,7 +205,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
         2.  Add robust error handling (try-catch) within each case and for JWS verification in `apple.service.ts` if not already comprehensive."
     *   **(Verification):** All key Apple notification types are handled with Prisma updates and event dispatches. Error handling is present.
 
-*   `[ ]` **FIX.WH.G.1: Google Play Webhook - Implement Real Logic**
+*   `[x]` **FIX.WH.G.1: Google Play Webhook - Implement Real Logic**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts`, replace the mock/placeholder logic for Google Play RTDN handling.
         1.  Implement logic to decode the Pub/Sub message data.

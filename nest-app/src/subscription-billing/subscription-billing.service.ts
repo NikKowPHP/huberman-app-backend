@@ -430,35 +430,95 @@ export class SubscriptionBillingService {
     }
   }
 
+  /**
+   * Handles Google Play subscription notifications
+   * @param message The Pub/Sub message from Google Play
+   */
   async handleGoogleNotification(message: any) {
     try {
-      const notificationType = message?.subscriptionNotification?.notificationType;
-      const subscriptionId = message?.subscriptionNotification?.subscriptionId;
-      
+      const notification = message?.subscriptionNotification;
+      if (!notification) {
+        throw new Error('Invalid Google Play notification - missing subscriptionNotification');
+      }
+
+      const { notificationType, subscriptionId } = notification;
       if (!notificationType || !subscriptionId) {
         throw new Error('Invalid Google Play notification - missing required fields');
       }
 
+      // TODO: Implement Google Play Developer API client for purchase token validation
+      // This requires setting up a Google Cloud service account
+      // await this.googlePlayService.validatePurchase(subscriptionId);
+
+      const subscription = await this.prisma.subscription.findUnique({
+        where: { googlePlaySubscriptionId: subscriptionId }
+      });
+
+      if (!subscription) {
+        throw new NotFoundException(`Subscription not found for Google Play ID: ${subscriptionId}`);
+      }
+
       switch (notificationType) {
         case 'SUBSCRIPTION_PURCHASED':
-        case 'SUBSCRIPTION_RENEWED':
-          await this.prisma.subscription.update({
+        case 'SUBSCRIPTION_RENEWED': {
+          const updatedSubscription = await this.prisma.subscription.update({
             where: { googlePlaySubscriptionId: subscriptionId },
-            data: { status: 'ACTIVE' }
+            data: {
+              googlePlayStatus: 'ACTIVE',
+              endsAt: notification.expiryTimeMillis ?
+                new Date(Number(notification.expiryTimeMillis)) : null
+            }
+          });
+
+          this.eventEmitter.emit('subscription.renewed', {
+            userId: updatedSubscription.userId,
+            subscriptionId: updatedSubscription.id,
+            renewalDate: new Date()
           });
           break;
-        case 'SUBSCRIPTION_CANCELED':
-        case 'SUBSCRIPTION_EXPIRED':
-          await this.prisma.subscription.update({
+        }
+
+        case 'SUBSCRIPTION_CANCELED': {
+          const updatedSubscription = await this.prisma.subscription.update({
             where: { googlePlaySubscriptionId: subscriptionId },
-            data: { status: 'CANCELED' }
+            data: {
+              googlePlayStatus: 'CANCELED',
+              endsAt: notification.expiryTimeMillis ?
+                new Date(Number(notification.expiryTimeMillis)) : new Date()
+            }
+          });
+
+          this.eventEmitter.emit('subscription.canceled', {
+            userId: updatedSubscription.userId,
+            subscriptionId: updatedSubscription.id,
+            cancelAt: updatedSubscription.endsAt
           });
           break;
+        }
+
+        case 'SUBSCRIPTION_EXPIRED': {
+          const updatedSubscription = await this.prisma.subscription.update({
+            where: { googlePlaySubscriptionId: subscriptionId },
+            data: {
+              googlePlayStatus: 'EXPIRED',
+              endsAt: new Date()
+            }
+          });
+
+          this.eventEmitter.emit('subscription.ended', {
+            userId: updatedSubscription.userId,
+            subscriptionId: updatedSubscription.id,
+            endedAt: new Date(),
+            reason: 'Subscription expired'
+          });
+          break;
+        }
+
         default:
-          console.warn(`Unhandled Google Play notification type: ${notificationType}`);
+          this.logger.warn(`Unhandled Google Play notification type: ${notificationType}`);
       }
     } catch (error) {
-      console.error('Error handling Google Play notification:', error);
+      this.logger.error(`Error handling Google Play notification: ${error.message}`, error.stack);
       throw error;
     }
   }
