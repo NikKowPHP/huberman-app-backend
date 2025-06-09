@@ -855,13 +855,16 @@ components:
           type: string
           format: date-time
           description: Last update timestamp
-    ErrorResponse:
+    ErrorResponseBase:
       type: object
       properties:
         message:
           type: string
           description: Error message
-    AuthRequest:
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponseBase'
+    AuthBase:
       type: object
       properties:
         email:
@@ -874,9 +877,12 @@ components:
           format: password
           description: User's password
           example: password123
+      required:
+        - email
+        - password
     RegisterRequest:
       allOf:
-        - $ref: '#/components/schemas/AuthRequest'
+        - $ref: '#/components/schemas/AuthBase'
         - type: object
           properties:
             name:
@@ -893,7 +899,7 @@ components:
             - password_confirmation
     LoginRequest:
       allOf:
-        - $ref: '#/components/schemas/AuthRequest'
+        - $ref: '#/components/schemas/AuthBase'
     AuthSuccessResponse:
       type: object
       properties:
@@ -914,25 +920,35 @@ components:
               example: 1
             name:
               type: string
-              description: User's name
+              description: User's full name
               example: John Doe
             email:
               type: string
               format: email
               description: User's email address
               example: john.doe@example.com
+          required:
+            - id
+            - name
+            - email
     UpdateUserProfileRequest:
       type: object
       properties:
         name:
           type: string
-          description: User's name
+          minLength: 2
+          maxLength: 255
+          description: User's full name
           example: Jane Doe
         email:
           type: string
           format: email
+          maxLength: 255
           description: User's email address
           example: jane.doe@example.com
+      required:
+        - name
+        - email
     Plan:
       type: object
       properties:
@@ -1276,6 +1292,8 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authenticated requests
       bearerFormat: Sanctum
   responses:
     UnauthorizedError:
@@ -1291,31 +1309,35 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationErrorResponse'
     ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: General error message.
-          example: An error occurred.
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponseBase'
+        - type: object
+          properties:
+            code:
+              type: integer
+              description: HTTP status code
+              example: 400
     ValidationErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: General error message for validation failures.
-          example: The given data was invalid.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Field-specific validation errors.
-          example:
-            email:
-              - The email field is required.
-            password:
-              - The password field is required.
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponseBase'
+        - type: object
+          properties:
+            code:
+              type: integer
+              description: HTTP status code
+              example: 422
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+              description: Field-specific validation errors
+              example:
+                email:
+                  - The email field is required.
+                password:
+                  - The password field is required.
     NotFound:
       description: Resource not found
       content:
