@@ -370,7 +370,7 @@
     *   `[x]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
     *   `[x]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
     *   `[x]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
-    *   `[ ]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
+    *   `[x]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
     *   `[ ]` Define/Review: Reusable schemas in `components/schemas`.
     *   `[ ]` Define/Review: Reusable error responses in `components/responses`.
     *   `[ ]` Define/Review: Security schemes (`bearerAuth`) and apply.
