@@ -83,7 +83,7 @@
     *   `[x]` (TDD) Test Forgot Password (`POST /api/v1/forgot-password`): Validation (email exists), success response, mock `Notification::send`.
     *   `[x]` (TDD) Test Reset Password (`POST /api/v1/reset-password`): Validation (token, email, password, confirmation), successful reset, token consumed/invalidated.
     *   `[x]` Implement necessary Controllers (`ForgotPasswordController`, `NewPasswordController`), Requests, Notifications (`ResetPasswordNotification`).
-    *   `[ ]` Define password reset routes. Ensure tests pass.
+    *   `[x]` Define password reset routes. Ensure tests pass.
 
 *   **Security Controls:**
     *   `[x]` (TDD) Write tests for rate limiting on auth endpoints (`login`, `register`, `forgot-password`).

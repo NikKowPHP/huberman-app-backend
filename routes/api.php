@@ -23,3 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/offline-data', [OfflineDataController::class, 'fetchData']);
     Route::post('/offline-data/sync', [OfflineDataController::class, 'syncData']);
 });
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+
+Route::post('/reset-password', [NewPasswordController::class, 'reset'])
+    ->name('password.reset');
