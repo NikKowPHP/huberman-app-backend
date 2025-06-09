@@ -218,7 +218,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 ## Phase FIX.6: Event, Job, Notification Enhancement
 
-*   `[ ]` **FIX.EVENT.LSR.1: `SubscriptionRenewedListener` - Implement Cache Clearing**
+*   `[x]` **FIX.EVENT.LSR.1: `SubscriptionRenewedListener` - Implement Cache Clearing**
     *   **(File):** `nest-app/src/subscription-billing/listeners/subscription-renewed.listener.ts`
     *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/listeners/subscription-renewed.listener.ts`, uncomment and implement the actual cache clearing logic. If a generic NestJS caching module (`@nestjs/cache-manager`) is used, inject `Cache` and use `this.cacheManager.del('user:${event.userId}:premium_subscription')` or similar. If no global cache manager, this step might be deferred or use a custom solution. For now, ensure the logging shows the intent to clear cache for `event.userId`."
     *   **(Verification):** Listener attempts to clear a user-specific cache key or logs the intent clearly. User `isPremium` update is removed if it's not a direct field on User model.
