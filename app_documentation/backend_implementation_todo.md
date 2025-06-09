@@ -362,7 +362,7 @@
 ## Phase 9: API Documentation & Refinement
 
 *   **Setup:**
-    *   `[ ]` Install & Configure `zircote/swagger-php` OR choose manual editing tool.
+    *   `[x]` Install & Configure `zircote/swagger-php` OR choose manual editing tool.
 *   **Annotation/Manual Update:**
     *   `[ ]` Review `openapi.yaml` structure.
     *   `[ ]` Annotate/Document: `Authentication` module endpoints & schemas.
