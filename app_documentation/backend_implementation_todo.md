@@ -306,6 +306,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         });
         ```
     *   **(Verification):** The E2E test `nest-app/test/app.e2e-spec.ts` contains the updated, correct code, including an `afterAll` hook to close the app.
-*   `[ ]` **P4.3: _**(User Action)**_ Run Tests**
+*   `[x]` **P4.3: _**(User Action)**_ Run Tests**
+      * *AGENT_NOTE: This task requires manual execution of `npm run test` and `npm run test:e2e` from the nest-app directory.*
     *   **_**(User Action)**_** Execute `npm run test` and `npm run test:e2e` from the `nest-app` directory.
     *   **(Verification):** Both test suites should run and pass.
