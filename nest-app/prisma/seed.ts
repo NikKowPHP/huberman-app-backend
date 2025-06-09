@@ -47,30 +47,34 @@ async function main() {
             slug: faker.lorem.slug(3),
             description: faker.lorem.sentence(),
             content: faker.lorem.paragraph(),
-            duration: faker.datatype.number({ min: 10, max: 60 }),
+            duration: faker.number.int({ min: 10, max: 60 }),
             publishedAt: faker.date.past(),
         })),
     });
 
-    // Seed protocols
-    const protocols = await prisma.protocol.createMany({
-        data: [
-            ...Array.from({ length: 5 }).map(() => ({
-                title: faker.lorem.words(3),
-                slug: faker.lorem.slug(3),
-                description: faker.lorem.sentence(),
-                implementationGuide: faker.lorem.paragraph(),
-                isFree: true,
-            })),
-            ...Array.from({ length: 2 }).map(() => ({
-                title: faker.lorem.words(3),
-                slug: faker.lorem.slug(3),
-                description: faker.lorem.sentence(),
-                implementationGuide: faker.lorem.paragraph(),
-                isFree: false,
-            })),
-        ],
-    });
+    // Seed protocols and get their IDs
+    const protocolData = [
+        ...Array.from({ length: 5 }).map(() => ({
+            title: faker.lorem.words(3),
+            slug: faker.lorem.slug(3),
+            description: faker.lorem.sentence(),
+            implementationGuide: faker.lorem.paragraph(),
+            isFree: true,
+        })),
+        ...Array.from({ length: 2 }).map(() => ({
+            title: faker.lorem.words(3),
+            slug: faker.lorem.slug(3),
+            description: faker.lorem.sentence(),
+            implementationGuide: faker.lorem.paragraph(),
+            isFree: false,
+        })),
+    ];
+    
+    const protocols = [];
+    for (const data of protocolData) {
+        const protocol = await prisma.protocol.create({ data });
+        protocols.push(protocol);
+    }
 
     // Seed episode-protocol relationships
     for (const episode of episodes) {
@@ -97,32 +101,34 @@ async function main() {
     }
 
     // Seed note tags
-    const noteTags = await prisma.noteTag.createMany({
+    await prisma.noteTag.createMany({
         data: Array.from({ length: 10 }).map(() => ({
             name: faker.lorem.word(),
             color: faker.color.rgb(),
         })),
     });
 
-    // Seed user reminders
+    // Get all users first
     const users = await prisma.user.findMany();
+
+    // Seed user reminders
     for (const user of users) {
         await prisma.userReminder.createMany({
             data: Array.from({ length: 3 }).map(() => ({
                 userId: user.id,
                 protocolId: faker.helpers.arrayElement(protocols).id,
-                reminderTime: faker.datatype.datetime().toISOString(),
+                reminderTime: faker.date.anytime().toISOString(),
                 frequency: faker.helpers.arrayElement([
                     'daily',
                     'weekly',
                     'specific_days',
                 ]),
                 specificDays:
-                    faker.helpers.arrayElement(['daily', 'weekly']) ===
+                    faker.helpers.arrayElement(['daily', 'weekly', 'specific_days']) ===
                     'specific_days'
                         ? faker.helpers.arrayElements(
                               ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                              faker.datatype.number({ min: 1, max: 7 }),
+                              faker.number.int({ min: 1, max: 7 }),
                           )
                         : [],
                 message: faker.lorem.sentence(),
@@ -144,8 +150,8 @@ async function main() {
                     'weekdays',
                     'custom',
                 ]),
-                startTime: faker.datatype.datetime(),
-                endTime: faker.datatype.datetime(),
+                startTime: faker.date.anytime(),
+                endTime: faker.date.anytime(),
                 isActive: faker.datatype.boolean({ probability: 0.8 }),
             })),
         });
@@ -159,9 +165,29 @@ async function main() {
                 routineId: routine.id,
                 name: faker.lorem.words(3),
                 description: faker.lorem.sentence(),
-                duration: faker.datatype.number({ min: 1, max: 30 }),
-                order: faker.datatype.uniqueNumber({ min: 1, max: 10 }),
+                duration: faker.number.int({ min: 1, max: 30 }),
+                order: faker.number.int({ min: 1, max: 10 }),
                 isOptional: faker.datatype.boolean({ probability: 0.2 }),
+            })),
+        });
+    }
+
+    // Seed offline data
+    for (const user of users) {
+        await prisma.offlineData.createMany({
+            data: Array.from({ length: 5 }).map(() => ({
+                userId: user.id,
+                key: `user_${user.id}_${faker.lorem.slug(2)}`,
+                value: JSON.stringify({
+                    [faker.lorem.word()]: faker.lorem.sentence(),
+                    timestamp: faker.date.recent().toISOString(),
+                    metadata: {
+                        device: faker.helpers.arrayElement(['mobile', 'desktop', 'tablet']),
+                        version: faker.system.semver(),
+                    }
+                }),
+                createdAt: faker.date.past(),
+                updatedAt: faker.date.recent(),
             })),
         });
     }
