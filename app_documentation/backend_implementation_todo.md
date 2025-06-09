@@ -272,7 +272,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         ```
     *   **(Verification):** The unit test `nest-app/src/app.service.spec.ts` contains the updated, correct code.
 
-*   `[ ]` **P4.2: Implement a Basic E2E Test**
+*   `[x]` **P4.2: Implement a Basic E2E Test**
     *   **(File):** `nest-app/test/app.e2e-spec.ts`
     *   **(LLM Action):** Open `nest-app/test/app.e2e-spec.ts` and ensure the E2E test for the root endpoint (`GET /`) is correctly implemented.
         ```typescript
