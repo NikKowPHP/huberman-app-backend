@@ -235,7 +235,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 ## Phase FIX.7: Seed Script Completion
 
-*   `[ ]` **FIX.SEED.OD.1: Add OfflineData Seeding**
+*   `[x]` **FIX.SEED.OD.1: Add OfflineData Seeding**
     *   **(File):** `nest-app/prisma/seed.ts`
     *   **(LLM Prompt):** "In `nest-app/prisma/seed.ts`, add logic to seed `OfflineData`. Create a few sample `User` records if they don't exist or pick existing ones. For each sample user, create a few `OfflineData` entries with a `key` (string) and `value` (JSON string, e.g., `JSON.stringify({ setting: 'value' })`)."
     *   **(Verification):** `seed.ts` includes OfflineData seeding.
