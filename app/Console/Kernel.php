@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         // Schedule job in `Kernel.php` (e.g., `daily()`).
         $schedule->command('reminders:send-due')->everyMinute();
         $schedule->command('app:send-foundational-reminders')->daily();
+        $schedule->command('subscriptions:check-expired')->daily();
     }
 
     /**

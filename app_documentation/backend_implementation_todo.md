@@ -236,7 +236,7 @@
     *   `[ ]` *(Implement/Test other handlers: `REVOKED`, `PAUSED`)* (Mock)
 
 *   **Scheduled Job for Status Check:**
-    *   `[ ]` Implement `CheckExpiredSubscriptions` job/command.
+    *   `[x]` Implement `CheckExpiredSubscriptions` job/command.
     *   `[ ]` (TDD) Test job finds past `canceled` subs and sets status to `expired`.
     *   `[x]` Schedule job in `Kernel.php` (e.g., `daily()`).
 
