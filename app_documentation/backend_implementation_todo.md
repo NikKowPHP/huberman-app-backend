@@ -207,7 +207,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         ```
     *   **(Verification):** `main.ts` now includes the code to register the global filter.
 
-*   `[ ]` **P3.3: Create `.env.example` file**
+*   `[x]` **P3.3: Create `.env.example` file**
     *   **(File):** `nest-app/.env.example`
     *   **(LLM Action):** Create a new file `nest-app/.env.example` and populate it with all the necessary environment variables for the project.
         ```
