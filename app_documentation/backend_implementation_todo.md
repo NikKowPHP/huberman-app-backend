@@ -243,7 +243,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
 
 **Objective:** Establish a clear testing pattern by implementing one basic unit and one basic E2E test.
 
-*   `[ ]` **P4.1: Implement a Basic Unit Test**
+*   `[x]` **P4.1: Implement a Basic Unit Test**
     *   **(File):** `nest-app/src/app.service.spec.ts`
     *   **(LLM Action):** Open the existing file `nest-app/src/app.service.spec.ts` and ensure the test correctly checks the behavior of the `getHello()` method.
         ```typescript
