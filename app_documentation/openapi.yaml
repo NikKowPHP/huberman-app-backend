@@ -233,9 +233,10 @@ paths:
       summary: Get a list of protocols
       tags:
         - ContentManagement
+      description: Returns a list of protocols available to the user. Premium users receive additional details like implementation guides.
       responses:
         '200':
-          description: List of protocols (content may vary based on subscription status)
+          description: List of protocols (content varies based on subscription status)
           content:
             application/json:
               schema:
@@ -247,6 +248,7 @@ paths:
       summary: Get protocol details by ID
       tags:
         - ContentManagement
+      description: Returns detailed information about a specific protocol. Premium users receive additional fields including implementation guides and premium-only content.
       parameters:
         - name: id
           in: path
@@ -256,7 +258,7 @@ paths:
           description: ID of the protocol to retrieve
       responses:
         '200':
-          description: Protocol details (content may vary based on subscription status)
+          description: Protocol details (content varies based on subscription status)
           content:
             application/json:
               schema:

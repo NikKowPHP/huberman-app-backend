@@ -368,7 +368,7 @@
     *   `[x]` Annotate/Document: `Authentication` module endpoints & schemas.
     *   `[x]` Annotate/Document: `UserManagement` module endpoints & schemas.
     *   `[x]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
-    *   `[ ]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
+    *   `[x]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
     *   `[ ]` Annotate/Document: `NotesService` module endpoints & schemas (note premium diffs).
     *   `[ ]` Annotate/Document: `ProtocolEngine` module endpoints & schemas (premium).
     *   `[ ]` Define/Review: Reusable schemas in `components/schemas`.
