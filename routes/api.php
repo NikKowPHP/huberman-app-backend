@@ -29,3 +29,20 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 
 Route::post('/reset-password', [NewPasswordController::class, 'reset'])
     ->name('password.reset');
+
+// Premium routes requiring active subscription
+Route::middleware(['auth:sanctum', 'premium'])->group(function () {
+    // Reminders endpoints
+    Route::prefix('reminders')->group(function () {
+        Route::get('/', [ReminderController::class, 'index']);
+        Route::post('/', [ReminderController::class, 'store']);
+        Route::put('/{reminder}', [ReminderController::class, 'update']);
+        Route::delete('/{reminder}', [ReminderController::class, 'destroy']);
+    });
+
+    // Tracking endpoints
+    Route::prefix('tracking')->group(function () {
+        Route::post('/log', [TrackingController::class, 'logAdherence']);
+        Route::get('/summary', [TrackingController::class, 'getSummary']);
+    });
+});
