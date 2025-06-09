@@ -221,7 +221,8 @@
     *   `[ ]` *(Implement/Test other handlers: `GRACE_PERIOD_EXPIRED`, `REVOKED`)* TO CHECK
 
 *   **Webhook Processing Logic (Google Play Billing - RTDN via Pub/Sub):**
-    *   `[ ]` Set up Google Cloud Pub/Sub topic & push subscription.
+    *   `[!]` Set up Google Cloud Pub/Sub topic & push subscription.
+      * *AGENT_NOTE: Skipped - Requires external Google Cloud Platform configuration*
     *   `[x]` Implement `WebhookController::handleGoogleWebhook` (Mock).
     *   `[x]` Implement service/logic to decode base64 Pub/Sub data.
     *   `[x]` (TDD) Test Pub/Sub message decoding & parsing.
