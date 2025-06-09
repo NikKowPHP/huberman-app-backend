@@ -23,7 +23,7 @@
         *   `[x]` Web Server (Nginx or Caddy) container + config.
         *   `[x]` PostgreSQL (`17.x` or latest supported) container.
         *   `[x]` Redis (`7.x`) container.
-        *   `[ ]` Node.js (LTS) container (optional, for build tools).
+        *   `[x]` Node.js (LTS) container (optional, for build tools).
     *   `[x]` Verify local Docker environment is running (`docker-compose up -d`) and accessible.
     *   `[x]` Configure PHPUnit (`phpunit.xml`) for testing environment (e.g., separate test PG database connection in `.env.testing`).
     *   `[x]` Establish coding standards (PSR-12 enforced, setup `laravel/pint`).

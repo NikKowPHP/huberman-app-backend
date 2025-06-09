@@ -88,6 +88,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # Node.js Service (Build Tools)
+  node:
+    image: node:20-alpine
+    container_name: huberman_app_node
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - huberman_app_network
+    depends_on:
+      - app
+    healthcheck:
+      test: ["CMD", "node", "-v"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Vector Database (Qdrant)
   qdrant:
     image: qdrant/qdrant
