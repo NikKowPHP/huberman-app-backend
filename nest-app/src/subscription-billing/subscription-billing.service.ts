@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { Stripe } from 'stripe';
 import { AppleService } from './apple.service';
@@ -7,9 +8,12 @@ import { AppleService } from './apple.service';
 export class SubscriptionBillingService {
   private stripe: Stripe;
 
+  private readonly logger = new Logger(SubscriptionBillingService.name);
+
   constructor(
     private readonly prisma: PrismaService,
-    private readonly appleService: AppleService
+    private readonly appleService: AppleService,
+    private readonly eventEmitter: EventEmitter2
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
       apiVersion: '2025-05-28.basil',
@@ -86,120 +90,186 @@ export class SubscriptionBillingService {
   }
 
   async handleCheckoutSessionCompleted(payload: any) {
-    const customerId = payload.data.object.customer;
-    const customerEmail = payload.data.object.customer_email;
-    const subscriptionId = payload.data.object.subscription;
+    try {
+      const customerId = payload.data.object.customer;
+      const customerEmail = payload.data.object.customer_email;
+      const subscriptionId = payload.data.object.subscription;
 
-    if (!customerId || !customerEmail || !subscriptionId) {
-      throw new NotFoundException('Missing data in checkout.session.completed event');
-    }
-
-    const user = await this.prisma.user.findUnique({
-      where: { email: customerEmail }
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User not found for email: ${customerEmail}`);
-    }
-
-    await this.prisma.subscription.create({
-      data: {
-        name: 'default',
-        stripeId: subscriptionId,
-        stripeCustomerId: customerId,
-        stripeStatus: 'TRIALING',
-        userId: user.id
+      if (!customerId || !customerEmail || !subscriptionId) {
+        throw new NotFoundException('Missing data in checkout.session.completed event');
       }
-    });
 
-    if (!user.stripeId || user.stripeId !== customerId) {
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: { stripeId: customerId }
+      const user = await this.prisma.user.findUnique({
+        where: { email: customerEmail }
       });
+
+      if (!user) {
+        throw new NotFoundException(`User not found for email: ${customerEmail}`);
+      }
+
+      const subscription = await this.prisma.subscription.create({
+        data: {
+          name: 'default',
+          stripeId: subscriptionId,
+          stripeCustomerId: customerId,
+          stripeStatus: 'TRIALING',
+          userId: user.id
+        }
+      });
+
+      if (!user.stripeId || user.stripeId !== customerId) {
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { stripeId: customerId }
+        });
+      }
+
+      this.eventEmitter.emit('subscription.started', {
+        userId: user.id,
+        subscriptionId: subscription.id,
+        trialEnd: payload.data.object.subscription.trial_end
+      });
+    } catch (error) {
+      this.logger.error(`Error handling checkout session completed: ${error.message}`, error.stack);
+      throw error;
     }
   }
 
   async handleCustomerSubscriptionUpdatedTrialEnded(payload: any) {
-    const subscriptionId = payload.data.object.id;
-    if (!subscriptionId) {
-      throw new NotFoundException('Missing subscription ID in customer.subscription.updated event');
-    }
-
-    await this.prisma.subscription.update({
-      where: { stripeId: subscriptionId },
-      data: {
-        stripeStatus: 'ACTIVE',
-        trialEndsAt: null,
-        endsAt: null
+    try {
+      const subscriptionId = payload.data.object.id;
+      if (!subscriptionId) {
+        throw new NotFoundException('Missing subscription ID in customer.subscription.updated event');
       }
-    });
+
+      const subscription = await this.prisma.subscription.update({
+        where: { stripeId: subscriptionId },
+        data: {
+          stripeStatus: 'ACTIVE',
+          trialEndsAt: null,
+          endsAt: null
+        }
+      });
+
+      this.eventEmitter.emit('subscription.renewed', {
+        userId: subscription.userId,
+        subscriptionId: subscription.id,
+        renewalDate: new Date()
+      });
+    } catch (error) {
+      this.logger.error(`Error handling subscription trial ended: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async handleInvoicePaymentSucceeded(payload: any) {
-    const subscriptionId = payload.data.object.subscription;
-    if (!subscriptionId) {
-      throw new NotFoundException('Missing subscription ID in invoice.payment_succeeded event');
-    }
-
-    const periodEnd = payload.data.object.lines.data[0].period.end;
-    if (!periodEnd) {
-      throw new NotFoundException('Missing period end in invoice.payment_succeeded event');
-    }
-
-    await this.prisma.subscription.update({
-      where: { stripeId: subscriptionId },
-      data: {
-        endsAt: new Date(periodEnd * 1000)
+    try {
+      const subscriptionId = payload.data.object.subscription;
+      if (!subscriptionId) {
+        throw new NotFoundException('Missing subscription ID in invoice.payment_succeeded event');
       }
-    });
+
+      const periodEnd = payload.data.object.lines.data[0].period.end;
+      if (!periodEnd) {
+        throw new NotFoundException('Missing period end in invoice.payment_succeeded event');
+      }
+
+      const subscription = await this.prisma.subscription.update({
+        where: { stripeId: subscriptionId },
+        data: {
+          endsAt: new Date(periodEnd * 1000)
+        }
+      });
+
+      this.eventEmitter.emit('subscription.renewed', {
+        userId: subscription.userId,
+        subscriptionId: subscription.id,
+        renewalDate: new Date(periodEnd * 1000)
+      });
+    } catch (error) {
+      this.logger.error(`Error handling invoice payment succeeded: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async handleInvoicePaymentFailed(payload: any) {
-    const subscriptionId = payload.data.object.subscription;
-    if (!subscriptionId) {
-      throw new NotFoundException('Missing subscription ID in invoice.payment_failed event');
-    }
+    try {
+      const subscriptionId = payload.data.object.subscription;
+      if (!subscriptionId) {
+        throw new NotFoundException('Missing subscription ID in invoice.payment_failed event');
+      }
 
-    await this.prisma.subscription.update({
-      where: { stripeId: subscriptionId },
-      data: { stripeStatus: 'PAST_DUE' }
-    });
+      const subscription = await this.prisma.subscription.update({
+        where: { stripeId: subscriptionId },
+        data: { stripeStatus: 'PAST_DUE' }
+      });
+
+      this.eventEmitter.emit('subscription.payment_failed', {
+        userId: subscription.userId,
+        subscriptionId: subscription.id,
+        invoiceId: payload.data.object.id
+      });
+    } catch (error) {
+      this.logger.error(`Error handling invoice payment failed: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async handleCustomerSubscriptionUpdatedCancel(payload: any) {
-    const subscriptionId = payload.data.object.id;
-    if (!subscriptionId) {
-      throw new NotFoundException('Missing subscription ID in customer.subscription.updated event');
-    }
-
-    const periodEnd = payload.data.object.current_period_end;
-    if (!periodEnd) {
-      throw new NotFoundException('Missing period end in customer.subscription.updated event');
-    }
-
-    await this.prisma.subscription.update({
-      where: { stripeId: subscriptionId },
-      data: {
-        stripeStatus: 'CANCELED',
-        endsAt: new Date(periodEnd * 1000)
+    try {
+      const subscriptionId = payload.data.object.id;
+      if (!subscriptionId) {
+        throw new NotFoundException('Missing subscription ID in customer.subscription.updated event');
       }
-    });
+
+      const periodEnd = payload.data.object.current_period_end;
+      if (!periodEnd) {
+        throw new NotFoundException('Missing period end in customer.subscription.updated event');
+      }
+
+      const subscription = await this.prisma.subscription.update({
+        where: { stripeId: subscriptionId },
+        data: {
+          stripeStatus: 'CANCELED',
+          endsAt: new Date(periodEnd * 1000)
+        }
+      });
+
+      this.eventEmitter.emit('subscription.canceled', {
+        userId: subscription.userId,
+        subscriptionId: subscription.id,
+        cancelAt: new Date(periodEnd * 1000)
+      });
+    } catch (error) {
+      this.logger.error(`Error handling subscription cancellation: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async handleCustomerSubscriptionDeleted(payload: any) {
-    const subscriptionId = payload.data.object.id;
-    if (!subscriptionId) {
-      throw new NotFoundException('Missing subscription ID in customer.subscription.deleted event');
-    }
-
-    await this.prisma.subscription.update({
-      where: { stripeId: subscriptionId },
-      data: {
-        stripeStatus: 'CANCELED',
-        endsAt: new Date()
+    try {
+      const subscriptionId = payload.data.object.id;
+      if (!subscriptionId) {
+        throw new NotFoundException('Missing subscription ID in customer.subscription.deleted event');
       }
-    });
+
+      const subscription = await this.prisma.subscription.update({
+        where: { stripeId: subscriptionId },
+        data: {
+          stripeStatus: 'CANCELED',
+          endsAt: new Date()
+        }
+      });
+
+      this.eventEmitter.emit('subscription.ended', {
+        userId: subscription.userId,
+        subscriptionId: subscription.id,
+        endedAt: new Date()
+      });
+    } catch (error) {
+      this.logger.error(`Error handling subscription deletion: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async handleAppleNotification(jws: string, notificationType: string): Promise<void> {

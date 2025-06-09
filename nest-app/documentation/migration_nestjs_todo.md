@@ -191,7 +191,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
 
 ## Phase FIX.5: Webhook Logic Enhancement
 
-*   `[ ]` **FIX.WH.S.1: Stripe Webhook - Robust Error Handling & Event Dispatch**
+*   `[x]` **FIX.WH.S.1: Stripe Webhook - Robust Error Handling & Event Dispatch**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts`, for each Stripe event handler method (e.g., `handleCheckoutSessionCompleted`):
         1.  Wrap the core logic in a try-catch block. Log detailed errors using `@nestjs/common` Logger.
