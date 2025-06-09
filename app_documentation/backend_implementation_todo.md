@@ -80,7 +80,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
 
 **Objective:** Implement the missing subscription logic for Google Play to ensure all payment providers are handled.
 
-*   `[ ]` **P2.1: Implement Google Play Webhook Logic**
+*   `[x]` **P2.1: Implement Google Play Webhook Logic**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Action):** In the `handleGoogleNotification` method, replace the placeholder `// TODO` logic with a `switch` statement that handles different notification types by updating the subscription status in the Prisma database.
         ```typescript

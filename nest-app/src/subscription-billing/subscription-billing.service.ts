@@ -436,83 +436,51 @@ export class SubscriptionBillingService {
    */
   async handleGoogleNotification(message: any) {
     try {
-      const notification = message?.subscriptionNotification;
-      if (!notification) {
-        throw new Error('Invalid Google Play notification - missing subscriptionNotification');
+      const dataString = Buffer.from(message.data, 'base64').toString('utf-8');
+      const data = JSON.parse(dataString);
+      const { subscriptionNotification } = data;
+      const { notificationType, purchaseToken, subscriptionId } = subscriptionNotification;
+
+      if (!purchaseToken) {
+        this.logger.error('Google Play notification is missing purchaseToken.');
+        return;
       }
 
-      const { notificationType, subscriptionId } = notification;
-      if (!notificationType || !subscriptionId) {
-        throw new Error('Invalid Google Play notification - missing required fields');
-      }
+      this.logger.log(`Received Google Play Notification: ${notificationType} for subscriptionId: ${subscriptionId}`);
 
-      // TODO: Implement Google Play Developer API client for purchase token validation
-      // This requires setting up a Google Cloud service account
-      // await this.googlePlayService.validatePurchase(subscriptionId);
-
-      const subscription = await this.prisma.subscription.findUnique({
-        where: { googlePlaySubscriptionId: subscriptionId }
+      const subscription = await this.prisma.subscription.findFirst({
+          where: { googlePlaySubscriptionId: subscriptionId },
       });
 
       if (!subscription) {
-        throw new NotFoundException(`Subscription not found for Google Play ID: ${subscriptionId}`);
+          this.logger.warn(`Subscription with Google Play ID ${subscriptionId} not found.`);
+          return;
       }
 
       switch (notificationType) {
-        case 'SUBSCRIPTION_PURCHASED':
-        case 'SUBSCRIPTION_RENEWED': {
-          const updatedSubscription = await this.prisma.subscription.update({
-            where: { googlePlaySubscriptionId: subscriptionId },
-            data: {
-              googlePlayStatus: 'ACTIVE',
-              endsAt: notification.expiryTimeMillis ?
-                new Date(Number(notification.expiryTimeMillis)) : null
-            }
+        case 4: // SUBSCRIPTION_RENEWED
+          await this.prisma.subscription.update({
+            where: { id: subscription.id },
+            data: { stripeStatus: 'ACTIVE' },
           });
-
-          this.eventEmitter.emit('subscription.renewed', {
-            userId: updatedSubscription.userId,
-            subscriptionId: updatedSubscription.id,
-            renewalDate: new Date()
-          });
+          this.eventEmitter.emit('subscription.renewed', { userId: subscription.userId });
           break;
-        }
 
-        case 'SUBSCRIPTION_CANCELED': {
-          const updatedSubscription = await this.prisma.subscription.update({
-            where: { googlePlaySubscriptionId: subscriptionId },
-            data: {
-              googlePlayStatus: 'CANCELED',
-              endsAt: notification.expiryTimeMillis ?
-                new Date(Number(notification.expiryTimeMillis)) : new Date()
-            }
+        case 3: // SUBSCRIPTION_CANCELED
+          await this.prisma.subscription.update({
+            where: { id: subscription.id },
+            data: { stripeStatus: 'CANCELED' },
           });
-
-          this.eventEmitter.emit('subscription.canceled', {
-            userId: updatedSubscription.userId,
-            subscriptionId: updatedSubscription.id,
-            cancelAt: updatedSubscription.endsAt
-          });
+          this.eventEmitter.emit('subscription.canceled', { userId: subscription.userId });
           break;
-        }
 
-        case 'SUBSCRIPTION_EXPIRED': {
-          const updatedSubscription = await this.prisma.subscription.update({
-            where: { googlePlaySubscriptionId: subscriptionId },
-            data: {
-              googlePlayStatus: 'EXPIRED',
-              endsAt: new Date()
-            }
+        case 12: // SUBSCRIPTION_EXPIRED
+          await this.prisma.subscription.update({
+            where: { id: subscription.id },
+            data: { stripeStatus: 'EXPIRED', endsAt: new Date() },
           });
-
-          this.eventEmitter.emit('subscription.ended', {
-            userId: updatedSubscription.userId,
-            subscriptionId: updatedSubscription.id,
-            endedAt: new Date(),
-            reason: 'Subscription expired'
-          });
+           this.eventEmitter.emit('subscription.ended', { userId: subscription.userId });
           break;
-        }
 
         default:
           this.logger.warn(`Unhandled Google Play notification type: ${notificationType}`);
