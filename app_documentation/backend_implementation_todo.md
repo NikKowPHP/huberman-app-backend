@@ -193,7 +193,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         ```
     *   **(Verification):** The file `all-exceptions.filter.ts` is created with the specified content.
 
-*   `[ ]` **P3.2: Register Global Exception Filter**
+*   `[x]` **P3.2: Register Global Exception Filter**
     *   **(File):** `nest-app/src/main.ts`
     *   **(LLM Action):** In `nest-app/src/main.ts`, register the `AllExceptionsFilter` globally.
         ```typescript
