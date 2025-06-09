@@ -25,4 +25,12 @@ export class AuthenticationService {
     if (error) throw error;
     return { message: 'Logged out successfully' };
   }
+async resetPassword(email: string) {
+    const supabase = this.supabaseService.getSupabaseClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: process.env.PASSWORD_RESET_URL, // You'll need to add this to your .env
+    });
+    if (error) throw error;
+    return { message: 'Password reset email sent successfully. Please check your inbox.' };
+  }
 }

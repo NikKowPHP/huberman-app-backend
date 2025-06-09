@@ -46,7 +46,7 @@ This plan is specifically designed to be executed by a 4B LLM. Each step is atom
         ```
     *   **(Verification):** The file `supabase/init.sql` exists and contains the correct SQL code. (Note: A human must run this SQL in their Supabase dashboard's SQL Editor).
 
-*   `[ ]` **P1.2: Implement Password Reset Logic**
+*   `[x]` **P1.2: Implement Password Reset Logic**
     *   **(File):** `nest-app/src/authentication/authentication.service.ts`
     *   **(LLM Action):** In the `AuthenticationService`, add a new method `resetPassword` that uses the Supabase client to trigger a password reset email.
         ```typescript
