@@ -365,7 +365,7 @@
     *   `[x]` Install & Configure `zircote/swagger-php` OR choose manual editing tool.
 *   **Annotation/Manual Update:**
     *   `[x]` Review `openapi.yaml` structure.
-    *   `[ ]` Annotate/Document: `Authentication` module endpoints & schemas.
+    *   `[x]` Annotate/Document: `Authentication` module endpoints & schemas.
     *   `[ ]` Annotate/Document: `UserManagement` module endpoints & schemas.
     *   `[ ]` Annotate/Document: `SubscriptionBilling` module endpoints & schemas (incl. webhooks).
     *   `[ ]` Annotate/Document: `ContentManagement` module endpoints & schemas (note premium diffs).
