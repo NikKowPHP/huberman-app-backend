@@ -198,7 +198,7 @@ Okay, here is a very detailed and simple `migration_nestjs_todo.md.md` plan desi
         2.  Ensure appropriate NestJS events (e.g., `SubscriptionStartedEvent`, `SubscriptionRenewedEvent`, `SubscriptionCanceledEvent`, `SubscriptionExpiredEvent`, `PaymentFailedEvent` - create these event classes in `nest-app/src/common/events/` if they don't exist) are dispatched using `this.eventEmitter.emit()` after successful state changes. Pass the relevant subscription or user object to the event."
     *   **(Verification):** Stripe handlers have try-catch blocks, log errors, and dispatch specific NestJS events.
 
-*   `[ ]` **FIX.WH.A.1: Apple Webhook - Full Event Type Handling & Error Logic**
+*   `[x]` **FIX.WH.A.1: Apple Webhook - Full Event Type Handling & Error Logic**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Prompt):** "In `nest-app/src/subscription-billing/subscription-billing.service.ts` within the `handleAppleNotification` method's switch statement:
         1.  Implement full logic for `SUBSCRIBED`, `DID_RENEW`, `DID_FAIL_TO_RENEW`, `EXPIRED` cases. This involves finding the user (e.g., via `originalTransactionId`), updating their subscription state in Prisma (status, `ends_at`, `trial_ends_at`), and dispatching corresponding NestJS events (similar to Stripe). Refer to Laravel's `SubscriptionService` for how these states were managed.

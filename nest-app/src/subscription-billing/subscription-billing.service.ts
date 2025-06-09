@@ -273,33 +273,160 @@ export class SubscriptionBillingService {
   }
 
   async handleAppleNotification(jws: string, notificationType: string): Promise<void> {
-    const payload = await this.appleService.decodeAndVerifyJWS(jws);
-    
-    switch (notificationType) {
-      case 'DID_CHANGE_RENEWAL_STATUS':
-        await this.handleDidChangeRenewalStatus(payload);
-        break;
-      default:
-        console.warn(`Unhandled Apple notification type: ${notificationType}`);
+    try {
+      const payload = await this.appleService.decodeAndVerifyJWS(jws);
+      const originalTransactionId = payload?.data?.originalTransactionId;
+      
+      if (!originalTransactionId) {
+        throw new NotFoundException('Missing originalTransactionId in Apple notification payload');
+      }
+
+      const user = await this.prisma.user.findFirst({
+        where: { appleOriginalTransactionId: originalTransactionId }
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User not found for originalTransactionId: ${originalTransactionId}`);
+      }
+
+      switch (notificationType) {
+        case 'SUBSCRIBED':
+          await this.handleAppleSubscribed(user.id, payload);
+          break;
+        case 'DID_RENEW':
+          await this.handleAppleDidRenew(user.id, payload);
+          break;
+        case 'DID_FAIL_TO_RENEW':
+          await this.handleAppleDidFailToRenew(user.id, payload);
+          break;
+        case 'EXPIRED':
+          await this.handleAppleExpired(user.id, payload);
+          break;
+        case 'DID_CHANGE_RENEWAL_STATUS':
+          await this.handleDidChangeRenewalStatus(payload);
+          break;
+        default:
+          this.logger.warn(`Unhandled Apple notification type: ${notificationType}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error handling Apple notification: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  private async handleAppleSubscribed(userId: string, payload: any): Promise<void> {
+    try {
+      const expiresDate = payload?.data?.expiresDate;
+      const subscription = await this.prisma.subscription.update({
+        where: { userId },
+        data: {
+          appleStatus: 'ACTIVE',
+          endsAt: expiresDate ? new Date(expiresDate) : null
+        }
+      });
+
+      this.eventEmitter.emit('subscription.started', {
+        userId,
+        subscriptionId: subscription.id,
+        trialEnd: payload?.data?.isTrialPeriod ? expiresDate : null
+      });
+    } catch (error) {
+      this.logger.error(`Error handling Apple SUBSCRIBED event: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  private async handleAppleDidRenew(userId: string, payload: any): Promise<void> {
+    try {
+      const expiresDate = payload?.data?.expiresDate;
+      const subscription = await this.prisma.subscription.update({
+        where: { userId },
+        data: {
+          appleStatus: 'ACTIVE',
+          endsAt: expiresDate ? new Date(expiresDate) : null
+        }
+      });
+
+      this.eventEmitter.emit('subscription.renewed', {
+        userId,
+        subscriptionId: subscription.id,
+        renewalDate: new Date()
+      });
+    } catch (error) {
+      this.logger.error(`Error handling Apple DID_RENEW event: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  private async handleAppleDidFailToRenew(userId: string, payload: any): Promise<void> { // eslint-disable-line @typescript-eslint/no-unused-vars
+    try {
+      const subscription = await this.prisma.subscription.update({
+        where: { userId },
+        data: { appleStatus: 'PAST_DUE' }
+      });
+
+      this.eventEmitter.emit('subscription.payment_failed', {
+        userId,
+        subscriptionId: subscription.id,
+        reason: 'Apple subscription renewal failed'
+      });
+    } catch (error) {
+      this.logger.error(`Error handling Apple DID_FAIL_TO_RENEW event: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  private async handleAppleExpired(userId: string, payload: any): Promise<void> {
+    try {
+      const expirationReason = payload?.data?.expirationReason;
+      const subscription = await this.prisma.subscription.update({
+        where: { userId },
+        data: {
+          appleStatus: 'EXPIRED',
+          endsAt: new Date()
+        }
+      });
+
+      this.eventEmitter.emit('subscription.ended', {
+        userId,
+        subscriptionId: subscription.id,
+        endedAt: new Date(),
+        reason: expirationReason === '1' ? 'Cancelled' : 'Payment failed'
+      });
+    } catch (error) {
+      this.logger.error(`Error handling Apple EXPIRED event: ${error.message}`, error.stack);
+      throw error;
     }
   }
 
   private async handleDidChangeRenewalStatus(payload: any): Promise<void> {
-    const autoRenewStatus = payload?.data?.autoRenewStatus;
-    const productId = payload?.data?.productId;
-    
-    if (autoRenewStatus === false && productId) {
-      const subscription = await this.prisma.subscription.findFirst({
-        where: { plan_product_id: productId }
-      });
-
-      if (subscription) {
-        await this.prisma.subscription.update({
-          where: { id: subscription.id },
-          data: { status: 'CANCELED' }
+    try {
+      const autoRenewStatus = payload?.data?.autoRenewStatus;
+      const productId = payload?.data?.productId;
+      
+      if (autoRenewStatus === false && productId) {
+        const subscription = await this.prisma.subscription.findFirst({
+          where: { plan_product_id: productId }
         });
-        console.log(`Canceled subscription ${subscription.id} for product ${productId}`);
+
+        if (subscription) {
+          await this.prisma.subscription.update({
+            where: { id: subscription.id },
+            data: { appleStatus: 'CANCELED' }
+          });
+
+          this.eventEmitter.emit('subscription.canceled', {
+            userId: subscription.userId,
+            subscriptionId: subscription.id,
+            cancelAt: new Date()
+          });
+
+          this.logger.log(`Canceled Apple subscription ${subscription.id} for product ${productId}`);
+        }
       }
+    } catch (error) {
+      this.logger.error(`Error handling Apple DID_CHANGE_RENEWAL_STATUS: ${error.message}`, error.stack);
+      throw error;
     }
   }
 
