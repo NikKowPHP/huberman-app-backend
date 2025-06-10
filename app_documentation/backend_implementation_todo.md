@@ -169,6 +169,6 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
     *   **(LLM Action):** "In `nest-app/src/main.ts`, register the `TransformInterceptor` globally using `app.useGlobalInterceptors(new TransformInterceptor());`."
     *   **(Verification):** `main.ts` now includes the code to register the global interceptor.
 
-*   `[ ]` **P2.3: Create Remaining Test Stubs**
+*   `[x]` **P2.3: Create Remaining Test Stubs**
     *   **(LLM Action):** "Following the pattern from task **P4.1** and **P4.2**, create placeholder `.spec.ts` (unit) and `.e2e-spec.ts` (E2E) files for the newly created services and controllers in the `tracking-service`, `offline-data`, `post`, and `routine` modules."
     *   **(Verification):** Basic test stub files exist for all new services and controllers.
