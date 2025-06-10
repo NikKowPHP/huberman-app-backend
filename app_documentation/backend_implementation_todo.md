@@ -35,7 +35,8 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
         ```
     *   **(Verification):** The `User` and `Subscription` models in `prisma.schema` now contain the new fields.
 
-*   `[ ]` **P0.2: Create New Database Migration**
+*   `[!]` **P0.2: Create New Database Migration**
+      * *AGENT_NOTE: Skipped due to database connection issues. Last error: Can't reach database server at `localhost:5434`*
     *   **(File):** A new file in `nest-app/prisma/migrations/`
     *   **(LLM Action):** Run the following command from the `nest-app` directory to create a new migration file reflecting the schema changes:
         ```bash
