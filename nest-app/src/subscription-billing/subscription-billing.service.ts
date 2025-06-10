@@ -448,8 +448,11 @@ export class SubscriptionBillingService {
 
       this.logger.log(`Received Google Play Notification: ${notificationType} for subscriptionId: ${subscriptionId}`);
 
+      // TODO: Add logic to validate the purchaseToken with the Google Play Developer API here.
+
       const subscription = await this.prisma.subscription.findFirst({
           where: { googlePlaySubscriptionId: subscriptionId },
+          include: { user: true },
       });
 
       if (!subscription) {
@@ -457,13 +460,15 @@ export class SubscriptionBillingService {
           return;
       }
 
+      const { user } = subscription;
+
       switch (notificationType) {
         case 4: // SUBSCRIPTION_RENEWED
           await this.prisma.subscription.update({
             where: { id: subscription.id },
             data: { stripeStatus: 'ACTIVE' },
           });
-          this.eventEmitter.emit('subscription.renewed', { userId: subscription.userId });
+          this.eventEmitter.emit('subscription.renewed', { userId: user.id });
           break;
 
         case 3: // SUBSCRIPTION_CANCELED
@@ -471,7 +476,7 @@ export class SubscriptionBillingService {
             where: { id: subscription.id },
             data: { stripeStatus: 'CANCELED' },
           });
-          this.eventEmitter.emit('subscription.canceled', { userId: subscription.userId });
+          this.eventEmitter.emit('subscription.canceled', { userId: user.id });
           break;
 
         case 12: // SUBSCRIPTION_EXPIRED
@@ -479,7 +484,7 @@ export class SubscriptionBillingService {
             where: { id: subscription.id },
             data: { stripeStatus: 'EXPIRED', endsAt: new Date() },
           });
-           this.eventEmitter.emit('subscription.ended', { userId: subscription.userId });
+           this.eventEmitter.emit('subscription.ended', { userId: user.id });
           break;
 
         default:
