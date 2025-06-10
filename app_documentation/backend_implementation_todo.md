@@ -164,7 +164,7 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
         ```
     *   **(Verification):** The file `transform.interceptor.ts` is created with the specified code.
 
-*   `[ ]` **P2.2: Register Global Response Interceptor**
+*   `[x]` **P2.2: Register Global Response Interceptor**
     *   **(File):** `nest-app/src/main.ts`
     *   **(LLM Action):** "In `nest-app/src/main.ts`, register the `TransformInterceptor` globally using `app.useGlobalInterceptors(new TransformInterceptor());`."
     *   **(Verification):** `main.ts` now includes the code to register the global interceptor.
