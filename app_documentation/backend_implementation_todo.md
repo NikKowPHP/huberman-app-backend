@@ -118,7 +118,8 @@ We are on the final step. Here is a new, ultra-focused `Final_Fixes_TODO.md` to 
 
 **Objective:** Confirm the application is stable and all tests pass.
 
-*   `[ ]` **P2.1: Run All Tests and Confirm Success**
+*   `[!]` **P2.1: Run All Tests and Confirm Success**
+      * *AGENT_NOTE: Skipped due to persistent Prisma client initialization errors and test failures.*
     *   **(LLM Action):** "Execute the test command from the `nest-app/` directory."
         ```bash
         npm run test && npm run test:e2e
