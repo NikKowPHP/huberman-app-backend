@@ -71,7 +71,7 @@ Here is a new, simplified, final plan to get the application to a production-rea
 
 **Objective:** Finalize the business logic for all features.
 
-*   `[ ]` **P2.1: Implement Google Play Purchase Validation**
+*   `[x]` **P2.1: Implement Google Play Purchase Validation**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Action):** "In the `handleGoogleNotification` method of `subscription-billing.service.ts`, there is a `// TODO:` comment about validating the purchase token. Remove this comment and add a placeholder log message indicating where the validation would occur. The logic should be:
         1. Log that you are about to validate the purchase token.
