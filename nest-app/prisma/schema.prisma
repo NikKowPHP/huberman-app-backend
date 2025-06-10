@@ -14,6 +14,8 @@ model User {
   email            String   @unique
   password         String
   profilePictureUrl String?
+  appleOriginalTransactionId  String? @unique
+  googlePlayPurchaseToken     String? @unique
   emailVerifiedAt  DateTime?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -45,6 +47,8 @@ model Subscription {
   plan         Plan     @relation(fields: [planId], references: [id])
   name         String
   stripeId     String   @unique
+  googlePlaySubscriptionId    String? @unique
+  appleOriginalTransactionId  String?
   stripeStatus SubscriptionStatus @default(INCOMPLETE)
   stripePrice  String
   quantity     Int

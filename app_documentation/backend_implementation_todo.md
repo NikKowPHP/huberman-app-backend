@@ -21,7 +21,7 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
 
 **Objective:** Correct the database schema to properly handle mobile subscriptions and complete the Google Play webhook logic.
 
-*   `[ ]` **P0.1: Update Prisma Schema for Subscriptions**
+*   `[x]` **P0.1: Update Prisma Schema for Subscriptions**
     *   **(File):** `nest-app/prisma/schema.prisma`
     *   **(LLM Action):** Modify the `User` and `Subscription` models in `nest-app/prisma/schema.prisma`. Add `appleOriginalTransactionId` and `googlePlayPurchaseToken` to the `User` model, and `googlePlaySubscriptionId` to the `Subscription` model.
         ```prisma
