@@ -92,7 +92,7 @@ Here is a new, simplified, final plan to get the application to a production-rea
 
 **Objective:** Populate the database with complete seed data and ensure all tests pass.
 
-*   `[ ]` **P3.1: Seed the Database**
+*   `[x]` **P3.1: Seed the Database**
     *   **(LLM Action):** "Now that the migrations are fixed, run the database seed command from the `nest-app/` directory to populate the database with all the data, including the newly added Posts and Comments."
         ```bash
         npx prisma db seed
