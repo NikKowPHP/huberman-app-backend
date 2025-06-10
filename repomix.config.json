@@ -1,5 +1,5 @@
 {
     "ignore": {
-    "customPatterns": ["*.test.ts", "docs/**", "public/**", "nest-app/src/generated/**"]
+    "customPatterns": ["*.test.ts", "docs/**", "public/**"]
   }
 }
