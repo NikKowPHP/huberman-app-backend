@@ -44,7 +44,7 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
         ```
     *   **(Verification):** A new migration folder is created inside `nest-app/prisma/migrations/` containing a `migration.sql` file that adds the new columns to the "User" and "Subscription" tables.
 
-*   `[ ]` **P0.3: Update Google Webhook Service Logic**
+*   `[x]` **P0.3: Update Google Webhook Service Logic**
     *   **(File):** `nest-app/src/subscription-billing/subscription-billing.service.ts`
     *   **(LLM Action):** In the `handleGoogleNotification` method, update the Prisma query to use the new `googlePlaySubscriptionId` field.
         ```typescript
@@ -128,12 +128,12 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
 
 **Objective:** Ensure the database can be fully populated with realistic sample data for all features.
 
-*   `[ ]` **P1.1: Add Post & Comment Seeding**
+*   `[x]` **P1.1: Add Post & Comment Seeding**
     *   **(File):** `nest-app/prisma/seed.ts`
     *   **(LLM Action):** "In `nest-app/prisma/seed.ts`, add logic to seed `Post` and `Comment` data. After seeding users, loop through them to create a few posts for each. Then, loop through the created posts and add a few comments from different users to each post."
     *   **(Verification):** `seed.ts` now contains logic for seeding posts and comments.
 
-*   `[ ]` **P1.2: _**(User Action)**_ Re-run Full Seed**
+*   `[!]` **P1.2: _**(User Action)**_ Re-run Full Seed**
     *   **_**(User Action)**_** Execute `npx prisma migrate reset` to clear the database and re-run all migrations and the seed script.
     *   **(Verification):** The command completes successfully. The database contains data for users, plans, posts, comments, etc.
 

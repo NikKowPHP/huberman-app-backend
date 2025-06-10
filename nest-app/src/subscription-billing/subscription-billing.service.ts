@@ -430,10 +430,6 @@ export class SubscriptionBillingService {
     }
   }
 
-  /**
-   * Handles Google Play subscription notifications
-   * @param message The Pub/Sub message from Google Play
-   */
   async handleGoogleNotification(message: any) {
     try {
       const dataString = Buffer.from(message.data, 'base64').toString('utf-8');
@@ -450,14 +446,37 @@ export class SubscriptionBillingService {
 
       // TODO: Add logic to validate the purchaseToken with the Google Play Developer API here.
 
-      const subscription = await this.prisma.subscription.findFirst({
+      // First try to find existing subscription
+      let subscription = await this.prisma.subscription.findFirst({
           where: { googlePlaySubscriptionId: subscriptionId },
           include: { user: true },
       });
 
       if (!subscription) {
-          this.logger.warn(`Subscription with Google Play ID ${subscriptionId} not found.`);
+        this.logger.log(`No subscription found for Google Play ID ${subscriptionId}, checking user by purchase token`);
+        
+        // Find user by purchase token
+        const user = await this.prisma.user.findFirst({
+          where: { googlePlayPurchaseToken: purchaseToken }
+        });
+
+        if (!user) {
+          this.logger.warn(`User not found for purchase token: ${purchaseToken}`);
           return;
+        }
+
+        // Create new subscription for user
+        subscription = await this.prisma.subscription.create({
+          data: {
+            name: 'google-play',
+            googlePlaySubscriptionId: subscriptionId,
+            stripeStatus: 'ACTIVE',
+            userId: user.id
+          },
+          include: { user: true }
+        });
+
+        this.logger.log(`Created new subscription ${subscription.id} for user ${user.id}`);
       }
 
       const { user } = subscription;
@@ -484,7 +503,7 @@ export class SubscriptionBillingService {
             where: { id: subscription.id },
             data: { stripeStatus: 'EXPIRED', endsAt: new Date() },
           });
-           this.eventEmitter.emit('subscription.ended', { userId: user.id });
+          this.eventEmitter.emit('subscription.ended', { userId: user.id });
           break;
 
         default:
