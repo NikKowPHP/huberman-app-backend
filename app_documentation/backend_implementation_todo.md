@@ -107,7 +107,7 @@ We are on the final step. Here is a new, ultra-focused `Final_Fixes_TODO.md` to 
       Apply this `overrideGuard` pattern to all E2E tests for guarded controllers."
     *   **(Verification):** The `overrideGuard(SupabaseAuthGuard).useValue({ canActivate: () => true })` chain is added to the `Test.createTestingModule` in all relevant E2E spec files.
 
-*   `[ ]` **P1.2: Fix Routine Controller Method Mismatch**
+*   `[x]` **P1.2: Fix Routine Controller Method Mismatch**
     *   **(File):** `nest-app/src/routine/routine.controller.ts`
     *   **(LLM Action):** "In `nest-app/src/routine/routine.controller.ts`, find the `getRoutineSteps` method. It is likely missing the `@Param('id') id: string` in its signature, which is required by the `@Get(':id/steps')` decorator. Correct the method signature to `async getRoutineSteps(@Req() req, @Param('id') id: string)`. Also ensure the service call is correct: `return this.routineService.getRoutineSteps(id);`"
     *   **(Verification):** The `getRoutineSteps` method in `routine.controller.ts` correctly accepts `@Param('id') id: string` and passes the `id` to the service.
