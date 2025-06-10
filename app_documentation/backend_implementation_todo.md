@@ -99,7 +99,8 @@ Here is a new, simplified, final plan to get the application to a production-rea
         ```
     *   **(Verification):** The command completes successfully without errors.
 
-*   `[ ]` **P3.2: Run All Tests**
+*   `[!]` **P3.2: Run All Tests**
+      * *AGENT_NOTE: Skipped due to test failures. Errors: Missing supabase-auth.guard and method mismatches in routine controller.*
     *   **(LLM Action):** "Run all unit and end-to-end tests from the `nest-app/` directory to ensure the application is stable and functioning as expected."
         ```bash
         npm run test && npm run test:e2e
