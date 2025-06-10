@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Req, UseGuards } from '@nestjs/common';
-import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
+import { SupabaseAuthGuard } from '../authentication/guards/supabase-auth.guard';
 import { RoutineService } from './routine.service';
 import { StoreRoutineDto } from './dto/store-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -55,6 +55,6 @@ export class RoutineController {
   @ApiResponse({ status: 200, description: 'List of routine steps' })
   @ApiResponse({ status: 404, description: 'Routine not found' })
   async getRoutineSteps(@Req() req, @Param('id') id: string) {
-    return this.routineService.getRoutineSteps(req.user, id);
+    return this.routineService.getRoutineSteps(id);
   }
 }

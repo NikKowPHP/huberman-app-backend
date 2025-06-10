@@ -35,6 +35,13 @@ export class RoutineService {
     });
   }
 
+  async getRoutine(userId: string, routineId: string) {
+    return this.prisma.routine.findUnique({
+      where: { id: routineId, userId },
+      include: { steps: true }
+    });
+  }
+
   async executeRoutine(routineId: string) {
     await this.prisma.routineStep.updateMany({
       where: { 

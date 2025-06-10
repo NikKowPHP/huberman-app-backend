@@ -2982,6 +2982,8 @@ export namespace Prisma {
     email: string | null
     password: string | null
     profilePictureUrl: string | null
+    appleOriginalTransactionId: string | null
+    googlePlayPurchaseToken: string | null
     emailVerifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2994,6 +2996,8 @@ export namespace Prisma {
     email: string | null
     password: string | null
     profilePictureUrl: string | null
+    appleOriginalTransactionId: string | null
+    googlePlayPurchaseToken: string | null
     emailVerifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3006,6 +3010,8 @@ export namespace Prisma {
     email: number
     password: number
     profilePictureUrl: number
+    appleOriginalTransactionId: number
+    googlePlayPurchaseToken: number
     emailVerifiedAt: number
     createdAt: number
     updatedAt: number
@@ -3020,6 +3026,8 @@ export namespace Prisma {
     email?: true
     password?: true
     profilePictureUrl?: true
+    appleOriginalTransactionId?: true
+    googlePlayPurchaseToken?: true
     emailVerifiedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3032,6 +3040,8 @@ export namespace Prisma {
     email?: true
     password?: true
     profilePictureUrl?: true
+    appleOriginalTransactionId?: true
+    googlePlayPurchaseToken?: true
     emailVerifiedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3044,6 +3054,8 @@ export namespace Prisma {
     email?: true
     password?: true
     profilePictureUrl?: true
+    appleOriginalTransactionId?: true
+    googlePlayPurchaseToken?: true
     emailVerifiedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3129,6 +3141,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl: string | null
+    appleOriginalTransactionId: string | null
+    googlePlayPurchaseToken: string | null
     emailVerifiedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -3158,6 +3172,8 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     profilePictureUrl?: boolean
+    appleOriginalTransactionId?: boolean
+    googlePlayPurchaseToken?: boolean
     emailVerifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3179,6 +3195,8 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     profilePictureUrl?: boolean
+    appleOriginalTransactionId?: boolean
+    googlePlayPurchaseToken?: boolean
     emailVerifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3191,6 +3209,8 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     profilePictureUrl?: boolean
+    appleOriginalTransactionId?: boolean
+    googlePlayPurchaseToken?: boolean
     emailVerifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3203,13 +3223,15 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     profilePictureUrl?: boolean
+    appleOriginalTransactionId?: boolean
+    googlePlayPurchaseToken?: boolean
     emailVerifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "profilePictureUrl" | "emailVerifiedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "profilePictureUrl" | "appleOriginalTransactionId" | "googlePlayPurchaseToken" | "emailVerifiedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     devices?: boolean | User$devicesArgs<ExtArgs>
     subscriptions?: boolean | User$subscriptionsArgs<ExtArgs>
@@ -3242,6 +3264,8 @@ export namespace Prisma {
       email: string
       password: string
       profilePictureUrl: string | null
+      appleOriginalTransactionId: string | null
+      googlePlayPurchaseToken: string | null
       emailVerifiedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -3682,6 +3706,8 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly profilePictureUrl: FieldRef<"User", 'String'>
+    readonly appleOriginalTransactionId: FieldRef<"User", 'String'>
+    readonly googlePlayPurchaseToken: FieldRef<"User", 'String'>
     readonly emailVerifiedAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -5355,6 +5381,8 @@ export namespace Prisma {
     planId: string | null
     name: string | null
     stripeId: string | null
+    googlePlaySubscriptionId: string | null
+    appleOriginalTransactionId: string | null
     stripeStatus: $Enums.SubscriptionStatus | null
     stripePrice: string | null
     quantity: number | null
@@ -5370,6 +5398,8 @@ export namespace Prisma {
     planId: string | null
     name: string | null
     stripeId: string | null
+    googlePlaySubscriptionId: string | null
+    appleOriginalTransactionId: string | null
     stripeStatus: $Enums.SubscriptionStatus | null
     stripePrice: string | null
     quantity: number | null
@@ -5385,6 +5415,8 @@ export namespace Prisma {
     planId: number
     name: number
     stripeId: number
+    googlePlaySubscriptionId: number
+    appleOriginalTransactionId: number
     stripeStatus: number
     stripePrice: number
     quantity: number
@@ -5410,6 +5442,8 @@ export namespace Prisma {
     planId?: true
     name?: true
     stripeId?: true
+    googlePlaySubscriptionId?: true
+    appleOriginalTransactionId?: true
     stripeStatus?: true
     stripePrice?: true
     quantity?: true
@@ -5425,6 +5459,8 @@ export namespace Prisma {
     planId?: true
     name?: true
     stripeId?: true
+    googlePlaySubscriptionId?: true
+    appleOriginalTransactionId?: true
     stripeStatus?: true
     stripePrice?: true
     quantity?: true
@@ -5440,6 +5476,8 @@ export namespace Prisma {
     planId?: true
     name?: true
     stripeId?: true
+    googlePlaySubscriptionId?: true
+    appleOriginalTransactionId?: true
     stripeStatus?: true
     stripePrice?: true
     quantity?: true
@@ -5542,6 +5580,8 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId: string | null
+    appleOriginalTransactionId: string | null
     stripeStatus: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -5576,6 +5616,8 @@ export namespace Prisma {
     planId?: boolean
     name?: boolean
     stripeId?: boolean
+    googlePlaySubscriptionId?: boolean
+    appleOriginalTransactionId?: boolean
     stripeStatus?: boolean
     stripePrice?: boolean
     quantity?: boolean
@@ -5593,6 +5635,8 @@ export namespace Prisma {
     planId?: boolean
     name?: boolean
     stripeId?: boolean
+    googlePlaySubscriptionId?: boolean
+    appleOriginalTransactionId?: boolean
     stripeStatus?: boolean
     stripePrice?: boolean
     quantity?: boolean
@@ -5610,6 +5654,8 @@ export namespace Prisma {
     planId?: boolean
     name?: boolean
     stripeId?: boolean
+    googlePlaySubscriptionId?: boolean
+    appleOriginalTransactionId?: boolean
     stripeStatus?: boolean
     stripePrice?: boolean
     quantity?: boolean
@@ -5627,6 +5673,8 @@ export namespace Prisma {
     planId?: boolean
     name?: boolean
     stripeId?: boolean
+    googlePlaySubscriptionId?: boolean
+    appleOriginalTransactionId?: boolean
     stripeStatus?: boolean
     stripePrice?: boolean
     quantity?: boolean
@@ -5636,7 +5684,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "planId" | "name" | "stripeId" | "stripeStatus" | "stripePrice" | "quantity" | "trialEndsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+  export type SubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "planId" | "name" | "stripeId" | "googlePlaySubscriptionId" | "appleOriginalTransactionId" | "stripeStatus" | "stripePrice" | "quantity" | "trialEndsAt" | "endsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
   export type SubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     plan?: boolean | PlanDefaultArgs<ExtArgs>
@@ -5662,6 +5710,8 @@ export namespace Prisma {
       planId: string
       name: string
       stripeId: string
+      googlePlaySubscriptionId: string | null
+      appleOriginalTransactionId: string | null
       stripeStatus: $Enums.SubscriptionStatus
       stripePrice: string
       quantity: number
@@ -6099,6 +6149,8 @@ export namespace Prisma {
     readonly planId: FieldRef<"Subscription", 'String'>
     readonly name: FieldRef<"Subscription", 'String'>
     readonly stripeId: FieldRef<"Subscription", 'String'>
+    readonly googlePlaySubscriptionId: FieldRef<"Subscription", 'String'>
+    readonly appleOriginalTransactionId: FieldRef<"Subscription", 'String'>
     readonly stripeStatus: FieldRef<"Subscription", 'SubscriptionStatus'>
     readonly stripePrice: FieldRef<"Subscription", 'String'>
     readonly quantity: FieldRef<"Subscription", 'Int'>
@@ -24329,6 +24381,8 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     profilePictureUrl: 'profilePictureUrl',
+    appleOriginalTransactionId: 'appleOriginalTransactionId',
+    googlePlayPurchaseToken: 'googlePlayPurchaseToken',
     emailVerifiedAt: 'emailVerifiedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -24354,6 +24408,8 @@ export namespace Prisma {
     planId: 'planId',
     name: 'name',
     stripeId: 'stripeId',
+    googlePlaySubscriptionId: 'googlePlaySubscriptionId',
+    appleOriginalTransactionId: 'appleOriginalTransactionId',
     stripeStatus: 'stripeStatus',
     stripePrice: 'stripePrice',
     quantity: 'quantity',
@@ -24791,6 +24847,8 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     profilePictureUrl?: StringNullableFilter<"User"> | string | null
+    appleOriginalTransactionId?: StringNullableFilter<"User"> | string | null
+    googlePlayPurchaseToken?: StringNullableFilter<"User"> | string | null
     emailVerifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -24811,6 +24869,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     profilePictureUrl?: SortOrderInput | SortOrder
+    appleOriginalTransactionId?: SortOrderInput | SortOrder
+    googlePlayPurchaseToken?: SortOrderInput | SortOrder
     emailVerifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24828,6 +24888,8 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    appleOriginalTransactionId?: string
+    googlePlayPurchaseToken?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -24846,7 +24908,7 @@ export namespace Prisma {
     routines?: RoutineListRelationFilter
     posts?: PostListRelationFilter
     comments?: CommentListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "appleOriginalTransactionId" | "googlePlayPurchaseToken">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -24854,6 +24916,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     profilePictureUrl?: SortOrderInput | SortOrder
+    appleOriginalTransactionId?: SortOrderInput | SortOrder
+    googlePlayPurchaseToken?: SortOrderInput | SortOrder
     emailVerifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24872,6 +24936,8 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     profilePictureUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    appleOriginalTransactionId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    googlePlayPurchaseToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerifiedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -24937,6 +25003,8 @@ export namespace Prisma {
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
     stripeId?: StringFilter<"Subscription"> | string
+    googlePlaySubscriptionId?: StringNullableFilter<"Subscription"> | string | null
+    appleOriginalTransactionId?: StringNullableFilter<"Subscription"> | string | null
     stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
@@ -24954,6 +25022,8 @@ export namespace Prisma {
     planId?: SortOrder
     name?: SortOrder
     stripeId?: SortOrder
+    googlePlaySubscriptionId?: SortOrderInput | SortOrder
+    appleOriginalTransactionId?: SortOrderInput | SortOrder
     stripeStatus?: SortOrder
     stripePrice?: SortOrder
     quantity?: SortOrder
@@ -24968,12 +25038,14 @@ export namespace Prisma {
   export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     stripeId?: string
+    googlePlaySubscriptionId?: string
     AND?: SubscriptionWhereInput | SubscriptionWhereInput[]
     OR?: SubscriptionWhereInput[]
     NOT?: SubscriptionWhereInput | SubscriptionWhereInput[]
     userId?: StringFilter<"Subscription"> | string
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
+    appleOriginalTransactionId?: StringNullableFilter<"Subscription"> | string | null
     stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
@@ -24983,7 +25055,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Subscription"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     plan?: XOR<PlanScalarRelationFilter, PlanWhereInput>
-  }, "id" | "stripeId">
+  }, "id" | "stripeId" | "googlePlaySubscriptionId">
 
   export type SubscriptionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -24991,6 +25063,8 @@ export namespace Prisma {
     planId?: SortOrder
     name?: SortOrder
     stripeId?: SortOrder
+    googlePlaySubscriptionId?: SortOrderInput | SortOrder
+    appleOriginalTransactionId?: SortOrderInput | SortOrder
     stripeStatus?: SortOrder
     stripePrice?: SortOrder
     quantity?: SortOrder
@@ -25014,6 +25088,8 @@ export namespace Prisma {
     planId?: StringWithAggregatesFilter<"Subscription"> | string
     name?: StringWithAggregatesFilter<"Subscription"> | string
     stripeId?: StringWithAggregatesFilter<"Subscription"> | string
+    googlePlaySubscriptionId?: StringNullableWithAggregatesFilter<"Subscription"> | string | null
+    appleOriginalTransactionId?: StringNullableWithAggregatesFilter<"Subscription"> | string | null
     stripeStatus?: EnumSubscriptionStatusWithAggregatesFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringWithAggregatesFilter<"Subscription"> | string
     quantity?: IntWithAggregatesFilter<"Subscription"> | number
@@ -26113,6 +26189,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26133,6 +26211,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26153,6 +26233,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26173,6 +26255,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26193,6 +26277,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26205,6 +26291,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26217,6 +26305,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26275,6 +26365,8 @@ export namespace Prisma {
     id?: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -26292,6 +26384,8 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -26305,6 +26399,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -26322,6 +26418,8 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -26337,6 +26435,8 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -26350,6 +26450,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -26365,6 +26467,8 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -27660,6 +27764,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     profilePictureUrl?: SortOrder
+    appleOriginalTransactionId?: SortOrder
+    googlePlayPurchaseToken?: SortOrder
     emailVerifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -27672,6 +27778,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     profilePictureUrl?: SortOrder
+    appleOriginalTransactionId?: SortOrder
+    googlePlayPurchaseToken?: SortOrder
     emailVerifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -27684,6 +27792,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     profilePictureUrl?: SortOrder
+    appleOriginalTransactionId?: SortOrder
+    googlePlayPurchaseToken?: SortOrder
     emailVerifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -27826,6 +27936,8 @@ export namespace Prisma {
     planId?: SortOrder
     name?: SortOrder
     stripeId?: SortOrder
+    googlePlaySubscriptionId?: SortOrder
+    appleOriginalTransactionId?: SortOrder
     stripeStatus?: SortOrder
     stripePrice?: SortOrder
     quantity?: SortOrder
@@ -27845,6 +27957,8 @@ export namespace Prisma {
     planId?: SortOrder
     name?: SortOrder
     stripeId?: SortOrder
+    googlePlaySubscriptionId?: SortOrder
+    appleOriginalTransactionId?: SortOrder
     stripeStatus?: SortOrder
     stripePrice?: SortOrder
     quantity?: SortOrder
@@ -27860,6 +27974,8 @@ export namespace Prisma {
     planId?: SortOrder
     name?: SortOrder
     stripeId?: SortOrder
+    googlePlaySubscriptionId?: SortOrder
+    appleOriginalTransactionId?: SortOrder
     stripeStatus?: SortOrder
     stripePrice?: SortOrder
     quantity?: SortOrder
@@ -30292,6 +30408,8 @@ export namespace Prisma {
     id?: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -30307,6 +30425,8 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -30569,6 +30689,8 @@ export namespace Prisma {
     planId?: StringFilter<"Subscription"> | string
     name?: StringFilter<"Subscription"> | string
     stripeId?: StringFilter<"Subscription"> | string
+    googlePlaySubscriptionId?: StringNullableFilter<"Subscription"> | string | null
+    appleOriginalTransactionId?: StringNullableFilter<"Subscription"> | string | null
     stripeStatus?: EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
     stripePrice?: StringFilter<"Subscription"> | string
     quantity?: IntFilter<"Subscription"> | number
@@ -30766,6 +30888,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -30785,6 +30909,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -30820,6 +30946,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30839,6 +30967,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30858,6 +30988,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -30877,6 +31009,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -30945,6 +31079,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30964,6 +31100,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31022,6 +31160,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31041,6 +31181,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31145,6 +31287,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31164,6 +31308,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31270,6 +31416,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31289,6 +31437,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31357,6 +31507,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31376,6 +31528,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31434,6 +31588,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31453,6 +31609,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31521,6 +31679,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31540,6 +31700,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31596,6 +31758,8 @@ export namespace Prisma {
     id?: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -31611,6 +31775,8 @@ export namespace Prisma {
     userId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -32439,6 +32605,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32458,6 +32626,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32525,6 +32695,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32544,6 +32716,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32662,6 +32836,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32681,6 +32857,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32742,6 +32920,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32761,6 +32941,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32796,6 +32978,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32815,6 +32999,8 @@ export namespace Prisma {
     email: string
     password: string
     profilePictureUrl?: string | null
+    appleOriginalTransactionId?: string | null
+    googlePlayPurchaseToken?: string | null
     emailVerifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32875,6 +33061,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32894,6 +33082,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    googlePlayPurchaseToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32949,6 +33139,8 @@ export namespace Prisma {
     planId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -33042,6 +33234,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -33057,6 +33251,8 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -33071,6 +33267,8 @@ export namespace Prisma {
     planId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -33311,6 +33509,8 @@ export namespace Prisma {
     userId: string
     name: string
     stripeId: string
+    googlePlaySubscriptionId?: string | null
+    appleOriginalTransactionId?: string | null
     stripeStatus?: $Enums.SubscriptionStatus
     stripePrice: string
     quantity: number
@@ -33324,6 +33524,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -33339,6 +33541,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -33353,6 +33557,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripeId?: StringFieldUpdateOperationsInput | string
+    googlePlaySubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    appleOriginalTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
     stripePrice?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number

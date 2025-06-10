@@ -9,15 +9,17 @@ datasource db {
 }
 
 model User {
-  id                String    @id @default(cuid())
-  name              String
-  email             String    @unique
-  password          String
-  profilePictureUrl String?
-  emailVerifiedAt   DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  deletedAt         DateTime?
+  id                         String    @id @default(cuid())
+  name                       String
+  email                      String    @unique
+  password                   String
+  profilePictureUrl          String?
+  appleOriginalTransactionId String?   @unique
+  googlePlayPurchaseToken    String?   @unique
+  emailVerifiedAt            DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  deletedAt                  DateTime?
 
   devices       UserDevice[]
   subscriptions Subscription[]
@@ -38,20 +40,22 @@ model UserDevice {
 }
 
 model Subscription {
-  id           String             @id @default(cuid())
-  userId       String
-  user         User               @relation(fields: [userId], references: [id])
-  planId       String
-  plan         Plan               @relation(fields: [planId], references: [id])
-  name         String
-  stripeId     String             @unique
-  stripeStatus SubscriptionStatus @default(INCOMPLETE)
-  stripePrice  String
-  quantity     Int
-  trialEndsAt  DateTime?
-  endsAt       DateTime?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id                         String             @id @default(cuid())
+  userId                     String
+  user                       User               @relation(fields: [userId], references: [id])
+  planId                     String
+  plan                       Plan               @relation(fields: [planId], references: [id])
+  name                       String
+  stripeId                   String             @unique
+  googlePlaySubscriptionId   String?            @unique
+  appleOriginalTransactionId String?
+  stripeStatus               SubscriptionStatus @default(INCOMPLETE)
+  stripePrice                String
+  quantity                   Int
+  trialEndsAt                DateTime?
+  endsAt                     DateTime?
+  createdAt                  DateTime           @default(now())
+  updatedAt                  DateTime           @updatedAt
 }
 
 model Note {

@@ -3,6 +3,10 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
+interface UserSeed {
+    id: string;
+}
+
 async function main() {
     // Seed plans
     await prisma.plan.createMany({
@@ -41,7 +45,7 @@ async function main() {
     });
 
     // Seed episodes
-    const episodes = await prisma.episode.createMany({
+    await prisma.episode.createMany({
         data: Array.from({ length: 5 }).map(() => ({
             title: faker.lorem.words(3),
             slug: faker.lorem.slug(3),
@@ -77,7 +81,7 @@ async function main() {
     }
 
     // Seed episode-protocol relationships
-    for (const episode of episodes) {
+    for (const episode of await prisma.episode.findMany()) {
         for (const protocol of protocols) {
             if (Math.random() > 0.5) {
                 await prisma.episodeProtocol.create({
@@ -91,7 +95,7 @@ async function main() {
     }
 
     // Seed summaries
-    for (const episode of episodes) {
+    for (const episode of await prisma.episode.findMany()) {
         await prisma.summary.createMany({
             data: Array.from({ length: 2 }).map(() => ({
                 episodeId: episode.id,
@@ -108,8 +112,8 @@ async function main() {
         })),
     });
 
-    // Get all users first
-    const users = await prisma.user.findMany();
+    // Get all users with proper typing
+    const users: UserSeed[] = await prisma.user.findMany();
 
     // Seed user reminders
     for (const user of users) {
@@ -167,37 +171,46 @@ async function main() {
                 description: faker.lorem.sentence(),
                 duration: faker.number.int({ min: 1, max: 30 }),
                 order: faker.number.int({ min: 1, max: 10 }),
-                isOptional: faker.datatype.boolean({ probability: 0.2 }),
+                isOptional: faker.datatype.boolean({ probability: 0.3 }),
             })),
         });
     }
 
-    // Seed offline data
+    // Seed posts
+    const posts = [];
     for (const user of users) {
-        await prisma.offlineData.createMany({
-            data: Array.from({ length: 5 }).map(() => ({
+        await prisma.post.createMany({
+            data: Array.from({ length: 3 }).map(() => ({
                 userId: user.id,
-                key: `user_${user.id}_${faker.lorem.slug(2)}`,
-                value: JSON.stringify({
-                    [faker.lorem.word()]: faker.lorem.sentence(),
-                    timestamp: faker.date.recent().toISOString(),
-                    metadata: {
-                        device: faker.helpers.arrayElement(['mobile', 'desktop', 'tablet']),
-                        version: faker.system.semver(),
-                    }
-                }),
-                createdAt: faker.date.past(),
-                updatedAt: faker.date.recent(),
+                title: faker.lorem.words(5),
+                content: faker.lorem.paragraphs(3),
+            })),
+        });
+        const userPosts = await prisma.post.findMany({
+            where: { userId: user.id },
+            take: 3,
+        });
+        posts.push(...userPosts);
+    }
+
+    // Seed comments
+    for (const post of posts) {
+        await prisma.comment.createMany({
+            data: Array.from({ length: 5 }).map(() => ({
+                postId: post.id,
+                userId: faker.helpers.arrayElement(users).id,
+                content: faker.lorem.paragraph(),
             })),
         });
     }
 }
 
 main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
+    .then(async () => {
         await prisma.$disconnect();
+    })
+    .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+        process.exit(1);
     });
