@@ -143,7 +143,7 @@ Here is a revised, simple, and step-by-step `backend_implementation_todo.md` tha
 
 **Objective:** Add final touches for consistency and create the remaining test file stubs.
 
-*   `[ ]` **P2.1: Implement Global Response Interceptor**
+*   `[x]` **P2.1: Implement Global Response Interceptor**
     *   **(File):** `nest-app/src/common/interceptors/transform.interceptor.ts`
     *   **(LLM Action):** "Create a new file `nest-app/src/common/interceptors/transform.interceptor.ts`. Implement a `TransformInterceptor` that wraps all successful API responses in a `{ "data": ... }` object to ensure a consistent output format."
         ```typescript
